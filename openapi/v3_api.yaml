@@ -10149,6 +10149,12 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/did_history/{id}":
     parameters:
     - name: id
@@ -10179,6 +10185,12 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/exports":
     post:
       summary: Request a CDR export
@@ -10197,6 +10209,12 @@ paths:
                 "$ref": "#/components/schemas/ExportDocument"
         '422':
           description: the date range was rejected
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
           content:
             application/vnd.api+json:
               schema:
@@ -10226,6 +10244,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/ExportCollectionDocument"
+        '400':
+          description: malformed request — unknown filter, bad pagination or bad sort field
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/exports/{id}":
     parameters:
     - name: id
@@ -10257,6 +10287,12 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
     patch:
       summary: Update an export
       tags:
@@ -10272,6 +10308,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/ExportDocument"
+        '404':
+          description: no export with that id belongs to the customer
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
       requestBody:
         content:
           application/vnd.api+json:
@@ -10309,6 +10357,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/AddressVerificationCollectionDocument"
+        '400':
+          description: malformed request — unknown filter, bad pagination or bad sort field
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
     post:
       summary: Submit an address verification
       tags:
@@ -10326,6 +10386,12 @@ paths:
                 "$ref": "#/components/schemas/AddressVerificationDocument"
         '422':
           description: the submission was rejected
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
           content:
             application/vnd.api+json:
               schema:
@@ -10376,6 +10442,12 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
     patch:
       summary: Update an address verification
       tags:
@@ -10391,6 +10463,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/AddressVerificationDocument"
+        '404':
+          description: no address verification with that id belongs to the customer
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
       requestBody:
         content:
           application/vnd.api+json:
@@ -10429,6 +10513,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/CapacityPoolCollectionDocument"
+        '400':
+          description: malformed request — unknown filter, bad pagination or bad sort field
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/capacity_pools/{id}":
     parameters:
     - name: id
@@ -10470,6 +10566,12 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
     patch:
       summary: Release channels from a capacity pool
       tags:
@@ -10479,8 +10581,26 @@ paths:
       parameters:
       - "$ref": "#/components/parameters/ApiVersion"
       responses:
+        '200':
+          description: channels released
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/CapacityPoolDocument"
         '422':
           description: the new channel count was rejected
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '404':
+          description: no capacity pool with that id belongs to the customer
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
           content:
             application/vnd.api+json:
               schema:
@@ -10521,6 +10641,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/SharedCapacityGroupCollectionDocument"
+        '400':
+          description: malformed request — unknown filter, bad pagination or bad sort field
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
     post:
       summary: Create a shared capacity group
       tags:
@@ -10538,6 +10670,12 @@ paths:
                 "$ref": "#/components/schemas/SharedCapacityGroupDocument"
         '422':
           description: the group was rejected
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
           content:
             application/vnd.api+json:
               schema:
@@ -10582,6 +10720,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/SharedCapacityGroupDocument"
+        '404':
+          description: no shared capacity group with that id belongs to the customer
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
     patch:
       summary: Update a shared capacity group
       tags:
@@ -10597,6 +10747,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/SharedCapacityGroupDocument"
+        '404':
+          description: no shared capacity group with that id belongs to the customer
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
       requestBody:
         content:
           application/vnd.api+json:
@@ -10614,6 +10776,18 @@ paths:
       responses:
         '204':
           description: shared capacity group deleted
+        '404':
+          description: no shared capacity group with that id belongs to the customer
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/countries":
     get:
       summary: List countries
@@ -10642,6 +10816,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/CountryCollectionDocument"
+        '400':
+          description: malformed request — unknown filter or bad sort field
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/countries/{id}":
     parameters:
     - name: id
@@ -10681,6 +10867,12 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/regions":
     get:
       summary: List regions
@@ -10709,6 +10901,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/RegionCollectionDocument"
+        '400':
+          description: malformed request — unknown filter or bad sort field
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/regions/{id}":
     parameters:
     - name: id
@@ -10742,6 +10946,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/RegionDocument"
+        '404':
+          description: no region with that id
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/cities":
     get:
       summary: List cities
@@ -10773,6 +10989,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/CityCollectionDocument"
+        '400':
+          description: malformed request — unknown filter, bad pagination or bad sort field
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/cities/{id}":
     parameters:
     - name: id
@@ -10808,6 +11036,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/CityDocument"
+        '404':
+          description: no city with that id
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/areas":
     get:
       summary: List areas
@@ -10838,6 +11078,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/AreaCollectionDocument"
+        '400':
+          description: malformed request — unknown filter, bad pagination or bad sort field
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/areas/{id}":
     parameters:
     - name: id
@@ -10871,6 +11123,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/AreaDocument"
+        '404':
+          description: no area with that id
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/did_group_types":
     get:
       summary: List DID group types
@@ -10892,6 +11156,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/DidGroupTypeCollectionDocument"
+        '400':
+          description: malformed request — unknown filter, bad pagination or bad sort field
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/did_group_types/{id}":
     parameters:
     - name: id
@@ -10916,6 +11192,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/DidGroupTypeDocument"
+        '404':
+          description: no DID group type with that id
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/pops":
     get:
       summary: List points of presence
@@ -10934,6 +11222,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/PopCollectionDocument"
+        '400':
+          description: malformed request — unknown filter
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/public_keys":
     get:
       summary: List public keys
@@ -10953,6 +11253,12 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/PublicKeyCollectionDocument"
+        '400':
+          description: malformed request — unknown filter or bad sort field
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/did_groups":
     get:
       summary: List DID groups
@@ -10990,6 +11296,12 @@ paths:
                 "$ref": "#/components/schemas/DidGroupCollectionDocument"
         '400':
           description: malformed request — unknown feature, filter or sort field
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
           content:
             application/vnd.api+json:
               schema:
@@ -11038,6 +11350,12 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/available_dids":
     get:
       summary: List available DIDs
@@ -11069,6 +11387,12 @@ paths:
                 "$ref": "#/components/schemas/AvailableDidCollectionDocument"
         '400':
           description: malformed request — `number_contains` needs at least 3 digits or a coverage filter
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
           content:
             application/vnd.api+json:
               schema:
@@ -11107,6 +11431,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/AvailableDidDocument"
+        '404':
+          description: no available DID with that id
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/did_reservations":
     post:
       summary: Reserve an available DID
@@ -11125,6 +11461,12 @@ paths:
                 "$ref": "#/components/schemas/DidReservationCreatedDocument"
         '422':
           description: the DID cannot be reserved
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
           content:
             application/vnd.api+json:
               schema:
@@ -11164,6 +11506,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/DidReservationCollectionDocument"
+        '400':
+          description: malformed request — unknown filter, bad pagination or bad sort field
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/did_reservations/{id}":
     parameters:
     - name: id
@@ -11197,6 +11551,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/DidReservationDocument"
+        '404':
+          description: no reservation with that id belongs to the customer
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
     delete:
       summary: Release a reservation
       tags:
@@ -11210,6 +11576,12 @@ paths:
           description: reservation released
         '404':
           description: no reservation with that id belongs to the customer
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
           content:
             application/vnd.api+json:
               schema:
@@ -11314,6 +11686,12 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
     patch:
       summary: Update a DID
       tags:
@@ -11331,6 +11709,18 @@ paths:
                 "$ref": "#/components/schemas/DidDocument"
         '422':
           description: the update was rejected
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '404':
+          description: no DID with that id belongs to the customer
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
           content:
             application/vnd.api+json:
               schema:
@@ -11371,6 +11761,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/EmergencyRequirementCollectionDocument"
+        '400':
+          description: malformed request — unknown filter or bad pagination
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/emergency_requirements/{id}":
     parameters:
     - name: id
@@ -11411,6 +11813,12 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/emergency_requirement_validations":
     post:
       summary: Check an identity or address against an emergency requirement
@@ -11429,6 +11837,12 @@ paths:
                 "$ref": "#/components/schemas/EmergencyRequirementValidationDocument"
         '422':
           description: the requirement is not satisfied
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
           content:
             application/vnd.api+json:
               schema:
@@ -11474,6 +11888,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/EmergencyCallingServiceCollectionDocument"
+        '400':
+          description: malformed request — unknown filter, bad pagination or bad sort field
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/emergency_calling_services/{id}":
     parameters:
     - name: id
@@ -11518,6 +11944,12 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
     delete:
       summary: Cancel an emergency calling service
       tags:
@@ -11529,6 +11961,18 @@ paths:
       responses:
         '204':
           description: emergency calling service cancelled
+        '404':
+          description: no emergency calling service with that id belongs to the customer
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/emergency_verifications":
     get:
       summary: List emergency verifications
@@ -11560,6 +12004,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/EmergencyVerificationCollectionDocument"
+        '400':
+          description: malformed request — unknown filter, bad pagination or bad sort field
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
     post:
       summary: Submit an emergency verification
       tags:
@@ -11577,6 +12033,12 @@ paths:
                 "$ref": "#/components/schemas/EmergencyVerificationDocument"
         '422':
           description: the submission was rejected
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
           content:
             application/vnd.api+json:
               schema:
@@ -11622,6 +12084,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/EmergencyVerificationDocument"
+        '404':
+          description: no emergency verification with that id belongs to the customer
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
     patch:
       summary: Update an emergency verification
       tags:
@@ -11637,6 +12111,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/EmergencyVerificationDocument"
+        '404':
+          description: no emergency verification with that id belongs to the customer
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
       requestBody:
         content:
           application/vnd.api+json:
@@ -11674,6 +12160,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/NanpaPrefixCollectionDocument"
+        '400':
+          description: malformed request — unknown filter, bad pagination or bad sort field
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/nanpa_prefixes/{id}":
     parameters:
     - name: id
@@ -11710,6 +12208,12 @@ paths:
                 "$ref": "#/components/schemas/NanpaPrefixDocument"
         '404':
           description: no NANPA prefix with that id
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
           content:
             application/vnd.api+json:
               schema:
@@ -11774,6 +12278,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/OrderCollectionDocument"
+        '400':
+          description: malformed request — unknown filter, bad pagination or bad sort field
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/orders/{id}":
     parameters:
     - name: id
@@ -11805,6 +12321,12 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
     patch:
       summary: Update an order
       tags:
@@ -11820,6 +12342,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/OrderDocument"
+        '404':
+          description: no order with that id belongs to the customer
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
       requestBody:
         content:
           application/vnd.api+json:
@@ -11839,6 +12373,12 @@ paths:
           description: order cancelled
         '404':
           description: no order with that id belongs to the customer
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
           content:
             application/vnd.api+json:
               schema:
@@ -11877,6 +12417,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/IdentityCollectionDocument"
+        '400':
+          description: malformed request — unknown filter, bad pagination or bad sort field
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
     post:
       summary: Create an identity
       tags:
@@ -11894,6 +12446,12 @@ paths:
                 "$ref": "#/components/schemas/IdentityDocument"
         '422':
           description: the identity was rejected
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
           content:
             application/vnd.api+json:
               schema:
@@ -11947,6 +12505,12 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
     patch:
       summary: Update an identity
       tags:
@@ -11962,6 +12526,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/IdentityDocument"
+        '404':
+          description: no identity with that id belongs to the customer
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
       requestBody:
         content:
           application/vnd.api+json:
@@ -11979,6 +12555,18 @@ paths:
       responses:
         '204':
           description: identity deleted
+        '404':
+          description: no identity with that id belongs to the customer
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/addresses":
     get:
       summary: List addresses
@@ -12012,6 +12600,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/AddressCollectionDocument"
+        '400':
+          description: malformed request — unknown filter, bad pagination or bad sort field
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
     post:
       summary: Create an address
       tags:
@@ -12027,6 +12627,12 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/AddressDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
       requestBody:
         content:
           application/vnd.api+json:
@@ -12076,6 +12682,12 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
     patch:
       summary: Update an address
       tags:
@@ -12091,6 +12703,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/AddressDocument"
+        '404':
+          description: no address with that id belongs to the customer
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
       requestBody:
         content:
           application/vnd.api+json:
@@ -12107,6 +12731,18 @@ paths:
       responses:
         '204':
           description: address deleted
+        '404':
+          description: no address with that id belongs to the customer
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/encrypted_files":
     post:
       summary: Upload an encrypted file
@@ -12125,6 +12761,12 @@ paths:
                 "$ref": "#/components/schemas/EncryptedFileDocument"
         '422':
           description: the upload was rejected
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
           content:
             application/vnd.api+json:
               schema:
@@ -12157,6 +12799,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/EncryptedFileCollectionDocument"
+        '400':
+          description: malformed request — unknown filter, bad pagination or bad sort field
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/encrypted_files/{id}":
     parameters:
     - name: id
@@ -12181,6 +12835,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/EncryptedFileDocument"
+        '404':
+          description: no encrypted file with that id belongs to the customer
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
     delete:
       summary: Delete an encrypted file
       tags:
@@ -12192,6 +12858,18 @@ paths:
       responses:
         '204':
           description: encrypted file deleted
+        '404':
+          description: no encrypted file with that id belongs to the customer
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/proofs":
     get:
       summary: List proofs
@@ -12222,6 +12900,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/ProofCollectionDocument"
+        '400':
+          description: malformed request — unknown filter, bad pagination or bad sort field
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
     post:
       summary: Create a proof
       tags:
@@ -12239,6 +12929,12 @@ paths:
                 "$ref": "#/components/schemas/ProofDocument"
         '422':
           description: the proof was rejected
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
           content:
             application/vnd.api+json:
               schema:
@@ -12283,6 +12979,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/ProofDocument"
+        '404':
+          description: no proof with that id belongs to the customer
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
     patch:
       summary: Update a proof
       tags:
@@ -12298,6 +13006,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/ProofDocument"
+        '404':
+          description: no proof with that id belongs to the customer
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
       requestBody:
         content:
           application/vnd.api+json:
@@ -12314,6 +13034,18 @@ paths:
       responses:
         '204':
           description: proof deleted
+        '404':
+          description: no proof with that id belongs to the customer
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/supporting_document_templates":
     get:
       summary: List supporting document templates
@@ -12335,6 +13067,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/SupportingDocumentTemplateCollectionDocument"
+        '400':
+          description: malformed request — unknown filter, bad pagination or bad sort field
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/supporting_document_templates/{id}":
     parameters:
     - name: id
@@ -12359,6 +13103,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/SupportingDocumentTemplateDocument"
+        '404':
+          description: no supporting document template with that id
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/permanent_supporting_documents":
     get:
       summary: List permanent supporting documents
@@ -12389,6 +13145,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/PermanentSupportingDocumentCollectionDocument"
+        '400':
+          description: malformed request — unknown filter, bad pagination or bad sort field
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
     post:
       summary: Create a permanent supporting document
       tags:
@@ -12404,6 +13172,12 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/PermanentSupportingDocumentDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
       requestBody:
         content:
           application/vnd.api+json:
@@ -12444,6 +13218,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/PermanentSupportingDocumentDocument"
+        '404':
+          description: no permanent supporting document with that id belongs to the customer
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
     patch:
       summary: Update a permanent supporting document
       tags:
@@ -12459,6 +13245,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/PermanentSupportingDocumentDocument"
+        '404':
+          description: no permanent supporting document with that id belongs to the customer
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
       requestBody:
         content:
           application/vnd.api+json:
@@ -12475,6 +13273,18 @@ paths:
       responses:
         '204':
           description: document deleted
+        '404':
+          description: no permanent supporting document with that id belongs to the customer
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/proof_types":
     get:
       summary: List proof types
@@ -12494,6 +13304,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/ProofTypeCollectionDocument"
+        '400':
+          description: malformed request — unknown filter or bad sort field
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/proof_types/{id}":
     parameters:
     - name: id
@@ -12518,6 +13340,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/ProofTypeDocument"
+        '404':
+          description: no proof type with that id
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/address_requirements":
     get:
       summary: List address requirements
@@ -12556,6 +13390,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/AddressRequirementCollectionDocument"
+        '400':
+          description: malformed request — unknown filter, bad pagination or bad sort field
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/address_requirements/{id}":
     parameters:
     - name: id
@@ -12597,6 +13443,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/AddressRequirementDocument"
+        '404':
+          description: no address requirement with that id
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/address_requirement_validations":
     post:
       summary: Check an identity or address against an address requirement
@@ -12615,6 +13473,12 @@ paths:
                 "$ref": "#/components/schemas/AddressRequirementValidationDocument"
         '422':
           description: the requirement is not satisfied
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
           content:
             application/vnd.api+json:
               schema:
@@ -12656,6 +13520,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/VoiceInTrunkCollectionDocument"
+        '400':
+          description: malformed request — unknown filter, bad pagination or bad sort field
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
     post:
       summary: Create a voice IN trunk
       tags:
@@ -12679,6 +13555,12 @@ paths:
                 "$ref": "#/components/schemas/ErrorsDocument"
         '400':
           description: malformed request — `configuration` missing
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
           content:
             application/vnd.api+json:
               schema:
@@ -12729,6 +13611,12 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
     patch:
       summary: Update a voice IN trunk
       tags:
@@ -12744,6 +13632,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/VoiceInTrunkDocument"
+        '404':
+          description: no trunk with that id belongs to the customer
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
       requestBody:
         content:
           application/vnd.api+json:
@@ -12763,6 +13663,12 @@ paths:
           description: trunk deleted
         '404':
           description: no trunk with that id belongs to the customer
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
           content:
             application/vnd.api+json:
               schema:
@@ -12796,6 +13702,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/VoiceInTrunkGroupCollectionDocument"
+        '400':
+          description: malformed request — unknown filter, bad pagination or bad sort field
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
     post:
       summary: Create a voice IN trunk group
       tags:
@@ -12811,6 +13729,12 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/VoiceInTrunkGroupDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
       requestBody:
         content:
           application/vnd.api+json:
@@ -12850,6 +13774,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/VoiceInTrunkGroupDocument"
+        '404':
+          description: no trunk group with that id belongs to the customer
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
     patch:
       summary: Update a voice IN trunk group
       tags:
@@ -12865,6 +13801,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/VoiceInTrunkGroupDocument"
+        '404':
+          description: no trunk group with that id belongs to the customer
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
       requestBody:
         content:
           application/vnd.api+json:
@@ -12882,6 +13830,18 @@ paths:
       responses:
         '204':
           description: trunk group deleted
+        '404':
+          description: no trunk group with that id belongs to the customer
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/voice_out_trunks":
     get:
       summary: List voice OUT trunks
@@ -12919,6 +13879,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/ErrorsDocument"
+        '400':
+          description: malformed request — unknown filter, bad pagination or bad sort field
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
     post:
       summary: Create a voice OUT trunk
       tags:
@@ -12936,6 +13908,12 @@ paths:
                 "$ref": "#/components/schemas/VoiceOutTrunkDocument"
         '422':
           description: the trunk was rejected
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
           content:
             application/vnd.api+json:
               schema:
@@ -12986,6 +13964,12 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
     patch:
       summary: Update a voice OUT trunk
       tags:
@@ -13001,6 +13985,18 @@ paths:
             application/vnd.api+json:
               schema:
                 "$ref": "#/components/schemas/VoiceOutTrunkDocument"
+        '404':
+          description: no trunk with that id belongs to the customer
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
       requestBody:
         content:
           application/vnd.api+json:
@@ -13017,6 +14013,18 @@ paths:
       responses:
         '204':
           description: trunk deleted
+        '404':
+          description: no trunk with that id belongs to the customer
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
   "/voice_out_trunk_regenerate_credentials":
     post:
       summary: Regenerate voice OUT trunk credentials
@@ -13035,6 +14043,12 @@ paths:
                 "$ref": "#/components/schemas/VoiceOutTrunkRegenerateCredentialDocument"
         '422':
           description: the trunk has no credentials to rotate
+          content:
+            application/vnd.api+json:
+              schema:
+                "$ref": "#/components/schemas/ErrorsDocument"
+        '401':
+          description: missing or invalid api-key
           content:
             application/vnd.api+json:
               schema:
