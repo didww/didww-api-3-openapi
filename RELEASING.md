@@ -45,6 +45,13 @@ reach yet.
    The tag is what keeps earlier documents reachable — `openapi/` itself only ever holds the current
    version.
 
+   **A tag names an API version, not a moment.** When the document for a version that is already
+   published is regenerated — the API did not change, the description of it got better — commit it on
+   top and move that version's tag onto the new commit (`git tag -f -a`, `git push --force origin
+   refs/tags/<version>`). Leaving the tag behind would keep handing out a document that is known to
+   describe the same version worse. A tag only ever stops moving when the version it names stops being
+   the one `openapi/` holds.
+
 CI lints the document and checks that the two formats agree and that `VERSION` matches
 `info.version`. It cannot tell whether the document is up to date with the API: that is what the
 generating suite is for.
