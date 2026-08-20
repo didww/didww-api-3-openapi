@@ -1,0 +1,30 @@
+name: Validate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # Versions are pinned: a new lint rule landing upstream would otherwise turn
+      # an unrelated pull request red.
+      - name: Lint the OpenAPI document
+        run: npx --yes @redocly/cli@2.46.2 lint openapi/v3_api.json
+
+      - name: Check the JSON and YAML documents agree
+        run: |
+          npx --yes js-yaml@4.1.0 openapi/v3_api.yaml > "${RUNNER_TEMP}/v3_api.from_yaml.json"
+          node .github/scripts/check-document.mjs "${RUNNER_TEMP}/v3_api.from_yaml.json"
