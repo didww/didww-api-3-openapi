@@ -38,7 +38,7 @@ reach yet.
 
    ```bash
    git commit -am "DIDWW API v3 $(cat VERSION)"
-   git tag "$(cat VERSION)"
+   git tag -a "$(cat VERSION)" -m "DIDWW API v3 $(cat VERSION)"
    git push origin main --follow-tags
    ```
 
