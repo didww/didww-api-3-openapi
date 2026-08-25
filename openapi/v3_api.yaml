@@ -8125,11 +8125,11 @@ components:
             setup_price:
               type: integer
               nullable: true
-              description: One-off activation charge. Always `0` when priced, null when this account has no emergency rate for the country and group type.
+              description: One-off activation charge. Always `0` when priced, null only on a requirement reached through an emergency calling service this account is no longer priced for.
             monthly_price:
               type: string
               nullable: true
-              description: Recurring monthly charge, as a decimal string. Null when not priced for this account.
+              description: Recurring monthly charge, as a decimal string. Null only on a requirement reached through an emergency calling service this account is no longer priced for.
           required:
           - setup_price
           - monthly_price
@@ -11737,7 +11737,7 @@ paths:
       tags:
       - Emergency
       operationId: listEmergencyRequirements
-      description: Returns what each country demands before emergency calling can be activated, and what it costs for this account — `meta.setup_price` and `meta.monthly_price` are null when the account has no emergency rate for that country and group type.
+      description: Returns what each country demands before emergency calling can be activated, and what it costs for this account — `meta.setup_price` and `meta.monthly_price`. A country and group type this account has no emergency rate for is not returned.
       parameters:
       - "$ref": "#/components/parameters/ApiVersion"
       - "$ref": "#/components/parameters/EmergencyRequirementFilter"
@@ -11808,7 +11808,7 @@ paths:
               schema:
                 "$ref": "#/components/schemas/EmergencyRequirementDocument"
         '404':
-          description: no emergency requirement with that id
+          description: no emergency requirement with that id is priced for this account
           content:
             application/vnd.api+json:
               schema:
