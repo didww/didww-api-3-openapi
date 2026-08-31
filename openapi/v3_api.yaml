@@ -7405,20 +7405,20 @@ components:
               - business
             personal_area_level:
               type: string
-              description: How close to the number a personal identity must be located.
+              nullable: true
+              description: How close to the number a personal identity must be located. Null when the country does not accept that kind of identity.
               enum:
               - world_wide
               - country
-              - area
-              - city
+              -
             business_area_level:
               type: string
-              description: How close to the number a business identity must be located.
+              nullable: true
+              description: How close to the number a business identity must be located. Null when the country does not accept that kind of identity.
               enum:
               - world_wide
               - country
-              - area
-              - city
+              -
             address_area_level:
               type: string
               description: How close to the number the address itself must be located.
@@ -8061,44 +8061,40 @@ components:
               - personal
             personal_area_level:
               type: string
-              description: How close to the number a personal identity must be located.
+              nullable: true
+              description: How close to the number a personal identity must be located. Null when the country does not accept that kind of identity.
               enum:
               - world_wide
               - country
-              - area
-              - city
+              -
             business_area_level:
               type: string
-              description: How close to the number a business identity must be located.
+              nullable: true
+              description: How close to the number a business identity must be located. Null when the country does not accept that kind of identity.
               enum:
               - world_wide
               - country
-              - area
-              - city
+              -
             address_area_level:
               type: string
               description: How close to the number the registered address must be located.
               enum:
-              - world_wide
               - country
               - area
               - city
             personal_mandatory_fields:
               type: array
-              nullable: true
-              description: Fields that must be filled in for a personal identity. Null when none are.
+              description: Fields that must be filled in for a personal identity. Empty when none are. Human-readable labels, not API names.
               items:
                 type: string
             business_mandatory_fields:
               type: array
-              nullable: true
-              description: Fields that must be filled in for a business identity. Null when none are.
+              description: Fields that must be filled in for a business identity. Empty when none are. Human-readable labels, not API names.
               items:
                 type: string
             address_mandatory_fields:
               type: array
-              nullable: true
-              description: Fields that must be filled in for the address. Null when none are.
+              description: Fields that must be filled in for the address. Empty when none are. Human-readable labels, not API names.
               items:
                 type: string
             estimate_setup_time:
@@ -8123,9 +8119,9 @@ components:
           type: object
           properties:
             setup_price:
-              type: integer
+              type: string
               nullable: true
-              description: One-off activation charge. Always `0` when priced, null only on a requirement reached through an emergency calling service this account is no longer priced for.
+              description: One-off activation charge, as a decimal string. Always `"0.0"` when priced. Null only on a requirement reached through an emergency calling service this account is no longer priced for.
             monthly_price:
               type: string
               nullable: true
