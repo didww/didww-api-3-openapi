@@ -7,8 +7,7 @@
     "contact": {
       "name": "DIDWW Support",
       "email": "support@didww.com"
-    },
-    "termsOfService": "https://www.didww.com/DIDWW-Terms-and-Agreements"
+    }
   },
   "externalDocs": {
     "description": "DIDWW API documentation",
@@ -17,7 +16,7 @@
   "tags": [
     {
       "name": "Coverage",
-      "description": "Countries, regions, cities and areas DIDWW sells numbers in, and the points of presence that serve them."
+      "description": "Countries, regions, cities and areas DIDWW sells numbers in."
     },
     {
       "name": "DID groups",
@@ -44,11 +43,11 @@
       "description": "Channel pools and the shared capacity groups that draw on them."
     },
     {
-      "name": "Voice IN trunks",
-      "description": "Where inbound calls are delivered, and the groups that spread them over several destinations."
+      "name": "Inbound trunks",
+      "description": "Where inbound calls are delivered, the groups that spread them over several destinations, and the points of presence a trunk can be pinned to."
     },
     {
-      "name": "Voice OUT trunks",
+      "name": "Outbound trunks",
       "description": "Outbound calling: credentials, allowed sources and the default number presented to the called party."
     },
     {
@@ -18529,69 +18528,6 @@
         }
       }
     },
-    "/pops": {
-      "get": {
-        "summary": "List points of presence",
-        "tags": [
-          "Coverage"
-        ],
-        "operationId": "listPops",
-        "description": "Returns the points of presence a voice trunk can be pinned to. Not paginated, and not sortable.",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/ApiVersion"
-          },
-          {
-            "$ref": "#/components/parameters/PopFilter"
-          },
-          {
-            "$ref": "#/components/parameters/PopFields"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "points of presence returned",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PopCollectionDocument"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "malformed request — unknown filter",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
-          "406": {
-            "description": "the requested media type cannot be served",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/public_keys": {
       "get": {
         "summary": "List public keys",
@@ -24018,9 +23954,9 @@
     },
     "/voice_in_trunks": {
       "get": {
-        "summary": "List voice IN trunks",
+        "summary": "List inbound trunks",
         "tags": [
-          "Voice IN trunks"
+          "Inbound trunks"
         ],
         "operationId": "listVoiceInTrunks",
         "description": "Returns the inbound voice trunks the customer has configured.",
@@ -24109,9 +24045,9 @@
         }
       },
       "post": {
-        "summary": "Create a voice IN trunk",
+        "summary": "Create an inbound trunk",
         "tags": [
-          "Voice IN trunks"
+          "Inbound trunks"
         ],
         "operationId": "createVoiceInTrunk",
         "description": "Creates an inbound voice trunk. `configuration` is required and its `type` decides which attributes it takes.",
@@ -24200,7 +24136,7 @@
           "name": "id",
           "in": "path",
           "required": true,
-          "description": "Voice IN trunk identifier.",
+          "description": "Inbound trunk identifier.",
           "schema": {
             "type": "string",
             "format": "uuid"
@@ -24208,9 +24144,9 @@
         }
       ],
       "get": {
-        "summary": "Read a voice IN trunk",
+        "summary": "Read an inbound trunk",
         "tags": [
-          "Voice IN trunks"
+          "Inbound trunks"
         ],
         "operationId": "getVoiceInTrunk",
         "description": "One inbound trunk, by its identifier. `configuration` carries the transport-specific settings, and its shape is determined by `configuration.type`.",
@@ -24287,9 +24223,9 @@
         }
       },
       "patch": {
-        "summary": "Update a voice IN trunk",
+        "summary": "Update an inbound trunk",
         "tags": [
-          "Voice IN trunks"
+          "Inbound trunks"
         ],
         "operationId": "updateVoiceInTrunk",
         "description": "Updates a trunk. `configuration` is written member by member: what you send is applied, what you omit keeps its stored value, and `type` must match the trunk's own.",
@@ -24382,9 +24318,9 @@
         }
       },
       "delete": {
-        "summary": "Delete a voice IN trunk",
+        "summary": "Delete an inbound trunk",
         "tags": [
-          "Voice IN trunks"
+          "Inbound trunks"
         ],
         "operationId": "deleteVoiceInTrunk",
         "description": "Deletes a trunk. Rejected with 422 while any DID is routed to it, or while it belongs to a trunk group — route those DIDs elsewhere and leave the group first.",
@@ -24442,9 +24378,9 @@
     },
     "/voice_in_trunk_groups": {
       "get": {
-        "summary": "List voice IN trunk groups",
+        "summary": "List inbound trunk groups",
         "tags": [
-          "Voice IN trunks"
+          "Inbound trunks"
         ],
         "operationId": "listVoiceInTrunkGroups",
         "description": "Returns the groups that spread inbound calls over several trunks. A DID is routed either to a trunk or to a group, never to both.",
@@ -24532,9 +24468,9 @@
         }
       },
       "post": {
-        "summary": "Create a voice IN trunk group",
+        "summary": "Create an inbound trunk group",
         "tags": [
-          "Voice IN trunks"
+          "Inbound trunks"
         ],
         "operationId": "createVoiceInTrunkGroup",
         "description": "Creates a trunk group. Listing `voice_in_trunks` moves those trunks into it.",
@@ -24623,7 +24559,7 @@
           "name": "id",
           "in": "path",
           "required": true,
-          "description": "Voice IN trunk group identifier.",
+          "description": "Inbound trunk group identifier.",
           "schema": {
             "type": "string",
             "format": "uuid"
@@ -24631,9 +24567,9 @@
         }
       ],
       "get": {
-        "summary": "Read a voice IN trunk group",
+        "summary": "Read an inbound trunk group",
         "tags": [
-          "Voice IN trunks"
+          "Inbound trunks"
         ],
         "operationId": "getVoiceInTrunkGroup",
         "description": "One trunk group, by its identifier. `include=voice_in_trunks` lists its members, whose `priority` and `weight` decide how calls are spread over them.",
@@ -24709,9 +24645,9 @@
         }
       },
       "patch": {
-        "summary": "Update a voice IN trunk group",
+        "summary": "Update an inbound trunk group",
         "tags": [
-          "Voice IN trunks"
+          "Inbound trunks"
         ],
         "operationId": "updateVoiceInTrunkGroup",
         "description": "Updates a trunk group. Sending `voice_in_trunks` replaces its whole membership.",
@@ -24804,9 +24740,9 @@
         }
       },
       "delete": {
-        "summary": "Delete a voice IN trunk group",
+        "summary": "Delete an inbound trunk group",
         "tags": [
-          "Voice IN trunks"
+          "Inbound trunks"
         ],
         "operationId": "deleteVoiceInTrunkGroup",
         "description": "Deletes a trunk group and the trunks in it — a member trunk is not kept as a standalone trunk. Refused while the group, or any trunk in it, is routed to a DID; route those DIDs elsewhere first.",
@@ -24852,11 +24788,74 @@
         }
       }
     },
+    "/pops": {
+      "get": {
+        "summary": "List points of presence",
+        "tags": [
+          "Inbound trunks"
+        ],
+        "operationId": "listPops",
+        "description": "Returns the points of presence an inbound trunk can be pinned to. Not paginated, and not sortable.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ApiVersion"
+          },
+          {
+            "$ref": "#/components/parameters/PopFilter"
+          },
+          {
+            "$ref": "#/components/parameters/PopFields"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "points of presence returned",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PopCollectionDocument"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "malformed request — unknown filter",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "406": {
+            "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "missing or invalid api-key",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/voice_out_trunks": {
       "get": {
-        "summary": "List voice OUT trunks",
+        "summary": "List outbound trunks",
         "tags": [
-          "Voice OUT trunks"
+          "Outbound trunks"
         ],
         "operationId": "listVoiceOutTrunks",
         "description": "Returns the outbound voice trunks the customer has configured. Each trunk reports what it has spent this period in `meta.spent_amount`.",
@@ -24955,9 +24954,9 @@
         }
       },
       "post": {
-        "summary": "Create a voice OUT trunk",
+        "summary": "Create an outbound trunk",
         "tags": [
-          "Voice OUT trunks"
+          "Outbound trunks"
         ],
         "operationId": "createVoiceOutTrunk",
         "description": "Creates an outbound trunk. `authentication_method` is required and its `type` decides how calls are authenticated; `credentials_and_ip` returns generated SIP credentials in the response.",
@@ -25138,7 +25137,7 @@
           "name": "id",
           "in": "path",
           "required": true,
-          "description": "Voice OUT trunk identifier.",
+          "description": "Outbound trunk identifier.",
           "schema": {
             "type": "string",
             "format": "uuid"
@@ -25146,9 +25145,9 @@
         }
       ],
       "get": {
-        "summary": "Read a voice OUT trunk",
+        "summary": "Read an outbound trunk",
         "tags": [
-          "Voice OUT trunks"
+          "Outbound trunks"
         ],
         "operationId": "getVoiceOutTrunk",
         "description": "One outbound trunk, by its identifier. `authentication_method` carries the credentials or the address allowlist, and its shape is determined by `authentication_method.type`.",
@@ -25235,9 +25234,9 @@
         }
       },
       "patch": {
-        "summary": "Update a voice OUT trunk",
+        "summary": "Update an outbound trunk",
         "tags": [
-          "Voice OUT trunks"
+          "Outbound trunks"
         ],
         "operationId": "updateVoiceOutTrunk",
         "description": "Updates an outbound trunk. Set `status` to `blocked` to stop it placing calls. Assigning `dids` is rejected while `allow_any_did_as_cli` is true.",
@@ -25422,9 +25421,9 @@
         }
       },
       "delete": {
-        "summary": "Delete a voice OUT trunk",
+        "summary": "Delete an outbound trunk",
         "tags": [
-          "Voice OUT trunks"
+          "Outbound trunks"
         ],
         "operationId": "deleteVoiceOutTrunk",
         "description": "Removes the outbound trunk. Calls placed through it stop immediately, and the numbers it allowed as caller ID are released — they are not deleted with it.",
@@ -25482,9 +25481,9 @@
     },
     "/voice_out_trunk_regenerate_credentials": {
       "post": {
-        "summary": "Regenerate voice OUT trunk credentials",
+        "summary": "Regenerate outbound trunk credentials",
         "tags": [
-          "Voice OUT trunks"
+          "Outbound trunks"
         ],
         "operationId": "createVoiceOutTrunkRegenerateCredential",
         "description": "Rotates the SIP credentials of a `credentials_and_ip` trunk. The response carries nothing but the identifier — read the new credentials back from the trunk.",

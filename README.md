@@ -70,7 +70,7 @@ sandbox without editing the base URL by hand.
 
 Every collection and member endpoint the documented version serves, with its query parameters,
 request bodies, responses and error shapes — coverage, DIDs and DID groups, orders and reservations,
-voice IN/OUT trunks, capacity, identities and regulation (addresses, proofs, requirements,
+inbound and outbound trunks, capacity, identities and regulation (addresses, proofs, requirements,
 verifications), emergency services, exports and account balance.
 
 The schemas are strict: a resource object enumerates its full attribute and relationship set, and an
