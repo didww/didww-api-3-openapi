@@ -15947,13 +15947,13 @@
             "{$request.body#/data/attributes/callback_url}": {
               "post": {
                 "summary": "The export finished (POST)",
-                "description": "Sent once the file has been generated and can be downloaded. Delivered only while the account has an API key with callbacks enabled; without one nothing is sent and nothing is retried.",
+                "description": "Sent once the file has been generated and can be downloaded. Delivered only while the account has an enabled callback secret, created in the User Panel; without one nothing is sent and nothing is retried.",
                 "parameters": [
                   {
                     "name": "X-DIDWW-Signature",
                     "in": "header",
                     "required": true,
-                    "description": "SHA1 HMAC in lowercase hexadecimal, keyed with an API key of the account that has callbacks enabled, over the callback URL normalised — scheme (defaulting to `http`), userinfo where the URL carries it, host, the port always explicit, path, the URL's own query, and finally its fragment, then the payload members sorted by name, with name and value concatenated. Every value is already a string on the wire, a null being the empty one. Verify it before acting on the request.",
+                    "description": "SHA1 HMAC in lowercase hexadecimal, keyed with the enabled callback secret of the account, over the callback URL normalised — scheme (defaulting to `http`), userinfo where the URL carries it, host, the port always explicit, path, the URL's own query, and finally its fragment, then the payload members sorted by name, with name and value concatenated. Every value is already a string on the wire, a null being the empty one. Verify it before acting on the request.",
                     "schema": {
                       "type": "string",
                       "pattern": "^[0-9a-f]{40}$",
@@ -16014,13 +16014,13 @@
               },
               "get": {
                 "summary": "The export finished (GET)",
-                "description": "Sent once the file has been generated and can be downloaded. Delivered only while the account has an API key with callbacks enabled; without one nothing is sent and nothing is retried.",
+                "description": "Sent once the file has been generated and can be downloaded. Delivered only while the account has an enabled callback secret, created in the User Panel; without one nothing is sent and nothing is retried.",
                 "parameters": [
                   {
                     "name": "X-DIDWW-Signature",
                     "in": "header",
                     "required": true,
-                    "description": "SHA1 HMAC in lowercase hexadecimal, keyed with an API key of the account that has callbacks enabled, over the callback URL normalised — scheme (defaulting to `http`), userinfo where the URL carries it, host, the port always explicit, path, the URL's own query, and finally its fragment — with the payload appended to that query, sorted by name and URL-encoded, before the fragment, then the payload members sorted by name, with name and value concatenated. Every value is already a string on the wire, a null being the empty one. Verify it before acting on the request.",
+                    "description": "SHA1 HMAC in lowercase hexadecimal, keyed with the enabled callback secret of the account, over the callback URL normalised — scheme (defaulting to `http`), userinfo where the URL carries it, host, the port always explicit, path, the URL's own query, and finally its fragment — with the payload appended to that query, sorted by name and URL-encoded, before the fragment, then the payload members sorted by name, with name and value concatenated. Every value is already a string on the wire, a null being the empty one. Verify it before acting on the request.",
                     "schema": {
                       "type": "string",
                       "pattern": "^[0-9a-f]{40}$",
@@ -16548,13 +16548,13 @@
             "{$request.body#/data/attributes/callback_url}": {
               "post": {
                 "summary": "The address verification was reviewed (POST)",
-                "description": "Sent once DIDWW has approved or rejected the submission. Delivered only while the account has an API key with callbacks enabled; without one nothing is sent and nothing is retried.",
+                "description": "Sent once DIDWW has approved or rejected the submission. Delivered only while the account has an enabled callback secret, created in the User Panel; without one nothing is sent and nothing is retried.",
                 "parameters": [
                   {
                     "name": "X-DIDWW-Signature",
                     "in": "header",
                     "required": true,
-                    "description": "SHA1 HMAC in lowercase hexadecimal, keyed with an API key of the account that has callbacks enabled, over the callback URL normalised — scheme (defaulting to `http`), userinfo where the URL carries it, host, the port always explicit, path, the URL's own query, and finally its fragment, then the payload members sorted by name, with name and value concatenated. Every value is already a string on the wire, a null being the empty one. Verify it before acting on the request.",
+                    "description": "SHA1 HMAC in lowercase hexadecimal, keyed with the enabled callback secret of the account, over the callback URL normalised — scheme (defaulting to `http`), userinfo where the URL carries it, host, the port always explicit, path, the URL's own query, and finally its fragment, then the payload members sorted by name, with name and value concatenated. Every value is already a string on the wire, a null being the empty one. Verify it before acting on the request.",
                     "schema": {
                       "type": "string",
                       "pattern": "^[0-9a-f]{40}$",
@@ -16619,13 +16619,13 @@
               },
               "get": {
                 "summary": "The address verification was reviewed (GET)",
-                "description": "Sent once DIDWW has approved or rejected the submission. Delivered only while the account has an API key with callbacks enabled; without one nothing is sent and nothing is retried.",
+                "description": "Sent once DIDWW has approved or rejected the submission. Delivered only while the account has an enabled callback secret, created in the User Panel; without one nothing is sent and nothing is retried.",
                 "parameters": [
                   {
                     "name": "X-DIDWW-Signature",
                     "in": "header",
                     "required": true,
-                    "description": "SHA1 HMAC in lowercase hexadecimal, keyed with an API key of the account that has callbacks enabled, over the callback URL normalised — scheme (defaulting to `http`), userinfo where the URL carries it, host, the port always explicit, path, the URL's own query, and finally its fragment — with the payload appended to that query, sorted by name and URL-encoded, before the fragment, then the payload members sorted by name, with name and value concatenated. Every value is already a string on the wire, a null being the empty one. Verify it before acting on the request.",
+                    "description": "SHA1 HMAC in lowercase hexadecimal, keyed with the enabled callback secret of the account, over the callback URL normalised — scheme (defaulting to `http`), userinfo where the URL carries it, host, the port always explicit, path, the URL's own query, and finally its fragment — with the payload appended to that query, sorted by name and URL-encoded, before the fragment, then the payload members sorted by name, with name and value concatenated. Every value is already a string on the wire, a null being the empty one. Verify it before acting on the request.",
                     "schema": {
                       "type": "string",
                       "pattern": "^[0-9a-f]{40}$",
@@ -20259,13 +20259,13 @@
             "{$request.body#/data/attributes/callback_url}": {
               "post": {
                 "summary": "The emergency verification was reviewed (POST)",
-                "description": "Sent once DIDWW has approved or rejected the submission. Delivered only while the account has an API key with callbacks enabled; without one nothing is sent and nothing is retried.",
+                "description": "Sent once DIDWW has approved or rejected the submission. Delivered only while the account has an enabled callback secret, created in the User Panel; without one nothing is sent and nothing is retried.",
                 "parameters": [
                   {
                     "name": "X-DIDWW-Signature",
                     "in": "header",
                     "required": true,
-                    "description": "SHA1 HMAC in lowercase hexadecimal, keyed with an API key of the account that has callbacks enabled, over the callback URL normalised — scheme (defaulting to `http`), userinfo where the URL carries it, host, the port always explicit, path, the URL's own query, and finally its fragment, then the payload members sorted by name, with name and value concatenated. Every value is already a string on the wire, a null being the empty one. Verify it before acting on the request.",
+                    "description": "SHA1 HMAC in lowercase hexadecimal, keyed with the enabled callback secret of the account, over the callback URL normalised — scheme (defaulting to `http`), userinfo where the URL carries it, host, the port always explicit, path, the URL's own query, and finally its fragment, then the payload members sorted by name, with name and value concatenated. Every value is already a string on the wire, a null being the empty one. Verify it before acting on the request.",
                     "schema": {
                       "type": "string",
                       "pattern": "^[0-9a-f]{40}$",
@@ -20336,13 +20336,13 @@
               },
               "get": {
                 "summary": "The emergency verification was reviewed (GET)",
-                "description": "Sent once DIDWW has approved or rejected the submission. Delivered only while the account has an API key with callbacks enabled; without one nothing is sent and nothing is retried.",
+                "description": "Sent once DIDWW has approved or rejected the submission. Delivered only while the account has an enabled callback secret, created in the User Panel; without one nothing is sent and nothing is retried.",
                 "parameters": [
                   {
                     "name": "X-DIDWW-Signature",
                     "in": "header",
                     "required": true,
-                    "description": "SHA1 HMAC in lowercase hexadecimal, keyed with an API key of the account that has callbacks enabled, over the callback URL normalised — scheme (defaulting to `http`), userinfo where the URL carries it, host, the port always explicit, path, the URL's own query, and finally its fragment — with the payload appended to that query, sorted by name and URL-encoded, before the fragment, then the payload members sorted by name, with name and value concatenated. Every value is already a string on the wire, a null being the empty one. Verify it before acting on the request.",
+                    "description": "SHA1 HMAC in lowercase hexadecimal, keyed with the enabled callback secret of the account, over the callback URL normalised — scheme (defaulting to `http`), userinfo where the URL carries it, host, the port always explicit, path, the URL's own query, and finally its fragment — with the payload appended to that query, sorted by name and URL-encoded, before the fragment, then the payload members sorted by name, with name and value concatenated. Every value is already a string on the wire, a null being the empty one. Verify it before acting on the request.",
                     "schema": {
                       "type": "string",
                       "pattern": "^[0-9a-f]{40}$",
@@ -20921,13 +20921,13 @@
             "{$request.body#/data/attributes/callback_url}": {
               "post": {
                 "summary": "The order reached its final state (POST)",
-                "description": "Sent once the order stops being `pending` — filled, or canceled because something in it could not be filled. Delivered only while the account has an API key with callbacks enabled; without one nothing is sent and nothing is retried.",
+                "description": "Sent once the order stops being `pending` — filled, or canceled because something in it could not be filled. Delivered only while the account has an enabled callback secret, created in the User Panel; without one nothing is sent and nothing is retried.",
                 "parameters": [
                   {
                     "name": "X-DIDWW-Signature",
                     "in": "header",
                     "required": true,
-                    "description": "SHA1 HMAC in lowercase hexadecimal, keyed with an API key of the account that has callbacks enabled, over the callback URL normalised — scheme (defaulting to `http`), userinfo where the URL carries it, host, the port always explicit, path, the URL's own query, and finally its fragment, then the payload members sorted by name, with name and value concatenated. Every value is already a string on the wire, a null being the empty one. Verify it before acting on the request.",
+                    "description": "SHA1 HMAC in lowercase hexadecimal, keyed with the enabled callback secret of the account, over the callback URL normalised — scheme (defaulting to `http`), userinfo where the URL carries it, host, the port always explicit, path, the URL's own query, and finally its fragment, then the payload members sorted by name, with name and value concatenated. Every value is already a string on the wire, a null being the empty one. Verify it before acting on the request.",
                     "schema": {
                       "type": "string",
                       "pattern": "^[0-9a-f]{40}$",
@@ -20982,13 +20982,13 @@
               },
               "get": {
                 "summary": "The order reached its final state (GET)",
-                "description": "Sent once the order stops being `pending` — filled, or canceled because something in it could not be filled. Delivered only while the account has an API key with callbacks enabled; without one nothing is sent and nothing is retried.",
+                "description": "Sent once the order stops being `pending` — filled, or canceled because something in it could not be filled. Delivered only while the account has an enabled callback secret, created in the User Panel; without one nothing is sent and nothing is retried.",
                 "parameters": [
                   {
                     "name": "X-DIDWW-Signature",
                     "in": "header",
                     "required": true,
-                    "description": "SHA1 HMAC in lowercase hexadecimal, keyed with an API key of the account that has callbacks enabled, over the callback URL normalised — scheme (defaulting to `http`), userinfo where the URL carries it, host, the port always explicit, path, the URL's own query, and finally its fragment — with the payload appended to that query, sorted by name and URL-encoded, before the fragment, then the payload members sorted by name, with name and value concatenated. Every value is already a string on the wire, a null being the empty one. Verify it before acting on the request.",
+                    "description": "SHA1 HMAC in lowercase hexadecimal, keyed with the enabled callback secret of the account, over the callback URL normalised — scheme (defaulting to `http`), userinfo where the URL carries it, host, the port always explicit, path, the URL's own query, and finally its fragment — with the payload appended to that query, sorted by name and URL-encoded, before the fragment, then the payload members sorted by name, with name and value concatenated. Every value is already a string on the wire, a null being the empty one. Verify it before acting on the request.",
                     "schema": {
                       "type": "string",
                       "pattern": "^[0-9a-f]{40}$",
@@ -24970,13 +24970,13 @@
             "{$request.body#/data/attributes/callback_url}": {
               "post": {
                 "summary": "The trunk was blocked or unblocked (POST)",
-                "description": "Sent when the trunk starts or stops being blocked — by the spending threshold, or by hand. Delivered only while the account has an API key with callbacks enabled; without one nothing is sent and nothing is retried.",
+                "description": "Sent when the trunk starts or stops being blocked — by the spending threshold, or by hand. Delivered only while the account has an enabled callback secret, created in the User Panel; without one nothing is sent and nothing is retried.",
                 "parameters": [
                   {
                     "name": "X-DIDWW-Signature",
                     "in": "header",
                     "required": true,
-                    "description": "SHA1 HMAC in lowercase hexadecimal, keyed with an API key of the account that has callbacks enabled, over the callback URL normalised — scheme (defaulting to `http`), userinfo where the URL carries it, host, the port always explicit, path, the URL's own query, and finally its fragment, then, for each entry in order, its members sorted by name with name and value concatenated. A value is concatenated as JSON writes it, so the boolean is `true` or `false` in lower case — not as the language you parsed it into would print it. Verify it before acting on the request.",
+                    "description": "SHA1 HMAC in lowercase hexadecimal, keyed with the enabled callback secret of the account, over the callback URL normalised — scheme (defaulting to `http`), userinfo where the URL carries it, host, the port always explicit, path, the URL's own query, and finally its fragment, then, for each entry in order, its members sorted by name with name and value concatenated. A value is concatenated as JSON writes it, so the boolean is `true` or `false` in lower case — not as the language you parsed it into would print it. Verify it before acting on the request.",
                     "schema": {
                       "type": "string",
                       "pattern": "^[0-9a-f]{40}$",
@@ -25250,13 +25250,13 @@
             "{$request.body#/data/attributes/callback_url}": {
               "post": {
                 "summary": "The trunk was blocked or unblocked (POST)",
-                "description": "Sent when the trunk starts or stops being blocked — by the spending threshold, or by hand. Delivered only while the account has an API key with callbacks enabled; without one nothing is sent and nothing is retried.",
+                "description": "Sent when the trunk starts or stops being blocked — by the spending threshold, or by hand. Delivered only while the account has an enabled callback secret, created in the User Panel; without one nothing is sent and nothing is retried.",
                 "parameters": [
                   {
                     "name": "X-DIDWW-Signature",
                     "in": "header",
                     "required": true,
-                    "description": "SHA1 HMAC in lowercase hexadecimal, keyed with an API key of the account that has callbacks enabled, over the callback URL normalised — scheme (defaulting to `http`), userinfo where the URL carries it, host, the port always explicit, path, the URL's own query, and finally its fragment, then, for each entry in order, its members sorted by name with name and value concatenated. A value is concatenated as JSON writes it, so the boolean is `true` or `false` in lower case — not as the language you parsed it into would print it. Verify it before acting on the request.",
+                    "description": "SHA1 HMAC in lowercase hexadecimal, keyed with the enabled callback secret of the account, over the callback URL normalised — scheme (defaulting to `http`), userinfo where the URL carries it, host, the port always explicit, path, the URL's own query, and finally its fragment, then, for each entry in order, its members sorted by name with name and value concatenated. A value is concatenated as JSON writes it, so the boolean is `true` or `false` in lower case — not as the language you parsed it into would print it. Verify it before acting on the request.",
                     "schema": {
                       "type": "string",
                       "pattern": "^[0-9a-f]{40}$",
