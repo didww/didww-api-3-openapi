@@ -1,3 +1,4 @@
 # Generated artefacts: keep them out of diffs and out of the language statistics.
 openapi/v3_api.json linguist-generated=true
 openapi/v3_api.yaml linguist-generated=true
+openapi/sources/*.json linguist-generated=true
