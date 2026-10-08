@@ -1,0 +1,20 @@
+{
+  "name": "didww-api-3-openapi",
+  "private": true,
+  "type": "module",
+  "description": "Builds the published DIDWW API v3 OpenAPI document from the per-service sources",
+  "engines": {
+    "node": ">=22.12"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "node --test test/*.test.mjs",
+    "lint": "redocly lint openapi/v3_api.json openapi/sources/*.json"
+  },
+  "dependencies": {
+    "js-yaml": "4.1.0"
+  },
+  "devDependencies": {
+    "@redocly/cli": "2.46.2"
+  }
+}

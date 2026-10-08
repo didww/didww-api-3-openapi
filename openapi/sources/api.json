@@ -15762,8 +15762,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "406": {
+            "description": "the requested media type cannot be served",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -15772,8 +15772,8 @@
               }
             }
           },
-          "406": {
-            "description": "the requested media type cannot be served",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -15834,8 +15834,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "406": {
+            "description": "the requested media type cannot be served",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -15844,8 +15844,8 @@
               }
             }
           },
-          "406": {
-            "description": "the requested media type cannot be served",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -15896,16 +15896,6 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
           "404": {
             "description": "no history entry with that id belongs to the customer",
             "content": {
@@ -15918,6 +15908,16 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -16095,8 +16095,8 @@
               }
             }
           },
-          "400": {
-            "description": "the body carries a member the API does not accept",
+          "422": {
+            "description": "the date range was rejected",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -16105,8 +16105,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "400": {
+            "description": "the body carries a member the API does not accept",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -16135,8 +16135,8 @@
               }
             }
           },
-          "422": {
-            "description": "the date range was rejected",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -16205,8 +16205,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "406": {
+            "description": "the requested media type cannot be served",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -16215,8 +16215,8 @@
               }
             }
           },
-          "406": {
-            "description": "the requested media type cannot be served",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -16267,16 +16267,6 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
           "404": {
             "description": "no export with that id belongs to the customer",
             "content": {
@@ -16289,6 +16279,16 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -16322,6 +16322,16 @@
               }
             }
           },
+          "404": {
+            "description": "no export with that id belongs to the customer",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
           "400": {
             "description": "the body carries a member the API does not accept",
             "content": {
@@ -16332,18 +16342,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "no export with that id belongs to the customer",
+          "422": {
+            "description": "the external reference is longer than the API accepts",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -16372,8 +16372,8 @@
               }
             }
           },
-          "422": {
-            "description": "the external reference is longer than the API accepts",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -16430,11 +16430,11 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key"
-          },
           "404": {
             "description": "no completed export of the customer has that filename"
+          },
+          "401": {
+            "description": "missing or invalid api-key"
           }
         }
       }
@@ -16509,8 +16509,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "406": {
+            "description": "the requested media type cannot be served",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -16519,8 +16519,8 @@
               }
             }
           },
-          "406": {
-            "description": "the requested media type cannot be served",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -16708,8 +16708,8 @@
               }
             }
           },
-          "400": {
-            "description": "the body carries a member the API does not accept",
+          "422": {
+            "description": "the submission was rejected",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -16718,8 +16718,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "400": {
+            "description": "the body carries a member the API does not accept",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -16748,8 +16748,8 @@
               }
             }
           },
-          "422": {
-            "description": "the submission was rejected",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -16831,16 +16831,6 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
           "404": {
             "description": "no address verification with that id belongs to the customer",
             "content": {
@@ -16853,6 +16843,16 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -16886,6 +16886,16 @@
               }
             }
           },
+          "404": {
+            "description": "no address verification with that id belongs to the customer",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
           "400": {
             "description": "the body carries a member the API does not accept",
             "content": {
@@ -16896,18 +16906,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "no address verification with that id belongs to the customer",
+          "422": {
+            "description": "the external reference is longer than the API accepts",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -16936,8 +16936,8 @@
               }
             }
           },
-          "422": {
-            "description": "the external reference is longer than the API accepts",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -17030,8 +17030,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "406": {
+            "description": "the requested media type cannot be served",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -17040,8 +17040,8 @@
               }
             }
           },
-          "406": {
-            "description": "the requested media type cannot be served",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -17114,16 +17114,6 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
           "404": {
             "description": "no capacity pool with that id belongs to the customer",
             "content": {
@@ -17136,6 +17126,16 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -17169,18 +17169,8 @@
               }
             }
           },
-          "400": {
-            "description": "the body carries a member the API does not accept",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "missing or invalid api-key",
+          "422": {
+            "description": "the new channel count was rejected",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -17191,6 +17181,16 @@
           },
           "404": {
             "description": "no capacity pool with that id belongs to the customer",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "the body carries a member the API does not accept",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -17219,8 +17219,8 @@
               }
             }
           },
-          "422": {
-            "description": "the new channel count was rejected",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -17312,8 +17312,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "406": {
+            "description": "the requested media type cannot be served",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -17322,8 +17322,8 @@
               }
             }
           },
-          "406": {
-            "description": "the requested media type cannot be served",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -17357,8 +17357,8 @@
               }
             }
           },
-          "400": {
-            "description": "the body carries a member the API does not accept",
+          "422": {
+            "description": "the group was rejected",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -17367,8 +17367,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "400": {
+            "description": "the body carries a member the API does not accept",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -17397,8 +17397,8 @@
               }
             }
           },
-          "422": {
-            "description": "the group was rejected",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -17480,16 +17480,6 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
           "404": {
             "description": "no shared capacity group with that id belongs to the customer",
             "content": {
@@ -17502,6 +17492,16 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -17535,6 +17535,16 @@
               }
             }
           },
+          "404": {
+            "description": "no shared capacity group with that id belongs to the customer",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
           "400": {
             "description": "the body carries a member the API does not accept",
             "content": {
@@ -17545,18 +17555,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "no shared capacity group with that id belongs to the customer",
+          "422": {
+            "description": "the external reference is longer than the API accepts",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -17585,8 +17585,8 @@
               }
             }
           },
-          "422": {
-            "description": "the external reference is longer than the API accepts",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -17623,16 +17623,6 @@
           "204": {
             "description": "shared capacity group deleted"
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
           "404": {
             "description": "no shared capacity group with that id belongs to the customer",
             "content": {
@@ -17645,6 +17635,16 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -17719,8 +17719,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "406": {
+            "description": "the requested media type cannot be served",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -17729,8 +17729,8 @@
               }
             }
           },
-          "406": {
-            "description": "the requested media type cannot be served",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -17801,16 +17801,6 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
           "404": {
             "description": "no country with that id",
             "content": {
@@ -17823,6 +17813,16 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -17897,8 +17897,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "406": {
+            "description": "the requested media type cannot be served",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -17907,8 +17907,8 @@
               }
             }
           },
-          "406": {
-            "description": "the requested media type cannot be served",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -17979,16 +17979,6 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
           "404": {
             "description": "no region with that id",
             "content": {
@@ -18001,6 +17991,16 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -18083,8 +18083,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "406": {
+            "description": "the requested media type cannot be served",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -18093,8 +18093,8 @@
               }
             }
           },
-          "406": {
-            "description": "the requested media type cannot be served",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -18167,16 +18167,6 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
           "404": {
             "description": "no city with that id",
             "content": {
@@ -18189,6 +18179,16 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -18269,8 +18269,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "406": {
+            "description": "the requested media type cannot be served",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -18279,8 +18279,8 @@
               }
             }
           },
-          "406": {
-            "description": "the requested media type cannot be served",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -18351,16 +18351,6 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
           "404": {
             "description": "no area with that id",
             "content": {
@@ -18373,6 +18363,16 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -18433,8 +18433,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "406": {
+            "description": "the requested media type cannot be served",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -18443,8 +18443,8 @@
               }
             }
           },
-          "406": {
-            "description": "the requested media type cannot be served",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -18495,16 +18495,6 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
           "404": {
             "description": "no DID group type with that id",
             "content": {
@@ -18517,6 +18507,16 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -18656,8 +18656,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "406": {
+            "description": "the requested media type cannot be served",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -18666,8 +18666,8 @@
               }
             }
           },
-          "406": {
-            "description": "the requested media type cannot be served",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -18743,16 +18743,6 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
           "404": {
             "description": "no DID group with that id",
             "content": {
@@ -18765,6 +18755,16 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -18837,8 +18837,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "406": {
+            "description": "the requested media type cannot be served",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -18847,8 +18847,8 @@
               }
             }
           },
-          "406": {
-            "description": "the requested media type cannot be served",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -18920,16 +18920,6 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
           "404": {
             "description": "no available DID with that id",
             "content": {
@@ -18942,6 +18932,16 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -18977,8 +18977,8 @@
               }
             }
           },
-          "400": {
-            "description": "the body carries a member the API does not accept",
+          "422": {
+            "description": "the DID cannot be reserved",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -18987,8 +18987,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "400": {
+            "description": "the body carries a member the API does not accept",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -19017,8 +19017,8 @@
               }
             }
           },
-          "422": {
-            "description": "the DID cannot be reserved",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -19107,8 +19107,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "406": {
+            "description": "the requested media type cannot be served",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -19117,8 +19117,8 @@
               }
             }
           },
-          "406": {
-            "description": "the requested media type cannot be served",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -19189,16 +19189,6 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
           "404": {
             "description": "no reservation with that id belongs to the customer",
             "content": {
@@ -19211,6 +19201,16 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -19237,16 +19237,6 @@
           "204": {
             "description": "reservation released"
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
           "404": {
             "description": "no reservation with that id belongs to the customer",
             "content": {
@@ -19259,6 +19249,16 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -19348,8 +19348,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "406": {
+            "description": "the requested media type cannot be served",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -19358,8 +19358,8 @@
               }
             }
           },
-          "406": {
-            "description": "the requested media type cannot be served",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -19439,16 +19439,6 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
           "404": {
             "description": "no DID with that id belongs to the customer",
             "content": {
@@ -19461,6 +19451,16 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -19494,18 +19494,8 @@
               }
             }
           },
-          "400": {
-            "description": "the body carries a member the API does not accept",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "missing or invalid api-key",
+          "422": {
+            "description": "the update was rejected",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -19516,6 +19506,16 @@
           },
           "404": {
             "description": "no DID with that id belongs to the customer",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "the body carries a member the API does not accept",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -19544,8 +19544,8 @@
               }
             }
           },
-          "422": {
-            "description": "the update was rejected",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -19634,16 +19634,6 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
           "403": {
             "description": "emergency calling is not enabled for the account",
             "content": {
@@ -19656,6 +19646,16 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -19727,8 +19727,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "404": {
+            "description": "no emergency requirement with that id is priced for this account",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -19747,8 +19747,8 @@
               }
             }
           },
-          "404": {
-            "description": "no emergency requirement with that id is priced for this account",
+          "406": {
+            "description": "the requested media type cannot be served",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -19757,8 +19757,8 @@
               }
             }
           },
-          "406": {
-            "description": "the requested media type cannot be served",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -19794,8 +19794,8 @@
               }
             }
           },
-          "400": {
-            "description": "the body carries a member the API does not accept",
+          "422": {
+            "description": "the requirement is not satisfied",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -19804,8 +19804,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "400": {
+            "description": "the body carries a member the API does not accept",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -19844,8 +19844,8 @@
               }
             }
           },
-          "422": {
-            "description": "the requirement is not satisfied",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -19941,16 +19941,6 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
           "403": {
             "description": "emergency calling is not enabled for the account",
             "content": {
@@ -19963,6 +19953,16 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -20038,8 +20038,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "404": {
+            "description": "no emergency calling service with that id belongs to the customer",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -20058,8 +20058,8 @@
               }
             }
           },
-          "404": {
-            "description": "no emergency calling service with that id belongs to the customer",
+          "406": {
+            "description": "the requested media type cannot be served",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -20068,8 +20068,8 @@
               }
             }
           },
-          "406": {
-            "description": "the requested media type cannot be served",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -20096,8 +20096,8 @@
           "204": {
             "description": "emergency calling service cancelled"
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "404": {
+            "description": "no emergency calling service with that id belongs to the customer",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -20116,8 +20116,8 @@
               }
             }
           },
-          "404": {
-            "description": "no emergency calling service with that id belongs to the customer",
+          "406": {
+            "description": "the requested media type cannot be served",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -20126,8 +20126,8 @@
               }
             }
           },
-          "406": {
-            "description": "the requested media type cannot be served",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -20210,16 +20210,6 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
           "403": {
             "description": "emergency calling is not enabled for the account",
             "content": {
@@ -20232,6 +20222,16 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -20435,8 +20435,8 @@
               }
             }
           },
-          "400": {
-            "description": "the body carries a member the API does not accept",
+          "422": {
+            "description": "the submission was rejected",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -20445,8 +20445,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "400": {
+            "description": "the body carries a member the API does not accept",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -20485,8 +20485,8 @@
               }
             }
           },
-          "422": {
-            "description": "the submission was rejected",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -20569,8 +20569,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "404": {
+            "description": "no emergency verification with that id belongs to the customer",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -20589,8 +20589,8 @@
               }
             }
           },
-          "404": {
-            "description": "no emergency verification with that id belongs to the customer",
+          "406": {
+            "description": "the requested media type cannot be served",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -20599,8 +20599,8 @@
               }
             }
           },
-          "406": {
-            "description": "the requested media type cannot be served",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -20634,6 +20634,16 @@
               }
             }
           },
+          "404": {
+            "description": "no emergency verification with that id belongs to the customer",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
           "400": {
             "description": "the body carries a member the API does not accept",
             "content": {
@@ -20644,8 +20654,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "422": {
+            "description": "the external reference is longer than the API accepts",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -20656,16 +20666,6 @@
           },
           "403": {
             "description": "emergency calling is not enabled for the account",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "no emergency verification with that id belongs to the customer",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -20694,8 +20694,8 @@
               }
             }
           },
-          "422": {
-            "description": "the external reference is longer than the API accepts",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -20787,8 +20787,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "406": {
+            "description": "the requested media type cannot be served",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -20797,8 +20797,8 @@
               }
             }
           },
-          "406": {
-            "description": "the requested media type cannot be served",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -20870,16 +20870,6 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
           "404": {
             "description": "no NANPA prefix with that id",
             "content": {
@@ -20892,6 +20882,16 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21063,8 +21063,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "403": {
+            "description": "the customer is in read-only mode",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21073,8 +21073,8 @@
               }
             }
           },
-          "403": {
-            "description": "the customer is in read-only mode",
+          "422": {
+            "description": "the order was rejected",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21103,8 +21103,8 @@
               }
             }
           },
-          "422": {
-            "description": "the order was rejected",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21173,8 +21173,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "406": {
+            "description": "the requested media type cannot be served",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21183,8 +21183,8 @@
               }
             }
           },
-          "406": {
-            "description": "the requested media type cannot be served",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21235,16 +21235,6 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
           "404": {
             "description": "no order with that id belongs to the customer",
             "content": {
@@ -21257,6 +21247,16 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21290,6 +21290,16 @@
               }
             }
           },
+          "404": {
+            "description": "no order with that id belongs to the customer",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
           "400": {
             "description": "the body carries a member the API does not accept",
             "content": {
@@ -21300,18 +21310,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "no order with that id belongs to the customer",
+          "422": {
+            "description": "the external reference is longer than the API accepts",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21340,8 +21340,8 @@
               }
             }
           },
-          "422": {
-            "description": "the external reference is longer than the API accepts",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21378,8 +21378,8 @@
           "204": {
             "description": "order cancelled"
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "422": {
+            "description": "the order cannot be cancelled",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21408,8 +21408,8 @@
               }
             }
           },
-          "422": {
-            "description": "the order cannot be cancelled",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21494,8 +21494,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "406": {
+            "description": "the requested media type cannot be served",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21504,8 +21504,8 @@
               }
             }
           },
-          "406": {
-            "description": "the requested media type cannot be served",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21539,8 +21539,8 @@
               }
             }
           },
-          "400": {
-            "description": "the body carries a member the API does not accept",
+          "422": {
+            "description": "the identity was rejected",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21549,8 +21549,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "400": {
+            "description": "the body carries a member the API does not accept",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21579,8 +21579,8 @@
               }
             }
           },
-          "422": {
-            "description": "the identity was rejected",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21665,16 +21665,6 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
           "404": {
             "description": "no identity with that id belongs to the customer",
             "content": {
@@ -21687,6 +21677,16 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21720,6 +21720,16 @@
               }
             }
           },
+          "404": {
+            "description": "no identity with that id belongs to the customer",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
           "400": {
             "description": "the body carries a member the API does not accept",
             "content": {
@@ -21730,18 +21740,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "no identity with that id belongs to the customer",
+          "422": {
+            "description": "the external reference is longer than the API accepts",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21770,8 +21770,8 @@
               }
             }
           },
-          "422": {
-            "description": "the external reference is longer than the API accepts",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21808,8 +21808,8 @@
           "204": {
             "description": "identity deleted"
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "409": {
+            "description": "the identity is still in use: it is the account identity of an account that is still open, a DID number names it as its main or its porting identity, an emergency calling service registered to it has not finished, or an SMS campaign registered to it has not finished",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21838,8 +21838,8 @@
               }
             }
           },
-          "409": {
-            "description": "the identity is still in use: it is the account identity of an account that is still open, a DID number names it as its main or its porting identity, an emergency calling service registered to it has not finished, or an SMS campaign registered to it has not finished",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21924,8 +21924,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "406": {
+            "description": "the requested media type cannot be served",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21934,8 +21934,8 @@
               }
             }
           },
-          "406": {
-            "description": "the requested media type cannot be served",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21969,8 +21969,8 @@
               }
             }
           },
-          "400": {
-            "description": "the body carries a member the API does not accept",
+          "422": {
+            "description": "the address was rejected",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21979,8 +21979,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "400": {
+            "description": "the body carries a member the API does not accept",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22009,8 +22009,8 @@
               }
             }
           },
-          "422": {
-            "description": "the address was rejected",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22095,16 +22095,6 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
           "404": {
             "description": "no address with that id belongs to the customer",
             "content": {
@@ -22117,6 +22107,16 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22150,6 +22150,16 @@
               }
             }
           },
+          "404": {
+            "description": "no address with that id belongs to the customer",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
           "400": {
             "description": "the body carries a member the API does not accept",
             "content": {
@@ -22160,18 +22170,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "no address with that id belongs to the customer",
+          "422": {
+            "description": "the external reference is longer than the API accepts",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22200,8 +22200,8 @@
               }
             }
           },
-          "422": {
-            "description": "the external reference is longer than the API accepts",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22238,8 +22238,8 @@
           "204": {
             "description": "address deleted"
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "409": {
+            "description": "the address is still in use: it is the billing address of an account that is still open, a verification of it is still new or pending, an emergency calling service registered to it has not finished, or an SMS campaign registered to it has not finished",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22268,8 +22268,8 @@
               }
             }
           },
-          "409": {
-            "description": "the address is still in use: it is the billing address of an account that is still open, a verification of it is still new or pending, an emergency calling service registered to it has not finished, or an SMS campaign registered to it has not finished",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22315,6 +22315,16 @@
               }
             }
           },
+          "422": {
+            "description": "the upload was rejected",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
           "400": {
             "description": "the request parameters are invalid — the body was not a multipart upload, or it carried a field the API does not accept",
             "content": {
@@ -22327,16 +22337,6 @@
           },
           "401": {
             "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "the upload was rejected",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22395,8 +22395,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "406": {
+            "description": "the requested media type cannot be served",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22405,8 +22405,8 @@
               }
             }
           },
-          "406": {
-            "description": "the requested media type cannot be served",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22457,16 +22457,6 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
           "404": {
             "description": "no encrypted file with that id belongs to the customer",
             "content": {
@@ -22479,6 +22469,16 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22505,16 +22505,6 @@
           "204": {
             "description": "encrypted file deleted"
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
           "404": {
             "description": "no encrypted file with that id belongs to the customer",
             "content": {
@@ -22527,6 +22517,16 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22608,8 +22608,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "406": {
+            "description": "the requested media type cannot be served",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22618,8 +22618,8 @@
               }
             }
           },
-          "406": {
-            "description": "the requested media type cannot be served",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22653,8 +22653,8 @@
               }
             }
           },
-          "400": {
-            "description": "the body carries a member the API does not accept",
+          "422": {
+            "description": "the proof was rejected",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22663,8 +22663,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "400": {
+            "description": "the body carries a member the API does not accept",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22693,8 +22693,8 @@
               }
             }
           },
-          "422": {
-            "description": "the proof was rejected",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22776,16 +22776,6 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
           "404": {
             "description": "no proof with that id belongs to the customer",
             "content": {
@@ -22798,6 +22788,16 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22831,6 +22831,16 @@
               }
             }
           },
+          "404": {
+            "description": "no proof with that id belongs to the customer",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
           "400": {
             "description": "the body carries a member the API does not accept",
             "content": {
@@ -22841,18 +22851,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "no proof with that id belongs to the customer",
+          "422": {
+            "description": "the external reference is longer than the API accepts",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22881,8 +22881,8 @@
               }
             }
           },
-          "422": {
-            "description": "the external reference is longer than the API accepts",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22919,8 +22919,8 @@
           "204": {
             "description": "proof deleted"
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "422": {
+            "description": "the proof is relied on by a verification still under review",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22949,8 +22949,8 @@
               }
             }
           },
-          "422": {
-            "description": "the proof is relied on by a verification still under review",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23011,8 +23011,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "406": {
+            "description": "the requested media type cannot be served",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23021,8 +23021,8 @@
               }
             }
           },
-          "406": {
-            "description": "the requested media type cannot be served",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23073,16 +23073,6 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
           "404": {
             "description": "no supporting document template with that id",
             "content": {
@@ -23095,6 +23085,16 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23176,8 +23176,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "406": {
+            "description": "the requested media type cannot be served",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23186,8 +23186,8 @@
               }
             }
           },
-          "406": {
-            "description": "the requested media type cannot be served",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23221,8 +23221,8 @@
               }
             }
           },
-          "400": {
-            "description": "the body carries a member the API does not accept",
+          "422": {
+            "description": "the document was rejected",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23231,8 +23231,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "400": {
+            "description": "the body carries a member the API does not accept",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23261,8 +23261,8 @@
               }
             }
           },
-          "422": {
-            "description": "the document was rejected",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23344,16 +23344,6 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
           "404": {
             "description": "no permanent supporting document with that id belongs to the customer",
             "content": {
@@ -23366,6 +23356,16 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23399,6 +23399,16 @@
               }
             }
           },
+          "404": {
+            "description": "no permanent supporting document with that id belongs to the customer",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
           "400": {
             "description": "the body carries a member the API does not accept",
             "content": {
@@ -23409,18 +23419,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "no permanent supporting document with that id belongs to the customer",
+          "422": {
+            "description": "the external reference is longer than the API accepts",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23449,8 +23449,8 @@
               }
             }
           },
-          "422": {
-            "description": "the external reference is longer than the API accepts",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23487,8 +23487,8 @@
           "204": {
             "description": "document deleted"
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "422": {
+            "description": "the document is relied on by a verification still under review",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23517,8 +23517,8 @@
               }
             }
           },
-          "422": {
-            "description": "the document is relied on by a verification still under review",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23570,8 +23570,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "406": {
+            "description": "the requested media type cannot be served",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23580,8 +23580,8 @@
               }
             }
           },
-          "406": {
-            "description": "the requested media type cannot be served",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23632,16 +23632,6 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
           "404": {
             "description": "no proof type with that id",
             "content": {
@@ -23654,6 +23644,16 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23742,8 +23742,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "406": {
+            "description": "the requested media type cannot be served",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23752,8 +23752,8 @@
               }
             }
           },
-          "406": {
-            "description": "the requested media type cannot be served",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23832,16 +23832,6 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
           "404": {
             "description": "no address requirement with that id",
             "content": {
@@ -23854,6 +23844,16 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23889,8 +23889,8 @@
               }
             }
           },
-          "400": {
-            "description": "the body carries a member the API does not accept",
+          "422": {
+            "description": "the requirement is not satisfied",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23899,8 +23899,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "400": {
+            "description": "the body carries a member the API does not accept",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23929,8 +23929,8 @@
               }
             }
           },
-          "422": {
-            "description": "the requirement is not satisfied",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24022,8 +24022,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "406": {
+            "description": "the requested media type cannot be served",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24032,8 +24032,8 @@
               }
             }
           },
-          "406": {
-            "description": "the requested media type cannot be served",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24067,8 +24067,8 @@
               }
             }
           },
-          "400": {
-            "description": "the body is malformed — `configuration` missing, or a member the API does not accept",
+          "422": {
+            "description": "the trunk was rejected",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24077,8 +24077,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "400": {
+            "description": "the body is malformed — `configuration` missing, or a member the API does not accept",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24107,8 +24107,8 @@
               }
             }
           },
-          "422": {
-            "description": "the trunk was rejected",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24190,16 +24190,6 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
           "404": {
             "description": "no trunk with that id belongs to the customer",
             "content": {
@@ -24212,6 +24202,16 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24245,6 +24245,16 @@
               }
             }
           },
+          "404": {
+            "description": "no trunk with that id belongs to the customer",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
           "400": {
             "description": "the body carries a member the API does not accept",
             "content": {
@@ -24255,18 +24265,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "no trunk with that id belongs to the customer",
+          "422": {
+            "description": "the external reference is longer than the API accepts",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24295,8 +24295,8 @@
               }
             }
           },
-          "422": {
-            "description": "the external reference is longer than the API accepts",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24333,8 +24333,8 @@
           "204": {
             "description": "trunk deleted"
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "422": {
+            "description": "the trunk is still in use",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24363,8 +24363,8 @@
               }
             }
           },
-          "422": {
-            "description": "the trunk is still in use",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24445,8 +24445,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "406": {
+            "description": "the requested media type cannot be served",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24455,8 +24455,8 @@
               }
             }
           },
-          "406": {
-            "description": "the requested media type cannot be served",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24490,8 +24490,8 @@
               }
             }
           },
-          "400": {
-            "description": "the body carries a member the API does not accept",
+          "422": {
+            "description": "the trunk group was rejected",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24500,8 +24500,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "400": {
+            "description": "the body carries a member the API does not accept",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24530,8 +24530,8 @@
               }
             }
           },
-          "422": {
-            "description": "the trunk group was rejected",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24612,16 +24612,6 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
           "404": {
             "description": "no trunk group with that id belongs to the customer",
             "content": {
@@ -24634,6 +24624,16 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24667,6 +24667,16 @@
               }
             }
           },
+          "404": {
+            "description": "no trunk group with that id belongs to the customer",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
           "400": {
             "description": "the body carries a member the API does not accept",
             "content": {
@@ -24677,18 +24687,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "no trunk group with that id belongs to the customer",
+          "422": {
+            "description": "the external reference is longer than the API accepts",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24717,8 +24717,8 @@
               }
             }
           },
-          "422": {
-            "description": "the external reference is longer than the API accepts",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24755,16 +24755,6 @@
           "204": {
             "description": "trunk group deleted"
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
           "404": {
             "description": "no trunk group with that id belongs to the customer",
             "content": {
@@ -24777,6 +24767,16 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24828,8 +24828,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "406": {
+            "description": "the requested media type cannot be served",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24838,8 +24838,8 @@
               }
             }
           },
-          "406": {
-            "description": "the requested media type cannot be served",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24921,16 +24921,6 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
           "403": {
             "description": "the outbound voice API is not enabled for the account",
             "content": {
@@ -24943,6 +24933,16 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25058,8 +25058,8 @@
               }
             }
           },
-          "400": {
-            "description": "the body carries a member the API does not accept",
+          "422": {
+            "description": "the trunk was rejected",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25068,8 +25068,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "400": {
+            "description": "the body carries a member the API does not accept",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25108,8 +25108,8 @@
               }
             }
           },
-          "422": {
-            "description": "the trunk was rejected",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25191,8 +25191,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "404": {
+            "description": "no trunk with that id belongs to the customer",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25211,8 +25211,8 @@
               }
             }
           },
-          "404": {
-            "description": "no trunk with that id belongs to the customer",
+          "406": {
+            "description": "the requested media type cannot be served",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25221,8 +25221,8 @@
               }
             }
           },
-          "406": {
-            "description": "the requested media type cannot be served",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25338,6 +25338,16 @@
               }
             }
           },
+          "404": {
+            "description": "no trunk with that id belongs to the customer",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
           "400": {
             "description": "the body carries a member the API does not accept",
             "content": {
@@ -25348,8 +25358,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "422": {
+            "description": "the external reference is longer than the API accepts",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25360,16 +25370,6 @@
           },
           "403": {
             "description": "the outbound voice API is not enabled for the account",
-            "content": {
-              "application/vnd.api+json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorsDocument"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "no trunk with that id belongs to the customer",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25398,8 +25398,8 @@
               }
             }
           },
-          "422": {
-            "description": "the external reference is longer than the API accepts",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25436,8 +25436,8 @@
           "204": {
             "description": "trunk deleted"
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "404": {
+            "description": "no trunk with that id belongs to the customer",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25456,8 +25456,8 @@
               }
             }
           },
-          "404": {
-            "description": "no trunk with that id belongs to the customer",
+          "406": {
+            "description": "the requested media type cannot be served",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25466,8 +25466,8 @@
               }
             }
           },
-          "406": {
-            "description": "the requested media type cannot be served",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25503,8 +25503,8 @@
               }
             }
           },
-          "400": {
-            "description": "the body carries a member the API does not accept",
+          "422": {
+            "description": "the trunk has no credentials to rotate",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25513,8 +25513,8 @@
               }
             }
           },
-          "401": {
-            "description": "missing or invalid api-key",
+          "400": {
+            "description": "the body carries a member the API does not accept",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25553,8 +25553,8 @@
               }
             }
           },
-          "422": {
-            "description": "the trunk has no credentials to rotate",
+          "401": {
+            "description": "missing or invalid api-key",
             "content": {
               "application/vnd.api+json": {
                 "schema": {

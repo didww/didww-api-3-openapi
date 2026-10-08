@@ -2,7 +2,7 @@ name: Validate
 
 on:
   push:
-    branches: [main]
+    branches: [main, prerelease]
   pull_request:
   workflow_dispatch:
 
@@ -18,13 +18,23 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+          cache: npm
 
-      # Versions are pinned: a new lint rule landing upstream would otherwise turn
-      # an unrelated pull request red.
-      - name: Lint the OpenAPI document
-        run: npx --yes @redocly/cli@2.46.2 lint openapi/v3_api.json
+      # Versions are pinned in package-lock.json: a new lint rule landing upstream
+      # would otherwise turn an unrelated pull request red.
+      - name: Install the build and lint tools
+        run: npm ci
 
-      - name: Check the JSON and YAML documents agree
+      - name: Test the build script
+        run: npm test
+
+      - name: Lint the sources and the published document
+        run: npm run lint
+
+      - name: Rebuild from the sources
+        run: node scripts/build.mjs --out "${RUNNER_TEMP}/rebuilt"
+
+      - name: Check the formats agree and the document is up to date
         run: |
-          npx --yes js-yaml@4.1.0 openapi/v3_api.yaml > "${RUNNER_TEMP}/v3_api.from_yaml.json"
-          node .github/scripts/check-document.mjs "${RUNNER_TEMP}/v3_api.from_yaml.json"
+          npx js-yaml openapi/v3_api.yaml > "${RUNNER_TEMP}/v3_api.from_yaml.json"
+          node .github/scripts/check-document.mjs "${RUNNER_TEMP}/v3_api.from_yaml.json" "${RUNNER_TEMP}/rebuilt/v3_api.json"
