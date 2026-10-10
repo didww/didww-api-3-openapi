@@ -65,6 +65,10 @@
     {
       "name": "Emergency",
       "description": "Emergency calling: what a country requires, validating a submission against it, and the service that results."
+    },
+    {
+      "name": "Prices",
+      "description": "Price files and price lookups, served by the platform service that prices the traffic: Voice IN, Voice OUT, SMS."
     }
   ],
   "servers": [
@@ -14297,6 +14301,112 @@
             }
           }
         }
+      },
+      "VoiceInPrice": {
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "attributes"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "UUID naming the answering row of the plan. A name, not an address: there is no member route to fetch it by."
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "prices"
+            ]
+          },
+          "attributes": {
+            "type": "object",
+            "required": [
+              "destination",
+              "country",
+              "src_country_name",
+              "source_type",
+              "rate",
+              "connection_fee",
+              "initial_interval",
+              "next_interval",
+              "reject_calls"
+            ],
+            "properties": {
+              "destination": {
+                "type": "string",
+                "description": "Prefix of the plan that priced the number: the longest one covering it for this source type and destination country."
+              },
+              "country": {
+                "type": "string",
+                "nullable": true,
+                "description": "Destination country the row is priced for, by name; null for a row of the plan's global country, which is not tied to one destination country."
+              },
+              "src_country_name": {
+                "type": "string",
+                "nullable": true,
+                "description": "Source country of the call the row is priced for, by name; null for a row that prices calls from any country."
+              },
+              "source_type": {
+                "type": "string",
+                "description": "Calling party category the row is priced for — the kind of line the call originates from, such as `cellular` or `fixed`. Each category covering the number answers with its own row."
+              },
+              "rate": {
+                "type": "string",
+                "nullable": true,
+                "description": "Per-minute rate in USD, VAT excluded, as a decimal string that is never rounded; null when `reject_calls` is set."
+              },
+              "connection_fee": {
+                "type": "string",
+                "nullable": true,
+                "description": "Fee charged once per call, in USD, VAT excluded, as a decimal string; null when `reject_calls` is set."
+              },
+              "initial_interval": {
+                "type": "integer",
+                "description": "First billing increment, in seconds: a call is charged for at least this long."
+              },
+              "next_interval": {
+                "type": "integer",
+                "description": "Each following billing increment, in seconds."
+              },
+              "reject_calls": {
+                "type": "boolean",
+                "description": "True when the plan rejects calls to this destination instead of pricing them; `rate` and `connection_fee` are then null. A rejection is an answer, not a missing price."
+              }
+            }
+          }
+        }
+      },
+      "VoiceInPriceCollectionDocument": {
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "minItems": 1,
+            "description": "One answer per source type and destination country whose prefixes cover the number. Never empty: no answer is the 404 `price_not_found`.",
+            "items": {
+              "$ref": "#/components/schemas/VoiceInPrice"
+            }
+          },
+          "meta": {
+            "type": "object",
+            "required": [
+              "total_records"
+            ],
+            "properties": {
+              "total_records": {
+                "type": "integer",
+                "description": "Number of answers in `data`."
+              }
+            }
+          }
+        }
       }
     },
     "parameters": {
@@ -17701,6 +17811,61 @@
           "id",
           "reference"
         ]
+      }
+    },
+    "headers": {
+      "ContentDisposition": {
+        "description": "`attachment` with the canonical file name of the price domain.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "ContentLength": {
+        "description": "Size of the gzipped file in bytes; a HEAD answers the size the download sends.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "LastModified": {
+        "description": "HTTP date the file's content or the account's plan assignment last changed; the value to send back in `If-Modified-Since`.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "CacheControl": {
+        "description": "Always `private`: the file is served per account.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "private"
+          ]
+        }
+      },
+      "AcceptRanges": {
+        "description": "Always `none`: the file is served whole.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "none"
+          ]
+        }
+      },
+      "Vary": {
+        "description": "Always `Authorization`: one URL answers every account with its own plan's file.",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "Authorization"
+          ]
+        }
+      },
+      "RetryAfter": {
+        "description": "Seconds to wait before retrying.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        }
       }
     }
   },
@@ -27979,6 +28144,358 @@
           "required": true
         }
       }
+    },
+    "/lookup/prices": {
+      "get": {
+        "summary": "Look up the price of a number",
+        "tags": [
+          "Prices"
+        ],
+        "operationId": "lookupPrices",
+        "description": "Looks up the price of one number in the plan assigned to the account. The number is matched against the destination prefixes of the plan: for every source type and destination country the plan prices, the longest prefix covering the number answers, so the collection carries one row per such pair and is never empty -- a number no prefix covers is a 404 (`price_not_found`). Without `filter[src_country_iso]` only the prices that apply to a call from any country take part; with it, a price the plan sets for calls from that country ranks above the any-source price of the same source type and destination country whatever their prefix lengths, and the any-source price stands where the plan sets none. `src_country_name` names the country whose price answered and is null when the any-source price did. A destination the plan rejects is still an answer: `reject_calls` is true and `rate` and `connection_fee` are null. The token must list `api-vin.didww.com` in its audience, on the sandbox host as well; the `read` scope suffices. `filter` is the only query parameter read: `sort`, `page`, `fields`, `include` and anything unrecognised are refused with 400.",
+        "parameters": [
+          {
+            "name": "filter[number]",
+            "in": "query",
+            "required": true,
+            "description": "The number to price: 8 to 15 digits with a non-zero first digit, in international format without a `+` or a dialling prefix.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[1-9][0-9]{7,14}$"
+            }
+          },
+          {
+            "name": "filter[src_country_iso]",
+            "in": "query",
+            "required": false,
+            "description": "The country the call comes from, as its upper-case ISO 3166-1 alpha-2 code. A price the plan sets for calls from that country then answers ahead of the any-source price; without this filter only any-source prices answer.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Z]{2}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "the prices covering the number: one per source type and destination country, the longest covering prefix of each",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VoiceInPriceCollectionDocument"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "malformed request: `filter[number]` missing or blank, or not 8 to 15 digits with a non-zero first digit; `filter[src_country_iso]` not the upper-case code of a known country; a filter other than these two; or any other query parameter -- `sort`, `page`, `fields`, `include` and anything unrecognised",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "the bearer token was refused: absent, malformed, expired, signed by a key this service does not hold, minted for another audience or environment, presented from an address outside the IP allowlist of the API key it was minted with, or naming an account this service has no record of; the response carries `WWW-Authenticate: Bearer error=\"invalid_token\"`",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "the token does not carry the `read` scope (title `Insufficient scope`); the response carries `WWW-Authenticate: Bearer error=\"insufficient_scope\"`",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "no price plan is assigned to the account (`price_plan_not_assigned`), or no prefix of the plan covers the number (`price_not_found`)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "406": {
+            "description": "the `Accept` header admits neither `application/vnd.api+json` nor `*/*`",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          }
+        }
+      },
+      "servers": [
+        {
+          "url": "https://api-vin.didww.com/v3",
+          "description": "Production"
+        },
+        {
+          "url": "https://api-vin-sandbox.didww.com/v3",
+          "description": "Sandbox"
+        }
+      ]
+    },
+    "/prices.csv.gz": {
+      "get": {
+        "summary": "Download the price file",
+        "tags": [
+          "Prices"
+        ],
+        "operationId": "downloadPrices",
+        "description": "Downloads the price file of the plan assigned to the account: the prices of the plan as a gzipped CSV (UTF-8, LF line endings, a header row), named `voice_in_prices.csv.gz`. Prices are printed as the lookup answers them: never rounded, trailing zeros dropped, one decimal kept (`0.0`, `1.5`, `0.002`). The file is small and served whole, with no byte ranges, and it is the account's own: `Cache-Control` is `private` and `Vary` is `Authorization`, so a cache keyed by the URL alone must not hand it to another account. The token must list `api-vin.didww.com` in its audience, on the sandbox host as well; the `read` scope suffices. Conditional requests use `Last-Modified` and `If-Modified-Since` only: no `ETag` is sent and `If-None-Match` is ignored. `Last-Modified` is the later of the last change of the file's content and the last change of the account's plan assignment, so an account moved to another plan is never answered 304 with the prices it left; send it back in `If-Modified-Since` to be answered 304 while nothing has changed.",
+        "parameters": [
+          {
+            "name": "If-Modified-Since",
+            "in": "header",
+            "required": false,
+            "description": "The `Last-Modified` date of the copy you hold. The file is sent only if it changed after that date; otherwise the answer is 304.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "the price file",
+            "content": {
+              "application/gzip": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            },
+            "headers": {
+              "Content-Disposition": {
+                "$ref": "#/components/headers/ContentDisposition"
+              },
+              "Last-Modified": {
+                "$ref": "#/components/headers/LastModified"
+              },
+              "Cache-Control": {
+                "$ref": "#/components/headers/CacheControl"
+              },
+              "Accept-Ranges": {
+                "$ref": "#/components/headers/AcceptRanges"
+              },
+              "Vary": {
+                "$ref": "#/components/headers/Vary"
+              },
+              "Content-Length": {
+                "$ref": "#/components/headers/ContentLength"
+              }
+            }
+          },
+          "304": {
+            "description": "the file has not changed since the `If-Modified-Since` date: the headers of the 200 and no body",
+            "headers": {
+              "Content-Disposition": {
+                "$ref": "#/components/headers/ContentDisposition"
+              },
+              "Last-Modified": {
+                "$ref": "#/components/headers/LastModified"
+              },
+              "Cache-Control": {
+                "$ref": "#/components/headers/CacheControl"
+              },
+              "Accept-Ranges": {
+                "$ref": "#/components/headers/AcceptRanges"
+              },
+              "Vary": {
+                "$ref": "#/components/headers/Vary"
+              }
+            }
+          },
+          "401": {
+            "description": "the bearer token was refused: absent, malformed, expired, signed by a key this service does not hold, minted for another audience or environment, presented from an address outside the IP allowlist of the API key it was minted with, or naming an account this service has no record of; the response carries `WWW-Authenticate: Bearer error=\"invalid_token\"`",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "the token does not carry the `read` scope (title `Insufficient scope`); the response carries `WWW-Authenticate: Bearer error=\"insufficient_scope\"`",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "no price plan is assigned to the account (`price_plan_not_assigned`)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "the file could not be served: the assigned plan has no generated file yet, or the store did not answer for it (`serving_failure`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          }
+        }
+      },
+      "head": {
+        "summary": "Check the price file",
+        "tags": [
+          "Prices"
+        ],
+        "operationId": "headPrices",
+        "description": "Answers the headers of the price file without its body -- `Last-Modified`, `Content-Disposition` with `voice_in_prices.csv.gz`, `Content-Length` and the cache headers of the download -- so a client can tell whether its copy is current before downloading. `If-Modified-Since` works as on the download: a date at or after `Last-Modified` is answered 304. The audience (`api-vin.didww.com`, the same on the sandbox host), the scope (`read`) and the refusals are those of the download; no response carries a body.",
+        "parameters": [
+          {
+            "name": "If-Modified-Since",
+            "in": "header",
+            "required": false,
+            "description": "The `Last-Modified` date of the copy you hold. The headers of the file are answered only if it changed after that date; otherwise the answer is 304.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "the headers of the price file",
+            "headers": {
+              "Content-Disposition": {
+                "$ref": "#/components/headers/ContentDisposition"
+              },
+              "Last-Modified": {
+                "$ref": "#/components/headers/LastModified"
+              },
+              "Cache-Control": {
+                "$ref": "#/components/headers/CacheControl"
+              },
+              "Accept-Ranges": {
+                "$ref": "#/components/headers/AcceptRanges"
+              },
+              "Vary": {
+                "$ref": "#/components/headers/Vary"
+              },
+              "Content-Length": {
+                "$ref": "#/components/headers/ContentLength"
+              }
+            }
+          },
+          "304": {
+            "description": "the file has not changed since the `If-Modified-Since` date: the headers of the 200",
+            "headers": {
+              "Content-Disposition": {
+                "$ref": "#/components/headers/ContentDisposition"
+              },
+              "Last-Modified": {
+                "$ref": "#/components/headers/LastModified"
+              },
+              "Cache-Control": {
+                "$ref": "#/components/headers/CacheControl"
+              },
+              "Accept-Ranges": {
+                "$ref": "#/components/headers/AcceptRanges"
+              },
+              "Vary": {
+                "$ref": "#/components/headers/Vary"
+              }
+            }
+          },
+          "401": {
+            "description": "the bearer token was refused: absent, malformed, expired, signed by a key this service does not hold, minted for another audience or environment, presented from an address outside the IP allowlist of the API key it was minted with, or naming an account this service has no record of; the response carries `WWW-Authenticate: Bearer error=\"invalid_token\"`"
+          },
+          "403": {
+            "description": "the token does not carry the `read` scope (title `Insufficient scope`); the response carries `WWW-Authenticate: Bearer error=\"insufficient_scope\"`"
+          },
+          "404": {
+            "description": "no price plan is assigned to the account (`price_plan_not_assigned`)"
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            }
+          },
+          "503": {
+            "description": "the file could not be served: the assigned plan has no generated file yet (`serving_failure`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            }
+          }
+        }
+      },
+      "servers": [
+        {
+          "url": "https://api-vin.didww.com/v3",
+          "description": "Production"
+        },
+        {
+          "url": "https://api-vin-sandbox.didww.com/v3",
+          "description": "Sandbox"
+        }
+      ]
     }
   }
 }
