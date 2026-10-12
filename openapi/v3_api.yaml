@@ -9625,6 +9625,110 @@ components:
             total_records:
               type: integer
               description: Number of answers in `data`.
+    VoiceOutPrice:
+      type: object
+      required:
+        - id
+        - type
+        - attributes
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: 'UUID naming the answer by the plan, the prefix and the routing conditions, so a re-import of the same price keeps it. A name, not an address: there is no member route to fetch it by.'
+        type:
+          type: string
+          enum:
+            - prices
+        attributes:
+          type: object
+          required:
+            - prefix
+            - country
+            - network
+            - rate
+            - connection_fee
+            - initial_increment
+            - recurring_increment
+            - next_rate
+            - next_connection_fee
+            - next_rate_effective_at
+            - next_change
+            - reject_calls
+            - category
+          properties:
+            prefix:
+              type: string
+              description: 'Destination prefix of the plan that priced the number: the longest one covering it among the prices of the same routing conditions.'
+            country:
+              type: string
+              nullable: true
+              description: Destination country of the prefix, by name; null when the prefix is not attributed to a country.
+            network:
+              type: string
+              nullable: true
+              description: Destination network of the prefix, by name; null when the prefix is not attributed to a network.
+            rate:
+              type: string
+              nullable: true
+              description: Per-minute rate in USD, VAT excluded, as a decimal string that is never rounded; null when `reject_calls` is set.
+            connection_fee:
+              type: string
+              nullable: true
+              description: Fee charged once per call, in USD, VAT excluded, as a decimal string; null when `reject_calls` is set.
+            initial_increment:
+              type: integer
+              description: 'First billing increment, in seconds: a call is charged for at least this long. On a rejected destination about to open, the increment it opens with.'
+            recurring_increment:
+              type: integer
+              description: Each following billing increment, in seconds. On a rejected destination about to open, the increment it opens with.
+            next_rate:
+              type: string
+              nullable: true
+              description: Per-minute rate in USD, VAT excluded, from `next_rate_effective_at` on; null when no change is scheduled, when the price is removed, or when the destination is going to reject calls.
+            next_connection_fee:
+              type: string
+              nullable: true
+              description: Fee charged once per call, in USD, VAT excluded, from `next_rate_effective_at` on; null whenever `next_rate` is.
+            next_rate_effective_at:
+              type: string
+              format: date-time
+              nullable: true
+              description: When the change named by `next_change` takes effect; null when no change is scheduled.
+            next_change:
+              type: string
+              nullable: true
+              description: 'The scheduled change of the price: `Increase` or `Decrease` of the rate, `Connection fee change`, `Billing increment change`, or two or three of these joined (`Increase and Connection fee change`); `No Change` when the next values equal the current ones; `Reject calls` when the destination is going to reject calls; `Removed` when the price ends within 30 days and no price of the same prefix takes over when it ends; `New Breakout` when a rejected destination opens within 30 days. Null when no change is scheduled.'
+            reject_calls:
+              type: boolean
+              description: True when the plan rejects calls to this destination instead of pricing them; `rate` and `connection_fee` are then null. A rejection is an answer, not a missing price.
+            category:
+              type: string
+              enum:
+                - International
+                - Origin based
+                - Local
+              description: Category of the price, as the sheets of the price list in the user panel group them. Rows of one lookup may share a category.
+    VoiceOutPriceCollectionDocument:
+      type: object
+      required:
+        - data
+        - meta
+      properties:
+        data:
+          type: array
+          minItems: 1
+          description: 'One answer per set of routing conditions of the plan whose prefixes cover the number. Never empty: no answer is the 404 `price_not_found`.'
+          items:
+            $ref: '#/components/schemas/VoiceOutPrice'
+        meta:
+          type: object
+          required:
+            - total_records
+          properties:
+            total_records:
+              type: integer
+              description: Number of answers in `data`.
   parameters:
     PageNumber:
       name: page[number]
@@ -18760,36 +18864,81 @@ paths:
               $ref: '#/components/schemas/VoiceOutTrunkRegenerateCredentialCreateRequest'
         required: true
   /lookup/prices:
+    servers:
+      - url: https://{service}.didww.com/v3
+        description: Production
+        variables:
+          service:
+            enum:
+              - api-vin
+              - api-vout
+            default: api-vin
+            description: api-vin — Voice IN Rates; api-vout — Voice OUT Rates
+      - url: https://{service}-sandbox.didww.com/v3
+        description: Sandbox
+        variables:
+          service:
+            enum:
+              - api-vin
+              - api-vout
+            default: api-vin
+            description: api-vin — Voice IN Rates; api-vout — Voice OUT Rates
     get:
       summary: Look up the price of a number
       tags:
         - Prices
       operationId: lookupPrices
-      description: 'Looks up the price of one number in the plan assigned to the account. The number is matched against the destination prefixes of the plan: for every source type and destination country the plan prices, the longest prefix covering the number answers, so the collection carries one row per such pair and is never empty -- a number no prefix covers is a 404 (`price_not_found`). Without `filter[src_country_iso]` only the prices that apply to a call from any country take part; with it, a price the plan sets for calls from that country ranks above the any-source price of the same source type and destination country whatever their prefix lengths, and the any-source price stands where the plan sets none. `src_country_name` names the country whose price answered and is null when the any-source price did. A destination the plan rejects is still an answer: `reject_calls` is true and `rate` and `connection_fee` are null. The token must list `api-vin.didww.com` in its audience, on the sandbox host as well; the `read` scope suffices. `filter` is the only query parameter read: `sort`, `page`, `fields`, `include` and anything unrecognised are refused with 400.'
+      description: |-
+        **api-vin — Voice IN Rates**
+
+        Looks up the price of one number in the plan assigned to the account. The number is matched against the destination prefixes of the plan: for every source type and destination country the plan prices, the longest prefix covering the number answers, so the collection carries one row per such pair and is never empty -- a number no prefix covers is a 404 (`price_not_found`). Without `filter[src_country_iso]` only the prices that apply to a call from any country take part; with it, a price the plan sets for calls from that country ranks above the any-source price of the same source type and destination country whatever their prefix lengths, and the any-source price stands where the plan sets none. `src_country_name` names the country whose price answered and is null when the any-source price did. A destination the plan rejects is still an answer: `reject_calls` is true and `rate` and `connection_fee` are null. The token must list `api-vin.didww.com` in its audience, on the sandbox host as well; the `read` scope suffices. `filter` is the only query parameter read: `sort`, `page`, `fields`, `include` and anything unrecognised are refused with 400.
+
+        **api-vout — Voice OUT Rates**
+
+        Looks up the price of one number in the plan assigned to the account. The number is matched against the destination prefixes of the plan: for every set of routing conditions the plan prices, the longest prefix covering the number answers, so the collection carries one row per such set and is never empty -- a number no prefix covers is a 404 (`price_not_found`). A prefix answers only while its price is in effect and only for a number whose length is within the bounds the plan sets for it; a change already scheduled is carried by the `next_` attributes and named by `next_change`. A destination the plan rejects is still an answer: `reject_calls` is true and `rate` and `connection_fee` are null. The token must list `api-vout.didww.com` in its audience, on the sandbox host as well; the `read` scope suffices. `filter` is the only query parameter read: `sort`, `page`, `fields`, `include` and anything unrecognised are refused with 400.
       parameters:
         - name: filter[number]
           in: query
           required: true
-          description: 'The number to price: 8 to 15 digits with a non-zero first digit, in international format without a `+` or a dialling prefix.'
           schema:
             type: string
             pattern: ^[1-9][0-9]{7,14}$
+          description: 'The number to price: 8 to 15 digits with a non-zero first digit, in international format without a `+` or a dialling prefix.'
         - name: filter[src_country_iso]
           in: query
           required: false
-          description: The country the call comes from, as its upper-case ISO 3166-1 alpha-2 code. A price the plan sets for calls from that country then answers ahead of the any-source price; without this filter only any-source prices answer.
           schema:
             type: string
             pattern: ^[A-Z]{2}$
+          description: |-
+            The country the call comes from, as its upper-case ISO 3166-1 alpha-2 code. A price the plan sets for calls from that country then answers ahead of the any-source price; without this filter only any-source prices answer.
+
+            Accepted by: `api-vin`.
       responses:
         '200':
-          description: 'the prices covering the number: one per source type and destination country, the longest covering prefix of each'
+          description: |-
+            **api-vin — Voice IN Rates**
+
+            the prices covering the number: one per source type and destination country, the longest covering prefix of each
+
+            **api-vout — Voice OUT Rates**
+
+            the prices covering the number: one per set of routing conditions, the longest covering prefix of each
           content:
             application/vnd.api+json:
               schema:
-                $ref: '#/components/schemas/VoiceInPriceCollectionDocument'
+                oneOf:
+                  - $ref: '#/components/schemas/VoiceInPriceCollectionDocument'
+                  - $ref: '#/components/schemas/VoiceOutPriceCollectionDocument'
         '400':
-          description: 'malformed request: `filter[number]` missing or blank, or not 8 to 15 digits with a non-zero first digit; `filter[src_country_iso]` not the upper-case code of a known country; a filter other than these two; or any other query parameter -- `sort`, `page`, `fields`, `include` and anything unrecognised'
+          description: |-
+            **api-vin — Voice IN Rates**
+
+            malformed request: `filter[number]` missing or blank, or not 8 to 15 digits with a non-zero first digit; `filter[src_country_iso]` not the upper-case code of a known country; a filter other than these two; or any other query parameter -- `sort`, `page`, `fields`, `include` and anything unrecognised
+
+            **api-vout — Voice OUT Rates**
+
+            malformed request: `filter[number]` missing or blank, or not 8 to 15 digits with a non-zero first digit; a filter other than `number`, `filter[id]` included; or any other query parameter -- `sort`, `page`, `fields`, `include` and anything unrecognised
           content:
             application/vnd.api+json:
               schema:
@@ -18819,41 +18968,63 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '429':
-          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
           headers:
             Retry-After:
               $ref: '#/components/headers/RetryAfter'
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
           content:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
-    servers:
-      - url: https://api-vin.didww.com/v3
-        description: Production
-      - url: https://api-vin-sandbox.didww.com/v3
-        description: Sandbox
   /prices.csv.gz:
+    servers:
+      - url: https://{service}.didww.com/v3
+        description: Production
+        variables:
+          service:
+            enum:
+              - api-vin
+              - api-vout
+            default: api-vin
+            description: api-vin — Voice IN Rates; api-vout — Voice OUT Rates
+      - url: https://{service}-sandbox.didww.com/v3
+        description: Sandbox
+        variables:
+          service:
+            enum:
+              - api-vin
+              - api-vout
+            default: api-vin
+            description: api-vin — Voice IN Rates; api-vout — Voice OUT Rates
     get:
       summary: Download the price file
       tags:
         - Prices
       operationId: downloadPrices
-      description: 'Downloads the price file of the plan assigned to the account: the prices of the plan as a gzipped CSV (UTF-8, LF line endings, a header row), named `voice_in_prices.csv.gz`. Prices are printed as the lookup answers them: never rounded, trailing zeros dropped, one decimal kept (`0.0`, `1.5`, `0.002`). The file is small and served whole, with no byte ranges, and it is the account''s own: `Cache-Control` is `private` and `Vary` is `Authorization`, so a cache keyed by the URL alone must not hand it to another account. The token must list `api-vin.didww.com` in its audience, on the sandbox host as well; the `read` scope suffices. Conditional requests use `Last-Modified` and `If-Modified-Since` only: no `ETag` is sent and `If-None-Match` is ignored. `Last-Modified` is the later of the last change of the file''s content and the last change of the account''s plan assignment, so an account moved to another plan is never answered 304 with the prices it left; send it back in `If-Modified-Since` to be answered 304 while nothing has changed.'
+      description: |-
+        **api-vin — Voice IN Rates**
+
+        Downloads the price file of the plan assigned to the account: the prices of the plan as a gzipped CSV (UTF-8, LF line endings, a header row), named `voice_in_prices.csv.gz`. Prices are printed as the lookup answers them: never rounded, trailing zeros dropped, one decimal kept (`0.0`, `1.5`, `0.002`). The file is small and served whole, with no byte ranges, and it is the account's own: `Cache-Control` is `private` and `Vary` is `Authorization`, so a cache keyed by the URL alone must not hand it to another account. The token must list `api-vin.didww.com` in its audience, on the sandbox host as well; the `read` scope suffices. Conditional requests use `Last-Modified` and `If-Modified-Since` only: no `ETag` is sent and `If-None-Match` is ignored. `Last-Modified` is the later of the last change of the file's content and the last change of the account's plan assignment, so an account moved to another plan is never answered 304 with the prices it left; send it back in `If-Modified-Since` to be answered 304 while nothing has changed.
+
+        **api-vout — Voice OUT Rates**
+
+        Downloads the price file of the plan assigned to the account: the prices of the plan as a gzipped CSV (UTF-8, LF line endings, a header row), named `voice_out_prices.csv.gz`. Prices are printed as the lookup answers them: never rounded, trailing zeros dropped, one decimal kept (`0.0`, `1.5`, `0.002`). The file is small and served whole, with no byte ranges, and it is the account's own: `Cache-Control` is `private` and `Vary` is `Authorization`, so a cache keyed by the URL alone must not hand it to another account. The token must list `api-vout.didww.com` in its audience, on the sandbox host as well; the `read` scope suffices. Conditional requests use `Last-Modified` and `If-Modified-Since` only: no `ETag` is sent, and a request carrying `If-None-Match` is always answered in full, its `If-Modified-Since` ignored. `Last-Modified` is the later of the last change of the file's content and the last change of the account's plan assignment, so an account moved to another plan is never answered 304 with the prices it left; send it back in `If-Modified-Since` to be answered 304 while nothing has changed.
       parameters:
         - name: If-Modified-Since
           in: header
           required: false
-          description: The `Last-Modified` date of the copy you hold. The file is sent only if it changed after that date; otherwise the answer is 304.
           schema:
             type: string
+          description: |-
+            **api-vin — Voice IN Rates**
+
+            The `Last-Modified` date of the copy you hold. The file is sent only if it changed after that date; otherwise the answer is 304.
+
+            **api-vout — Voice OUT Rates**
+
+            The `Last-Modified` date of the copy you hold. The file is sent only if it changed after that date; otherwise the answer is 304. Ignored when the request also carries `If-None-Match`.
       responses:
         '200':
-          description: the price file
-          content:
-            application/gzip:
-              schema:
-                type: string
-                format: binary
           headers:
             Content-Disposition:
               $ref: '#/components/headers/ContentDisposition'
@@ -18867,8 +19038,13 @@ paths:
               $ref: '#/components/headers/Vary'
             Content-Length:
               $ref: '#/components/headers/ContentLength'
+          description: the price file
+          content:
+            application/gzip:
+              schema:
+                type: string
+                format: binary
         '304':
-          description: 'the file has not changed since the `If-Modified-Since` date: the headers of the 200 and no body'
           headers:
             Content-Disposition:
               $ref: '#/components/headers/ContentDisposition'
@@ -18880,6 +19056,7 @@ paths:
               $ref: '#/components/headers/AcceptRanges'
             Vary:
               $ref: '#/components/headers/Vary'
+          description: 'the file has not changed since the `If-Modified-Since` date: the headers of the 200 and no body'
         '401':
           description: 'the bearer token was refused: absent, malformed, expired, signed by a key this service does not hold, minted for another audience or environment, presented from an address outside the IP allowlist of the API key it was minted with, or naming an account this service has no record of; the response carries `WWW-Authenticate: Bearer error="invalid_token"`'
           content:
@@ -18899,19 +19076,19 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '429':
-          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
           headers:
             Retry-After:
               $ref: '#/components/headers/RetryAfter'
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
           content:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '503':
-          description: 'the file could not be served: the assigned plan has no generated file yet, or the store did not answer for it (`serving_failure`); `Retry-After` says how many seconds to wait'
           headers:
             Retry-After:
               $ref: '#/components/headers/RetryAfter'
+          description: 'the file could not be served: the assigned plan has no generated file yet, or the store did not answer for it (`serving_failure`); `Retry-After` says how many seconds to wait'
           content:
             application/vnd.api+json:
               schema:
@@ -18921,17 +19098,30 @@ paths:
       tags:
         - Prices
       operationId: headPrices
-      description: 'Answers the headers of the price file without its body -- `Last-Modified`, `Content-Disposition` with `voice_in_prices.csv.gz`, `Content-Length` and the cache headers of the download -- so a client can tell whether its copy is current before downloading. `If-Modified-Since` works as on the download: a date at or after `Last-Modified` is answered 304. The audience (`api-vin.didww.com`, the same on the sandbox host), the scope (`read`) and the refusals are those of the download; no response carries a body.'
+      description: |-
+        **api-vin — Voice IN Rates**
+
+        Answers the headers of the price file without its body -- `Last-Modified`, `Content-Disposition` with `voice_in_prices.csv.gz`, `Content-Length` and the cache headers of the download -- so a client can tell whether its copy is current before downloading. `If-Modified-Since` works as on the download: a date at or after `Last-Modified` is answered 304. The audience (`api-vin.didww.com`, the same on the sandbox host), the scope (`read`) and the refusals are those of the download; no response carries a body.
+
+        **api-vout — Voice OUT Rates**
+
+        Answers the headers of the price file without its body -- `Last-Modified`, `Content-Disposition` with `voice_out_prices.csv.gz`, `Content-Length` and the cache headers of the download -- so a client can tell whether its copy is current before downloading. `If-Modified-Since` works as on the download: a date at or after `Last-Modified` is answered 304, unless the request also carries `If-None-Match`. The audience (`api-vout.didww.com`, the same on the sandbox host), the scope (`read`) and the refusals are those of the download; no response carries a body.
       parameters:
         - name: If-Modified-Since
           in: header
           required: false
-          description: The `Last-Modified` date of the copy you hold. The headers of the file are answered only if it changed after that date; otherwise the answer is 304.
           schema:
             type: string
+          description: |-
+            **api-vin — Voice IN Rates**
+
+            The `Last-Modified` date of the copy you hold. The headers of the file are answered only if it changed after that date; otherwise the answer is 304.
+
+            **api-vout — Voice OUT Rates**
+
+            The `Last-Modified` date of the copy you hold. The headers of the file are answered only if it changed after that date; otherwise the answer is 304. Ignored when the request also carries `If-None-Match`.
       responses:
         '200':
-          description: the headers of the price file
           headers:
             Content-Disposition:
               $ref: '#/components/headers/ContentDisposition'
@@ -18945,8 +19135,8 @@ paths:
               $ref: '#/components/headers/Vary'
             Content-Length:
               $ref: '#/components/headers/ContentLength'
+          description: the headers of the price file
         '304':
-          description: 'the file has not changed since the `If-Modified-Since` date: the headers of the 200'
           headers:
             Content-Disposition:
               $ref: '#/components/headers/ContentDisposition'
@@ -18958,6 +19148,7 @@ paths:
               $ref: '#/components/headers/AcceptRanges'
             Vary:
               $ref: '#/components/headers/Vary'
+          description: 'the file has not changed since the `If-Modified-Since` date: the headers of the 200'
         '401':
           description: 'the bearer token was refused: absent, malformed, expired, signed by a key this service does not hold, minted for another audience or environment, presented from an address outside the IP allowlist of the API key it was minted with, or naming an account this service has no record of; the response carries `WWW-Authenticate: Bearer error="invalid_token"`'
         '403':
@@ -18965,17 +19156,12 @@ paths:
         '404':
           description: no price plan is assigned to the account (`price_plan_not_assigned`)
         '429':
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
-          headers:
-            Retry-After:
-              $ref: '#/components/headers/RetryAfter'
         '503':
-          description: 'the file could not be served: the assigned plan has no generated file yet (`serving_failure`); `Retry-After` says how many seconds to wait'
           headers:
             Retry-After:
               $ref: '#/components/headers/RetryAfter'
-    servers:
-      - url: https://api-vin.didww.com/v3
-        description: Production
-      - url: https://api-vin-sandbox.didww.com/v3
-        description: Sandbox
+          description: 'the file could not be served: the assigned plan has no generated file yet (`serving_failure`); `Retry-After` says how many seconds to wait'
