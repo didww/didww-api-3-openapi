@@ -10472,6 +10472,7 @@
               "phone_number",
               "contact_email",
               "company_name",
+              "company_website",
               "company_reg_number",
               "vat_id",
               "id_number",
@@ -10514,6 +10515,12 @@
                 "type": "string",
                 "nullable": true,
                 "description": "Required for a business identity, and rejected on a personal one."
+              },
+              "company_website": {
+                "type": "string",
+                "nullable": true,
+                "description": "Company website. Rejected on a personal identity.",
+                "example": "https://example.com"
               },
               "company_reg_number": {
                 "type": "string",
@@ -10758,6 +10765,12 @@
                     "nullable": true,
                     "description": "Required for a business identity, and rejected on a personal one."
                   },
+                  "company_website": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Company website. Rejected on a personal identity.",
+                    "example": "https://example.com"
+                  },
                   "company_reg_number": {
                     "type": "string",
                     "nullable": true,
@@ -10884,6 +10897,12 @@
                     "type": "string",
                     "nullable": true,
                     "description": "Required for a business identity, and rejected on a personal one."
+                  },
+                  "company_website": {
+                    "type": "string",
+                    "nullable": true,
+                    "description": "Company website. Rejected on a personal identity.",
+                    "example": "https://example.com"
                   },
                   "company_reg_number": {
                     "type": "string",
@@ -16726,6 +16745,14 @@
               "type": "string",
               "description": "Matches identities whose company registration number contains this value."
             },
+            "company_website": {
+              "type": "string",
+              "description": "Matches identities whose company website is exactly this value."
+            },
+            "company_website_contains": {
+              "type": "string",
+              "description": "Matches identities whose company website contains this value."
+            },
             "country.id": {
               "type": "string",
               "description": "Matches identities registered in the country. Accepts a comma-separated list, matching any of the values."
@@ -16823,6 +16850,8 @@
               "-company_name",
               "company_reg_number",
               "-company_reg_number",
+              "company_website",
+              "-company_website",
               "contact_email",
               "-contact_email",
               "created_at",
@@ -16883,6 +16912,7 @@
               "phone_number",
               "contact_email",
               "company_name",
+              "company_website",
               "company_reg_number",
               "vat_id",
               "id_number",
