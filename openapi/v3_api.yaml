@@ -13,7 +13,8 @@ info:
     issued in the DIDWW user panel. A token is accepted only by the services its
     audience (`aud`) lists: `api.didww.com` for the operations of this host, and the
     production host of the platform service that serves the prices operations
-    (`api-vin.didww.com`, `api-vout.didww.com`) for those, in either environment.
+    (`api-vin.didww.com`, `api-vout.didww.com`, `api-sms.didww.com`) for those, in
+    either environment.
     A token minted with the `read` scope can only read: every other method is refused
     with 403 and an `insufficient_scope` challenge.
 
@@ -9745,6 +9746,163 @@ components:
             total_records:
               type: integer
               description: Number of answers in `data`.
+    SmsOutPrice:
+      type: object
+      required:
+        - id
+        - type
+        - attributes
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: 'UUID derived from the content of the answering row: the same across requests and regenerations while the row is unchanged, and distinct for distinct rows. A change to the row, its price included, gives it a new id, so the id does not follow the price of a destination over time. A name, not an address: there is no member route to fetch it by.'
+        type:
+          type: string
+          enum:
+            - prices
+        attributes:
+          type: object
+          required:
+            - source_prefix
+            - destination_prefix
+            - country
+            - mcc
+            - mcc_name
+            - mnc
+            - mnc_name
+            - reject_sms
+            - price
+          properties:
+            source_prefix:
+              type: string
+              nullable: true
+              description: Prefix of the sending number the row is priced for; null when the row prices an SMS from any number.
+            destination_prefix:
+              type: string
+              nullable: true
+              description: Destination prefix the row is priced for; with `filter[dst_number]`, the longest one covering the number among the rows the filters admit. Null when the row prices any destination.
+            country:
+              type: string
+              nullable: true
+              description: Destination country the row is priced for, by name; null when the row is not attributed to a country.
+            mcc:
+              type: integer
+              nullable: true
+              description: Mobile country code of the destination network the row is priced for; null when the row prices any network.
+            mcc_name:
+              type: string
+              nullable: true
+              description: Name of the mobile country code; null when `mcc` is.
+            mnc:
+              type: integer
+              nullable: true
+              description: Mobile network code of the destination network the row is priced for; null when the row prices any network of the country.
+            mnc_name:
+              type: string
+              nullable: true
+              description: Name of the mobile network; null when `mnc` is.
+            reject_sms:
+              type: boolean
+              description: True when the plan rejects SMS to this destination instead of pricing them; `price` is then null. A rejection is an answer, not a missing price.
+            price:
+              type: string
+              nullable: true
+              description: Price per SMS in USD, VAT excluded, as a decimal string with six decimals; null when `reject_sms` is set.
+    SmsOutPriceCollectionDocument:
+      type: object
+      required:
+        - data
+        - meta
+      properties:
+        data:
+          type: array
+          minItems: 1
+          description: 'Every row of the plan the filters select -- the rows of the winning prefix when a number is given, every row of the country otherwise. Rows equal in every stored value are answered once; two rows can still print alike, since they can differ in plan settings this API does not print and prices are printed to six decimals, and their ids then differ. Never empty: no answer is the 404 `price_not_found`.'
+          items:
+            $ref: '#/components/schemas/SmsOutPrice'
+        meta:
+          type: object
+          required:
+            - total_records
+          properties:
+            total_records:
+              type: integer
+              description: Number of answers in `data`.
+    SmsInPrice:
+      type: object
+      required:
+        - id
+        - type
+        - attributes
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: 'UUID derived from the content of the answering row: the same across requests and regenerations while the row is unchanged, and distinct for distinct rows. A change to the row, its price included, gives it a new id, so the id does not follow the price of a destination over time. A name, not an address: there is no member route to fetch it by.'
+        type:
+          type: string
+          enum:
+            - prices
+        attributes:
+          type: object
+          required:
+            - source_prefix
+            - source_number_length_min
+            - source_number_length_max
+            - destination_prefix
+            - destination_number_length_min
+            - destination_number_length_max
+            - country
+            - price
+          properties:
+            source_prefix:
+              type: string
+              nullable: true
+              description: Prefix of the sending number the row is priced for; null when the row prices an SMS from any number.
+            source_number_length_min:
+              type: integer
+              description: Shortest sending number, in digits, the row is priced for.
+            source_number_length_max:
+              type: integer
+              description: Longest sending number, in digits, the row is priced for.
+            destination_prefix:
+              type: string
+              nullable: true
+              description: Prefix of the receiving number the row is priced for; with `filter[dst_number]`, the longest one covering the number among the rows the filters admit whose length range holds it. Null when the row prices any destination.
+            destination_number_length_min:
+              type: integer
+              description: Shortest receiving number, in digits, the row is priced for.
+            destination_number_length_max:
+              type: integer
+              description: Longest receiving number, in digits, the row is priced for.
+            country:
+              type: string
+              nullable: true
+              description: Country of the receiving number the row is priced for, by name; null when the row is not attributed to a country.
+            price:
+              type: string
+              description: Price per SMS in USD, VAT excluded, as a decimal string with six decimals.
+    SmsInPriceCollectionDocument:
+      type: object
+      required:
+        - data
+        - meta
+      properties:
+        data:
+          type: array
+          minItems: 1
+          description: 'Every row of the plan the filters select -- the rows of the winning prefix whose destination length range holds the number when a number is given, every row of the country otherwise. Rows equal in every stored value are answered once; prices are printed to six decimals, so two rows can still print alike. Never empty: no answer is the 404 `price_not_found`.'
+          items:
+            $ref: '#/components/schemas/SmsInPrice'
+        meta:
+          type: object
+          required:
+            - total_records
+          properties:
+            total_records:
+              type: integer
+              description: Number of answers in `data`.
   parameters:
     PageNumber:
       name: page[number]
@@ -19190,3 +19348,883 @@ paths:
             Retry-After:
               $ref: '#/components/headers/RetryAfter'
           description: 'the file could not be served: the assigned plan has no generated file yet (`serving_failure`); `Retry-After` says how many seconds to wait'
+  /sms_out/a2p/lookup/prices:
+    get:
+      summary: Look up the SMS OUT A2P prices of a number or a country
+      tags:
+        - Prices
+      operationId: lookupSmsOutA2pPrices
+      description: 'Looks up the SMS OUT A2P prices of one number or one country in the plan assigned to the account in this domain. With `filter[dst_number]` the number is matched against the destination prefixes of the plan: the longest prefix covering it wins, and every row of the plan under that prefix answers. Rows under one prefix can differ by the sending number they price (`source_prefix`), by the destination network (`mcc` and `mnc`, which only the delivery decides) and by plan settings this API does not print, so the collection is the plan rows that apply, not the one price charged. A destination the plan rejects is still an answer: `reject_sms` is true and `price` is null. With `filter[dst_country_iso]` alone, every row of the plan priced for that country answers, under every prefix; with both, the country narrows the rows before the prefixes are ranked. At least one of the two filters is required, and the collection is never empty -- a number no row of the plan covers, or a country the plan does not price, is a 404 (`price_not_found`). The token must list `api-sms.didww.com` in its audience, on the sandbox host as well; the `read` scope suffices. `filter` is the only query parameter read: `sort`, `page`, `fields`, `include` and anything unrecognised are refused with 400.'
+      parameters:
+        - name: filter[dst_number]
+          in: query
+          required: false
+          description: 'The number to price: 8 to 15 digits with a non-zero first digit, in international format without a `+` or a dialling prefix. Required unless `filter[dst_country_iso]` is sent.'
+          schema:
+            type: string
+            pattern: ^[1-9][0-9]{7,14}$
+        - name: filter[dst_country_iso]
+          in: query
+          required: false
+          description: The destination country, as its upper-case ISO 3166-1 alpha-2 code. Alone, every row of the plan priced for that country answers; beside a number, only the rows of that country take part in the match. Required unless `filter[dst_number]` is sent.
+          schema:
+            type: string
+            pattern: ^[A-Z]{2}$
+      responses:
+        '200':
+          description: 'the prices covering the number, or the prices of the country: every row of the plan the filters select, as the collection schema describes'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/SmsOutPriceCollectionDocument'
+        '400':
+          description: 'malformed request: neither `filter[dst_number]` nor `filter[dst_country_iso]` sent; `filter[dst_number]` not 8 to 15 digits with a non-zero first digit; `filter[dst_country_iso]` not the upper-case code of a known country; a filter other than these two, `filter[id]` included; or any other query parameter -- `sort`, `page`, `fields`, `include` and anything unrecognised'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '401':
+          description: 'the bearer token was refused: absent, malformed, expired, signed by a key this service does not hold, minted for another audience or environment, presented from an address outside the IP allowlist of the API key it was minted with, or naming an account this service has no record of; the response carries `WWW-Authenticate: Bearer error="invalid_token"`'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `read` scope (title `Insufficient scope`); the response carries `WWW-Authenticate: Bearer error="insufficient_scope"`'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '404':
+          description: the account holds no price plan of this service in this domain -- no plan at all, or a plan this service publishes no prices for (`price_plan_not_assigned`) -- or no row of the plan matches the filters (`price_not_found`)
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '406':
+          description: the `Accept` header admits neither `application/vnd.api+json` nor `*/*`
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+    servers:
+      - url: https://api-sms.didww.com/v3
+        description: Production
+      - url: https://api-sms-sandbox.didww.com/v3
+        description: Sandbox
+  /sms_out/p2p/lookup/prices:
+    get:
+      summary: Look up the SMS OUT P2P prices of a number or a country
+      tags:
+        - Prices
+      operationId: lookupSmsOutP2pPrices
+      description: 'Looks up the SMS OUT P2P prices of one number or one country in the plan assigned to the account in this domain. With `filter[dst_number]` the number is matched against the destination prefixes of the plan: the longest prefix covering it wins, and every row of the plan under that prefix answers. Rows under one prefix can differ by the sending number they price (`source_prefix`), by the destination network (`mcc` and `mnc`, which only the delivery decides) and by plan settings this API does not print, so the collection is the plan rows that apply, not the one price charged. A destination the plan rejects is still an answer: `reject_sms` is true and `price` is null. With `filter[dst_country_iso]` alone, every row of the plan priced for that country answers, under every prefix; with both, the country narrows the rows before the prefixes are ranked. At least one of the two filters is required, and the collection is never empty -- a number no row of the plan covers, or a country the plan does not price, is a 404 (`price_not_found`). The token must list `api-sms.didww.com` in its audience, on the sandbox host as well; the `read` scope suffices. `filter` is the only query parameter read: `sort`, `page`, `fields`, `include` and anything unrecognised are refused with 400.'
+      parameters:
+        - name: filter[dst_number]
+          in: query
+          required: false
+          description: 'The number to price: 8 to 15 digits with a non-zero first digit, in international format without a `+` or a dialling prefix. Required unless `filter[dst_country_iso]` is sent.'
+          schema:
+            type: string
+            pattern: ^[1-9][0-9]{7,14}$
+        - name: filter[dst_country_iso]
+          in: query
+          required: false
+          description: The destination country, as its upper-case ISO 3166-1 alpha-2 code. Alone, every row of the plan priced for that country answers; beside a number, only the rows of that country take part in the match. Required unless `filter[dst_number]` is sent.
+          schema:
+            type: string
+            pattern: ^[A-Z]{2}$
+      responses:
+        '200':
+          description: 'the prices covering the number, or the prices of the country: every row of the plan the filters select, as the collection schema describes'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/SmsOutPriceCollectionDocument'
+        '400':
+          description: 'malformed request: neither `filter[dst_number]` nor `filter[dst_country_iso]` sent; `filter[dst_number]` not 8 to 15 digits with a non-zero first digit; `filter[dst_country_iso]` not the upper-case code of a known country; a filter other than these two, `filter[id]` included; or any other query parameter -- `sort`, `page`, `fields`, `include` and anything unrecognised'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '401':
+          description: 'the bearer token was refused: absent, malformed, expired, signed by a key this service does not hold, minted for another audience or environment, presented from an address outside the IP allowlist of the API key it was minted with, or naming an account this service has no record of; the response carries `WWW-Authenticate: Bearer error="invalid_token"`'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `read` scope (title `Insufficient scope`); the response carries `WWW-Authenticate: Bearer error="insufficient_scope"`'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '404':
+          description: the account holds no price plan of this service in this domain -- no plan at all, or a plan this service publishes no prices for (`price_plan_not_assigned`) -- or no row of the plan matches the filters (`price_not_found`)
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '406':
+          description: the `Accept` header admits neither `application/vnd.api+json` nor `*/*`
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+    servers:
+      - url: https://api-sms.didww.com/v3
+        description: Production
+      - url: https://api-sms-sandbox.didww.com/v3
+        description: Sandbox
+  /sms_out/otp/lookup/prices:
+    get:
+      summary: Look up the SMS OUT OTP prices of a number or a country
+      tags:
+        - Prices
+      operationId: lookupSmsOutOtpPrices
+      description: 'Looks up the SMS OUT OTP prices of one number or one country in the plan assigned to the account in this domain. With `filter[dst_number]` the number is matched against the destination prefixes of the plan: the longest prefix covering it wins, and every row of the plan under that prefix answers. Rows under one prefix can differ by the sending number they price (`source_prefix`), by the destination network (`mcc` and `mnc`, which only the delivery decides) and by plan settings this API does not print, so the collection is the plan rows that apply, not the one price charged. A destination the plan rejects is still an answer: `reject_sms` is true and `price` is null. With `filter[dst_country_iso]` alone, every row of the plan priced for that country answers, under every prefix; with both, the country narrows the rows before the prefixes are ranked. At least one of the two filters is required, and the collection is never empty -- a number no row of the plan covers, or a country the plan does not price, is a 404 (`price_not_found`). The token must list `api-sms.didww.com` in its audience, on the sandbox host as well; the `read` scope suffices. `filter` is the only query parameter read: `sort`, `page`, `fields`, `include` and anything unrecognised are refused with 400.'
+      parameters:
+        - name: filter[dst_number]
+          in: query
+          required: false
+          description: 'The number to price: 8 to 15 digits with a non-zero first digit, in international format without a `+` or a dialling prefix. Required unless `filter[dst_country_iso]` is sent.'
+          schema:
+            type: string
+            pattern: ^[1-9][0-9]{7,14}$
+        - name: filter[dst_country_iso]
+          in: query
+          required: false
+          description: The destination country, as its upper-case ISO 3166-1 alpha-2 code. Alone, every row of the plan priced for that country answers; beside a number, only the rows of that country take part in the match. Required unless `filter[dst_number]` is sent.
+          schema:
+            type: string
+            pattern: ^[A-Z]{2}$
+      responses:
+        '200':
+          description: 'the prices covering the number, or the prices of the country: every row of the plan the filters select, as the collection schema describes'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/SmsOutPriceCollectionDocument'
+        '400':
+          description: 'malformed request: neither `filter[dst_number]` nor `filter[dst_country_iso]` sent; `filter[dst_number]` not 8 to 15 digits with a non-zero first digit; `filter[dst_country_iso]` not the upper-case code of a known country; a filter other than these two, `filter[id]` included; or any other query parameter -- `sort`, `page`, `fields`, `include` and anything unrecognised'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '401':
+          description: 'the bearer token was refused: absent, malformed, expired, signed by a key this service does not hold, minted for another audience or environment, presented from an address outside the IP allowlist of the API key it was minted with, or naming an account this service has no record of; the response carries `WWW-Authenticate: Bearer error="invalid_token"`'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `read` scope (title `Insufficient scope`); the response carries `WWW-Authenticate: Bearer error="insufficient_scope"`'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '404':
+          description: the account holds no price plan of this service in this domain -- no plan at all, or a plan this service publishes no prices for (`price_plan_not_assigned`) -- or no row of the plan matches the filters (`price_not_found`)
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '406':
+          description: the `Accept` header admits neither `application/vnd.api+json` nor `*/*`
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+    servers:
+      - url: https://api-sms.didww.com/v3
+        description: Production
+      - url: https://api-sms-sandbox.didww.com/v3
+        description: Sandbox
+  /sms_in/lookup/prices:
+    get:
+      summary: Look up the SMS IN prices of a number or a country
+      tags:
+        - Prices
+      operationId: lookupSmsInPrices
+      description: 'Looks up the SMS IN prices of one number or one country in the plan assigned to the account in this domain. With `filter[dst_number]` the number is matched against the destination prefixes of the plan: only the rows whose destination length range holds the number take part, the longest prefix covering it among them wins, and every such row under that prefix answers. Rows under one prefix can differ by the sending number they price and by their length ranges. With `filter[dst_country_iso]` alone, every row of the plan priced for that country answers, under every prefix; with both, the country narrows the rows before the prefixes are ranked. At least one of the two filters is required, and the collection is never empty -- a number no row of the plan covers, or a country the plan does not price, is a 404 (`price_not_found`). The token must list `api-sms.didww.com` in its audience, on the sandbox host as well; the `read` scope suffices. `filter` is the only query parameter read: `sort`, `page`, `fields`, `include` and anything unrecognised are refused with 400.'
+      parameters:
+        - name: filter[dst_number]
+          in: query
+          required: false
+          description: 'The number to price: 8 to 15 digits with a non-zero first digit, in international format without a `+` or a dialling prefix. Required unless `filter[dst_country_iso]` is sent.'
+          schema:
+            type: string
+            pattern: ^[1-9][0-9]{7,14}$
+        - name: filter[dst_country_iso]
+          in: query
+          required: false
+          description: The destination country, as its upper-case ISO 3166-1 alpha-2 code. Alone, every row of the plan priced for that country answers; beside a number, only the rows of that country take part in the match. Required unless `filter[dst_number]` is sent.
+          schema:
+            type: string
+            pattern: ^[A-Z]{2}$
+      responses:
+        '200':
+          description: 'the prices covering the number, or the prices of the country: every row of the plan the filters select, as the collection schema describes'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/SmsInPriceCollectionDocument'
+        '400':
+          description: 'malformed request: neither `filter[dst_number]` nor `filter[dst_country_iso]` sent; `filter[dst_number]` not 8 to 15 digits with a non-zero first digit; `filter[dst_country_iso]` not the upper-case code of a known country; a filter other than these two, `filter[id]` included; or any other query parameter -- `sort`, `page`, `fields`, `include` and anything unrecognised'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '401':
+          description: 'the bearer token was refused: absent, malformed, expired, signed by a key this service does not hold, minted for another audience or environment, presented from an address outside the IP allowlist of the API key it was minted with, or naming an account this service has no record of; the response carries `WWW-Authenticate: Bearer error="invalid_token"`'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `read` scope (title `Insufficient scope`); the response carries `WWW-Authenticate: Bearer error="insufficient_scope"`'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '404':
+          description: the account holds no price plan of this service in this domain -- no plan at all, or a plan this service publishes no prices for (`price_plan_not_assigned`) -- or no row of the plan matches the filters (`price_not_found`)
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '406':
+          description: the `Accept` header admits neither `application/vnd.api+json` nor `*/*`
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+    servers:
+      - url: https://api-sms.didww.com/v3
+        description: Production
+      - url: https://api-sms-sandbox.didww.com/v3
+        description: Sandbox
+  /sms_out/a2p/prices.csv.gz:
+    get:
+      summary: Download the SMS OUT A2P price file
+      tags:
+        - Prices
+      operationId: downloadSmsOutA2pPrices
+      description: 'Downloads the SMS OUT A2P price file of the plan assigned to the account in this domain: the prices of the plan as a gzipped CSV (UTF-8, LF line endings, a header row), named `sms_out_a2p_prices.csv.gz`, one row per rate of the plan with the columns Source prefix, Destination prefix, Country, MCC, MCC name, MNC, MNC name, Reject SMS and Price (USD, excl. VAT); Reject SMS is `Yes` with an empty price for a destination the plan rejects, `No` otherwise. An empty prefix prices any number, an empty MCC any network and an empty MNC any network of the country, as the nulls of the lookup do; the file leaves out some settings of a row, so two rows can look alike or show one destination at different prices; prices carry six decimals. The file is served whole, with no byte ranges, and it is the account''s own: `Cache-Control` is `private` and `Vary` is `Authorization`, so a cache keyed by the URL alone must not hand it to another account. The token must list `api-sms.didww.com` in its audience, on the sandbox host as well; the `read` scope suffices. Conditional requests use `Last-Modified` and `If-Modified-Since` only: no `ETag` is sent, and a request carrying `If-None-Match` is always answered in full, its `If-Modified-Since` ignored. `Last-Modified` is the later of the last change of the file''s content and the last change of the account''s plan assignment in this domain, so an account moved to another plan is never answered 304 with the prices it left; send it back in `If-Modified-Since` to be answered 304 while nothing has changed.'
+      parameters:
+        - name: If-Modified-Since
+          in: header
+          required: false
+          description: The `Last-Modified` date of the copy you hold. The file is sent only if it changed after that date; otherwise the answer is 304. Ignored when the request also carries `If-None-Match`.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: the price file
+          content:
+            application/gzip:
+              schema:
+                type: string
+                format: binary
+          headers:
+            Content-Disposition:
+              $ref: '#/components/headers/ContentDisposition'
+            Last-Modified:
+              $ref: '#/components/headers/LastModified'
+            Cache-Control:
+              $ref: '#/components/headers/CacheControl'
+            Accept-Ranges:
+              $ref: '#/components/headers/AcceptRanges'
+            Vary:
+              $ref: '#/components/headers/Vary'
+            Content-Length:
+              $ref: '#/components/headers/ContentLength'
+        '304':
+          description: 'the file has not changed since the `If-Modified-Since` date: the headers of the 200 and no body'
+          headers:
+            Content-Disposition:
+              $ref: '#/components/headers/ContentDisposition'
+            Last-Modified:
+              $ref: '#/components/headers/LastModified'
+            Cache-Control:
+              $ref: '#/components/headers/CacheControl'
+            Accept-Ranges:
+              $ref: '#/components/headers/AcceptRanges'
+            Vary:
+              $ref: '#/components/headers/Vary'
+        '401':
+          description: 'the bearer token was refused: absent, malformed, expired, signed by a key this service does not hold, minted for another audience or environment, presented from an address outside the IP allowlist of the API key it was minted with, or naming an account this service has no record of; the response carries `WWW-Authenticate: Bearer error="invalid_token"`'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `read` scope (title `Insufficient scope`); the response carries `WWW-Authenticate: Bearer error="insufficient_scope"`'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '404':
+          description: 'the account holds no price plan of this service in this domain (`price_plan_not_assigned`): no plan at all, or a plan this service publishes no prices for'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '503':
+          description: 'the file could not be served: the assigned plan has no generated file yet, or the store did not answer for it (`serving_failure`); `Retry-After` says how many seconds to wait'
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+    head:
+      summary: Check the SMS OUT A2P price file
+      tags:
+        - Prices
+      operationId: headSmsOutA2pPrices
+      description: 'Answers the headers of the SMS OUT A2P price file without its body -- `Last-Modified`, `Content-Disposition` with `sms_out_a2p_prices.csv.gz`, `Content-Length` and the cache headers of the download -- so a client can tell whether its copy is current before downloading. `If-Modified-Since` works as on the download: a date at or after `Last-Modified` is answered 304, unless the request also carries `If-None-Match`. The audience (`api-sms.didww.com`, the same on the sandbox host), the scope (`read`) and the refusals are those of the download; no response carries a body.'
+      parameters:
+        - name: If-Modified-Since
+          in: header
+          required: false
+          description: The `Last-Modified` date of the copy you hold. The headers of the file are answered only if it changed after that date; otherwise the answer is 304. Ignored when the request also carries `If-None-Match`.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: the headers of the price file
+          headers:
+            Content-Disposition:
+              $ref: '#/components/headers/ContentDisposition'
+            Last-Modified:
+              $ref: '#/components/headers/LastModified'
+            Cache-Control:
+              $ref: '#/components/headers/CacheControl'
+            Accept-Ranges:
+              $ref: '#/components/headers/AcceptRanges'
+            Vary:
+              $ref: '#/components/headers/Vary'
+            Content-Length:
+              $ref: '#/components/headers/ContentLength'
+        '304':
+          description: 'the file has not changed since the `If-Modified-Since` date: the headers of the 200'
+          headers:
+            Content-Disposition:
+              $ref: '#/components/headers/ContentDisposition'
+            Last-Modified:
+              $ref: '#/components/headers/LastModified'
+            Cache-Control:
+              $ref: '#/components/headers/CacheControl'
+            Accept-Ranges:
+              $ref: '#/components/headers/AcceptRanges'
+            Vary:
+              $ref: '#/components/headers/Vary'
+        '401':
+          description: 'the bearer token was refused: absent, malformed, expired, signed by a key this service does not hold, minted for another audience or environment, presented from an address outside the IP allowlist of the API key it was minted with, or naming an account this service has no record of; the response carries `WWW-Authenticate: Bearer error="invalid_token"`'
+        '403':
+          description: 'the token does not carry the `read` scope (title `Insufficient scope`); the response carries `WWW-Authenticate: Bearer error="insufficient_scope"`'
+        '404':
+          description: 'the account holds no price plan of this service in this domain (`price_plan_not_assigned`): no plan at all, or a plan this service publishes no prices for'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+        '503':
+          description: 'the file could not be served: the assigned plan has no generated file yet (`serving_failure`); `Retry-After` says how many seconds to wait'
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+    servers:
+      - url: https://api-sms.didww.com/v3
+        description: Production
+      - url: https://api-sms-sandbox.didww.com/v3
+        description: Sandbox
+  /sms_out/p2p/prices.csv.gz:
+    get:
+      summary: Download the SMS OUT P2P price file
+      tags:
+        - Prices
+      operationId: downloadSmsOutP2pPrices
+      description: 'Downloads the SMS OUT P2P price file of the plan assigned to the account in this domain: the prices of the plan as a gzipped CSV (UTF-8, LF line endings, a header row), named `sms_out_p2p_prices.csv.gz`, one row per rate of the plan with the columns Source prefix, Destination prefix, Country, MCC, MCC name, MNC, MNC name, Reject SMS and Price (USD, excl. VAT); Reject SMS is `Yes` with an empty price for a destination the plan rejects, `No` otherwise. An empty prefix prices any number, an empty MCC any network and an empty MNC any network of the country, as the nulls of the lookup do; the file leaves out some settings of a row, so two rows can look alike or show one destination at different prices; prices carry six decimals. The file is served whole, with no byte ranges, and it is the account''s own: `Cache-Control` is `private` and `Vary` is `Authorization`, so a cache keyed by the URL alone must not hand it to another account. The token must list `api-sms.didww.com` in its audience, on the sandbox host as well; the `read` scope suffices. Conditional requests use `Last-Modified` and `If-Modified-Since` only: no `ETag` is sent, and a request carrying `If-None-Match` is always answered in full, its `If-Modified-Since` ignored. `Last-Modified` is the later of the last change of the file''s content and the last change of the account''s plan assignment in this domain, so an account moved to another plan is never answered 304 with the prices it left; send it back in `If-Modified-Since` to be answered 304 while nothing has changed.'
+      parameters:
+        - name: If-Modified-Since
+          in: header
+          required: false
+          description: The `Last-Modified` date of the copy you hold. The file is sent only if it changed after that date; otherwise the answer is 304. Ignored when the request also carries `If-None-Match`.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: the price file
+          content:
+            application/gzip:
+              schema:
+                type: string
+                format: binary
+          headers:
+            Content-Disposition:
+              $ref: '#/components/headers/ContentDisposition'
+            Last-Modified:
+              $ref: '#/components/headers/LastModified'
+            Cache-Control:
+              $ref: '#/components/headers/CacheControl'
+            Accept-Ranges:
+              $ref: '#/components/headers/AcceptRanges'
+            Vary:
+              $ref: '#/components/headers/Vary'
+            Content-Length:
+              $ref: '#/components/headers/ContentLength'
+        '304':
+          description: 'the file has not changed since the `If-Modified-Since` date: the headers of the 200 and no body'
+          headers:
+            Content-Disposition:
+              $ref: '#/components/headers/ContentDisposition'
+            Last-Modified:
+              $ref: '#/components/headers/LastModified'
+            Cache-Control:
+              $ref: '#/components/headers/CacheControl'
+            Accept-Ranges:
+              $ref: '#/components/headers/AcceptRanges'
+            Vary:
+              $ref: '#/components/headers/Vary'
+        '401':
+          description: 'the bearer token was refused: absent, malformed, expired, signed by a key this service does not hold, minted for another audience or environment, presented from an address outside the IP allowlist of the API key it was minted with, or naming an account this service has no record of; the response carries `WWW-Authenticate: Bearer error="invalid_token"`'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `read` scope (title `Insufficient scope`); the response carries `WWW-Authenticate: Bearer error="insufficient_scope"`'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '404':
+          description: 'the account holds no price plan of this service in this domain (`price_plan_not_assigned`): no plan at all, or a plan this service publishes no prices for'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '503':
+          description: 'the file could not be served: the assigned plan has no generated file yet, or the store did not answer for it (`serving_failure`); `Retry-After` says how many seconds to wait'
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+    head:
+      summary: Check the SMS OUT P2P price file
+      tags:
+        - Prices
+      operationId: headSmsOutP2pPrices
+      description: 'Answers the headers of the SMS OUT P2P price file without its body -- `Last-Modified`, `Content-Disposition` with `sms_out_p2p_prices.csv.gz`, `Content-Length` and the cache headers of the download -- so a client can tell whether its copy is current before downloading. `If-Modified-Since` works as on the download: a date at or after `Last-Modified` is answered 304, unless the request also carries `If-None-Match`. The audience (`api-sms.didww.com`, the same on the sandbox host), the scope (`read`) and the refusals are those of the download; no response carries a body.'
+      parameters:
+        - name: If-Modified-Since
+          in: header
+          required: false
+          description: The `Last-Modified` date of the copy you hold. The headers of the file are answered only if it changed after that date; otherwise the answer is 304. Ignored when the request also carries `If-None-Match`.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: the headers of the price file
+          headers:
+            Content-Disposition:
+              $ref: '#/components/headers/ContentDisposition'
+            Last-Modified:
+              $ref: '#/components/headers/LastModified'
+            Cache-Control:
+              $ref: '#/components/headers/CacheControl'
+            Accept-Ranges:
+              $ref: '#/components/headers/AcceptRanges'
+            Vary:
+              $ref: '#/components/headers/Vary'
+            Content-Length:
+              $ref: '#/components/headers/ContentLength'
+        '304':
+          description: 'the file has not changed since the `If-Modified-Since` date: the headers of the 200'
+          headers:
+            Content-Disposition:
+              $ref: '#/components/headers/ContentDisposition'
+            Last-Modified:
+              $ref: '#/components/headers/LastModified'
+            Cache-Control:
+              $ref: '#/components/headers/CacheControl'
+            Accept-Ranges:
+              $ref: '#/components/headers/AcceptRanges'
+            Vary:
+              $ref: '#/components/headers/Vary'
+        '401':
+          description: 'the bearer token was refused: absent, malformed, expired, signed by a key this service does not hold, minted for another audience or environment, presented from an address outside the IP allowlist of the API key it was minted with, or naming an account this service has no record of; the response carries `WWW-Authenticate: Bearer error="invalid_token"`'
+        '403':
+          description: 'the token does not carry the `read` scope (title `Insufficient scope`); the response carries `WWW-Authenticate: Bearer error="insufficient_scope"`'
+        '404':
+          description: 'the account holds no price plan of this service in this domain (`price_plan_not_assigned`): no plan at all, or a plan this service publishes no prices for'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+        '503':
+          description: 'the file could not be served: the assigned plan has no generated file yet (`serving_failure`); `Retry-After` says how many seconds to wait'
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+    servers:
+      - url: https://api-sms.didww.com/v3
+        description: Production
+      - url: https://api-sms-sandbox.didww.com/v3
+        description: Sandbox
+  /sms_out/otp/prices.csv.gz:
+    get:
+      summary: Download the SMS OUT OTP price file
+      tags:
+        - Prices
+      operationId: downloadSmsOutOtpPrices
+      description: 'Downloads the SMS OUT OTP price file of the plan assigned to the account in this domain: the prices of the plan as a gzipped CSV (UTF-8, LF line endings, a header row), named `sms_out_otp_prices.csv.gz`, one row per rate of the plan with the columns Source prefix, Destination prefix, Country, MCC, MCC name, MNC, MNC name, Reject SMS and Price (USD, excl. VAT); Reject SMS is `Yes` with an empty price for a destination the plan rejects, `No` otherwise. An empty prefix prices any number, an empty MCC any network and an empty MNC any network of the country, as the nulls of the lookup do; the file leaves out some settings of a row, so two rows can look alike or show one destination at different prices; prices carry six decimals. The file is served whole, with no byte ranges, and it is the account''s own: `Cache-Control` is `private` and `Vary` is `Authorization`, so a cache keyed by the URL alone must not hand it to another account. The token must list `api-sms.didww.com` in its audience, on the sandbox host as well; the `read` scope suffices. Conditional requests use `Last-Modified` and `If-Modified-Since` only: no `ETag` is sent, and a request carrying `If-None-Match` is always answered in full, its `If-Modified-Since` ignored. `Last-Modified` is the later of the last change of the file''s content and the last change of the account''s plan assignment in this domain, so an account moved to another plan is never answered 304 with the prices it left; send it back in `If-Modified-Since` to be answered 304 while nothing has changed.'
+      parameters:
+        - name: If-Modified-Since
+          in: header
+          required: false
+          description: The `Last-Modified` date of the copy you hold. The file is sent only if it changed after that date; otherwise the answer is 304. Ignored when the request also carries `If-None-Match`.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: the price file
+          content:
+            application/gzip:
+              schema:
+                type: string
+                format: binary
+          headers:
+            Content-Disposition:
+              $ref: '#/components/headers/ContentDisposition'
+            Last-Modified:
+              $ref: '#/components/headers/LastModified'
+            Cache-Control:
+              $ref: '#/components/headers/CacheControl'
+            Accept-Ranges:
+              $ref: '#/components/headers/AcceptRanges'
+            Vary:
+              $ref: '#/components/headers/Vary'
+            Content-Length:
+              $ref: '#/components/headers/ContentLength'
+        '304':
+          description: 'the file has not changed since the `If-Modified-Since` date: the headers of the 200 and no body'
+          headers:
+            Content-Disposition:
+              $ref: '#/components/headers/ContentDisposition'
+            Last-Modified:
+              $ref: '#/components/headers/LastModified'
+            Cache-Control:
+              $ref: '#/components/headers/CacheControl'
+            Accept-Ranges:
+              $ref: '#/components/headers/AcceptRanges'
+            Vary:
+              $ref: '#/components/headers/Vary'
+        '401':
+          description: 'the bearer token was refused: absent, malformed, expired, signed by a key this service does not hold, minted for another audience or environment, presented from an address outside the IP allowlist of the API key it was minted with, or naming an account this service has no record of; the response carries `WWW-Authenticate: Bearer error="invalid_token"`'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `read` scope (title `Insufficient scope`); the response carries `WWW-Authenticate: Bearer error="insufficient_scope"`'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '404':
+          description: 'the account holds no price plan of this service in this domain (`price_plan_not_assigned`): no plan at all, or a plan this service publishes no prices for'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '503':
+          description: 'the file could not be served: the assigned plan has no generated file yet, or the store did not answer for it (`serving_failure`); `Retry-After` says how many seconds to wait'
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+    head:
+      summary: Check the SMS OUT OTP price file
+      tags:
+        - Prices
+      operationId: headSmsOutOtpPrices
+      description: 'Answers the headers of the SMS OUT OTP price file without its body -- `Last-Modified`, `Content-Disposition` with `sms_out_otp_prices.csv.gz`, `Content-Length` and the cache headers of the download -- so a client can tell whether its copy is current before downloading. `If-Modified-Since` works as on the download: a date at or after `Last-Modified` is answered 304, unless the request also carries `If-None-Match`. The audience (`api-sms.didww.com`, the same on the sandbox host), the scope (`read`) and the refusals are those of the download; no response carries a body.'
+      parameters:
+        - name: If-Modified-Since
+          in: header
+          required: false
+          description: The `Last-Modified` date of the copy you hold. The headers of the file are answered only if it changed after that date; otherwise the answer is 304. Ignored when the request also carries `If-None-Match`.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: the headers of the price file
+          headers:
+            Content-Disposition:
+              $ref: '#/components/headers/ContentDisposition'
+            Last-Modified:
+              $ref: '#/components/headers/LastModified'
+            Cache-Control:
+              $ref: '#/components/headers/CacheControl'
+            Accept-Ranges:
+              $ref: '#/components/headers/AcceptRanges'
+            Vary:
+              $ref: '#/components/headers/Vary'
+            Content-Length:
+              $ref: '#/components/headers/ContentLength'
+        '304':
+          description: 'the file has not changed since the `If-Modified-Since` date: the headers of the 200'
+          headers:
+            Content-Disposition:
+              $ref: '#/components/headers/ContentDisposition'
+            Last-Modified:
+              $ref: '#/components/headers/LastModified'
+            Cache-Control:
+              $ref: '#/components/headers/CacheControl'
+            Accept-Ranges:
+              $ref: '#/components/headers/AcceptRanges'
+            Vary:
+              $ref: '#/components/headers/Vary'
+        '401':
+          description: 'the bearer token was refused: absent, malformed, expired, signed by a key this service does not hold, minted for another audience or environment, presented from an address outside the IP allowlist of the API key it was minted with, or naming an account this service has no record of; the response carries `WWW-Authenticate: Bearer error="invalid_token"`'
+        '403':
+          description: 'the token does not carry the `read` scope (title `Insufficient scope`); the response carries `WWW-Authenticate: Bearer error="insufficient_scope"`'
+        '404':
+          description: 'the account holds no price plan of this service in this domain (`price_plan_not_assigned`): no plan at all, or a plan this service publishes no prices for'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+        '503':
+          description: 'the file could not be served: the assigned plan has no generated file yet (`serving_failure`); `Retry-After` says how many seconds to wait'
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+    servers:
+      - url: https://api-sms.didww.com/v3
+        description: Production
+      - url: https://api-sms-sandbox.didww.com/v3
+        description: Sandbox
+  /sms_in/prices.csv.gz:
+    get:
+      summary: Download the SMS IN price file
+      tags:
+        - Prices
+      operationId: downloadSmsInPrices
+      description: 'Downloads the SMS IN price file of the plan assigned to the account in this domain: the prices of the plan as a gzipped CSV (UTF-8, LF line endings, a header row), named `sms_in_prices.csv.gz`, one row per rate of the plan with the columns Source prefix, Source number length min, Source number length max, Destination prefix, Destination number length min, Destination number length max, Country and Price (USD, excl. VAT). An empty prefix prices any number, as the nulls of the lookup do; prices carry six decimals. The file is served whole, with no byte ranges, and it is the account''s own: `Cache-Control` is `private` and `Vary` is `Authorization`, so a cache keyed by the URL alone must not hand it to another account. The token must list `api-sms.didww.com` in its audience, on the sandbox host as well; the `read` scope suffices. Conditional requests use `Last-Modified` and `If-Modified-Since` only: no `ETag` is sent, and a request carrying `If-None-Match` is always answered in full, its `If-Modified-Since` ignored. `Last-Modified` is the later of the last change of the file''s content and the last change of the account''s plan assignment in this domain, so an account moved to another plan is never answered 304 with the prices it left; send it back in `If-Modified-Since` to be answered 304 while nothing has changed.'
+      parameters:
+        - name: If-Modified-Since
+          in: header
+          required: false
+          description: The `Last-Modified` date of the copy you hold. The file is sent only if it changed after that date; otherwise the answer is 304. Ignored when the request also carries `If-None-Match`.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: the price file
+          content:
+            application/gzip:
+              schema:
+                type: string
+                format: binary
+          headers:
+            Content-Disposition:
+              $ref: '#/components/headers/ContentDisposition'
+            Last-Modified:
+              $ref: '#/components/headers/LastModified'
+            Cache-Control:
+              $ref: '#/components/headers/CacheControl'
+            Accept-Ranges:
+              $ref: '#/components/headers/AcceptRanges'
+            Vary:
+              $ref: '#/components/headers/Vary'
+            Content-Length:
+              $ref: '#/components/headers/ContentLength'
+        '304':
+          description: 'the file has not changed since the `If-Modified-Since` date: the headers of the 200 and no body'
+          headers:
+            Content-Disposition:
+              $ref: '#/components/headers/ContentDisposition'
+            Last-Modified:
+              $ref: '#/components/headers/LastModified'
+            Cache-Control:
+              $ref: '#/components/headers/CacheControl'
+            Accept-Ranges:
+              $ref: '#/components/headers/AcceptRanges'
+            Vary:
+              $ref: '#/components/headers/Vary'
+        '401':
+          description: 'the bearer token was refused: absent, malformed, expired, signed by a key this service does not hold, minted for another audience or environment, presented from an address outside the IP allowlist of the API key it was minted with, or naming an account this service has no record of; the response carries `WWW-Authenticate: Bearer error="invalid_token"`'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `read` scope (title `Insufficient scope`); the response carries `WWW-Authenticate: Bearer error="insufficient_scope"`'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '404':
+          description: 'the account holds no price plan of this service in this domain (`price_plan_not_assigned`): no plan at all, or a plan this service publishes no prices for'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '503':
+          description: 'the file could not be served: the assigned plan has no generated file yet, or the store did not answer for it (`serving_failure`); `Retry-After` says how many seconds to wait'
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+    head:
+      summary: Check the SMS IN price file
+      tags:
+        - Prices
+      operationId: headSmsInPrices
+      description: 'Answers the headers of the SMS IN price file without its body -- `Last-Modified`, `Content-Disposition` with `sms_in_prices.csv.gz`, `Content-Length` and the cache headers of the download -- so a client can tell whether its copy is current before downloading. `If-Modified-Since` works as on the download: a date at or after `Last-Modified` is answered 304, unless the request also carries `If-None-Match`. The audience (`api-sms.didww.com`, the same on the sandbox host), the scope (`read`) and the refusals are those of the download; no response carries a body.'
+      parameters:
+        - name: If-Modified-Since
+          in: header
+          required: false
+          description: The `Last-Modified` date of the copy you hold. The headers of the file are answered only if it changed after that date; otherwise the answer is 304. Ignored when the request also carries `If-None-Match`.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: the headers of the price file
+          headers:
+            Content-Disposition:
+              $ref: '#/components/headers/ContentDisposition'
+            Last-Modified:
+              $ref: '#/components/headers/LastModified'
+            Cache-Control:
+              $ref: '#/components/headers/CacheControl'
+            Accept-Ranges:
+              $ref: '#/components/headers/AcceptRanges'
+            Vary:
+              $ref: '#/components/headers/Vary'
+            Content-Length:
+              $ref: '#/components/headers/ContentLength'
+        '304':
+          description: 'the file has not changed since the `If-Modified-Since` date: the headers of the 200'
+          headers:
+            Content-Disposition:
+              $ref: '#/components/headers/ContentDisposition'
+            Last-Modified:
+              $ref: '#/components/headers/LastModified'
+            Cache-Control:
+              $ref: '#/components/headers/CacheControl'
+            Accept-Ranges:
+              $ref: '#/components/headers/AcceptRanges'
+            Vary:
+              $ref: '#/components/headers/Vary'
+        '401':
+          description: 'the bearer token was refused: absent, malformed, expired, signed by a key this service does not hold, minted for another audience or environment, presented from an address outside the IP allowlist of the API key it was minted with, or naming an account this service has no record of; the response carries `WWW-Authenticate: Bearer error="invalid_token"`'
+        '403':
+          description: 'the token does not carry the `read` scope (title `Insufficient scope`); the response carries `WWW-Authenticate: Bearer error="insufficient_scope"`'
+        '404':
+          description: 'the account holds no price plan of this service in this domain (`price_plan_not_assigned`): no plan at all, or a plan this service publishes no prices for'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+        '503':
+          description: 'the file could not be served: the assigned plan has no generated file yet (`serving_failure`); `Retry-After` says how many seconds to wait'
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+    servers:
+      - url: https://api-sms.didww.com/v3
+        description: Production
+      - url: https://api-sms-sandbox.didww.com/v3
+        description: Sandbox
