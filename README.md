@@ -7,8 +7,8 @@ Voice OUT and SMS plans.
 
 The document is not written by hand. It is generated from the integration test suites that drive the
 live endpoints, one suite per DIDWW service: every request body, response body and status code it
-describes is exercised against a running API on every build, and a response that stops matching its
-documented schema fails that build. What you read here is what the API answered.
+describes is exercised against a running API every time a service's suite runs, and a response that
+stops matching its documented schema fails that run. What you read here is what the API answered.
 
 ## Directory structure
 
@@ -61,9 +61,10 @@ on `main`: a version appears there once it is the one customers are actually ser
 
 ## Authentication and environments
 
-Every request carries a short-lived bearer access token: `Authorization: Bearer <token>`. A token is
-minted with `POST /token` on the token service of the environment being called, in exchange for an
-API key issued in the DIDWW user panel (see [API keys][api-keys] in the documentation):
+Requests are authenticated with a short-lived bearer access token, `Authorization: Bearer <token>`;
+two operations are the exception, as noted below the table. A token is minted with `POST /token` on
+the token service of the environment being called, in exchange for an API key issued in the DIDWW
+user panel (see [API keys][api-keys] in the documentation):
 
 ```bash
 curl https://auth.didww.com/token \
@@ -154,8 +155,8 @@ generated from the document calls the prices operations on their own hosts.
 
 ## Sources
 
-The published document is built, not generated directly: each DIDWW service generates its own
-source from its integration suite into [`openapi/sources/`](./openapi/sources/) — `api.json`,
+The published document is built from one source per service: each DIDWW service generates its
+own source from its integration suite into [`openapi/sources/`](./openapi/sources/) — `api.json`,
 `voice_in.json`, `voice_out.json`, `sms.json` — and `scripts/build.mjs` assembles them into
 `openapi/v3_api.json` and `openapi/v3_api.yaml`, failing when the sources disagree. `main` holds the
 version customers are served; `prerelease` holds the next version while it is prepared, and is merged
