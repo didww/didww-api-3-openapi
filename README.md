@@ -2,18 +2,20 @@
 
 This repository contains the [OpenAPI specification][openapi] for the [DIDWW API v3][docs] — the
 JSON:API interface to the DIDWW platform: browse coverage, order and manage DIDs, route them to
-voice trunks, and reserve numbers before purchase.
+voice and SMS trunks, reserve numbers before purchase, and read the prices of the account's Voice IN,
+Voice OUT and SMS plans.
 
-The document is not written by hand. It is generated from an integration test suite that drives the
-live endpoints: every request body, response body and status code it describes is exercised against
-a running API on every build, and a response that stops matching its documented schema fails that
-build. What you read here is what the API answered.
+The document is not written by hand. It is generated from the integration test suites that drive the
+live endpoints, one suite per DIDWW service: every request body, response body and status code it
+describes is exercised against a running API on every build, and a response that stops matching its
+documented schema fails that build. What you read here is what the API answered.
 
 ## Directory structure
 
 | Path | Description |
 |------|-------------|
 | [`/openapi/`](./openapi/) | The OpenAPI 3.0 document, in JSON and YAML |
+| [`/openapi/sources/`](./openapi/sources/) | The generated source of each service the document is built from |
 | [`VERSION`](./VERSION) | The API version the current document describes |
 | [`RELEASING.md`](./RELEASING.md) | How a new version is published here |
 
@@ -24,8 +26,8 @@ build. What you read here is what the API answered.
 | [`openapi/v3_api.json`](./openapi/v3_api.json) | OpenAPI 3.0.3 document, JSON |
 | [`openapi/v3_api.yaml`](./openapi/v3_api.yaml) | The same document, YAML |
 
-Both files are generated from the same source and describe exactly the same API; CI fails if they
-ever diverge. Pick whichever format your tooling prefers.
+Both files are built from the same sources and describe exactly the same API; CI fails if they ever
+diverge. Pick whichever format your tooling prefers.
 
 The paths above are stable — every release updates these files in place, so a tool can point at a
 raw URL once and keep getting the current document:
@@ -40,38 +42,83 @@ To pin to a specific API version, replace `main` with that version's tag (for ex
 
 ## API versions
 
-DIDWW API v3 is versioned by release date. A client picks a version per request with the
-`X-DIDWW-Api-Version` header; without it, the API serves the version configured for the API key's
-customer.
+DIDWW API v3 is versioned by release date. A request carrying an access token is served the
+version named by the token's `api_version` claim — the version requested in the `api_version` field
+of `POST /token`, else the default version configured for the account — but never one older than
+`2026-10-22` or than the account's default. It never reads the `X-DIDWW-Api-Version` header.
+Versions released before `2026-10-22` are reached with the `api-key` header instead, the version
+picked by `X-DIDWW-Api-Version` (never older than the account's default), else the account's
+default; a key request that resolves to `2026-10-22` or later is refused with 401. The documents of
+those versions, under their tags, describe that scheme.
 
-**This repository tracks one version: the latest one released to production.** It is named in
-[`VERSION`](./VERSION) and in the document's `info.version`, and it is the default of the
-`X-DIDWW-Api-Version` parameter throughout the document. Each release is committed and tagged with
-its version date, so earlier documents stay reachable through the repository's tags and
+**`main` tracks one version: the latest one released to production.** It is named in
+[`VERSION`](./VERSION) and in the document's `info.version`. Each release is committed and tagged
+with its version date, so earlier documents stay reachable through the repository's tags and
 [releases](https://github.com/didww/didww-api-3-openapi/releases).
 
 Note that the newest version *announced* in the API documentation may be ahead of the one described
-here: a version appears in this repository once it is the one customers are actually served.
+on `main`: a version appears there once it is the one customers are actually served.
 
 ## Authentication and environments
 
-Every request carries an `api-key` header — the key issued to the customer in the DIDWW user panel.
-See [API keys][api-keys] in the documentation.
+Every request carries a short-lived bearer access token: `Authorization: Bearer <token>`. A token is
+minted with `POST /token` on the token service of the environment being called, in exchange for an
+API key issued in the DIDWW user panel (see [API keys][api-keys] in the documentation):
 
-| Environment | Base URL |
-|-------------|----------|
-| Production | `https://api.didww.com/v3` |
-| Sandbox | `https://sandbox-api.didww.com/v3` |
+```bash
+curl https://auth.didww.com/token \
+  -H 'Api-Key: <your API key>' \
+  -H 'Content-Type: application/json' \
+  -d '{"aud": ["api.didww.com", "api-vin.didww.com"], "api_version": "2026-10-22"}'
+```
 
-Both are declared as `servers` in the document, so a client generated from it can be pointed at the
-sandbox without editing the base URL by hand.
+The answer carries the token in `access_token`, its lifetime in seconds in `expires_in`, and the
+audiences, scope and API version it was minted for. Mint a new one when it expires.
+
+- **Audience.** A token is accepted only by the services its `aud` lists. Each service's audience is
+  its production host name, on the production and on the sandbox host alike; mint one token per
+  service, or one token listing every service you call.
+- **Scope.** A token minted with `"scope": "read"` can only read: every other method is refused with
+  403 and an `insufficient_scope` challenge. The prices operations only read.
+- **Environment.** A token is minted with an API key of the environment it will call, on that
+  environment's token service; a token minted in one environment is refused by the other.
+
+| Service | Production | Sandbox | Audience (`aud`) |
+|---------|------------|---------|------------------|
+| Token service | `https://auth.didww.com/token` | `https://auth-sandbox.didww.com/token` | — |
+| DIDWW API | `https://api.didww.com/v3` | `https://sandbox-api.didww.com/v3` | `api.didww.com` |
+| Voice IN Rates | `https://api-vin.didww.com/v3` | `https://api-vin-sandbox.didww.com/v3` | `api-vin.didww.com` |
+| Voice OUT Rates | `https://api-vout.didww.com/v3` | `https://api-vout-sandbox.didww.com/v3` | `api-vout.didww.com` |
+| SMS Rates | `https://api-sms.didww.com/v3` | `https://api-sms-sandbox.didww.com/v3` | `api-sms.didww.com` |
+
+One operation also accepts the `api-key` header in place of a token: the export download
+(`GET /exports/{filename}.csv.gz`), which is reached through the URL a completed export reports.
+One needs no authentication at all: `GET /public_keys`, the keys regulation documents are encrypted
+with before upload.
+
+### Servers
+
+The document's root `servers` are the Production and Sandbox base URLs of `api.didww.com`, so a
+client generated from it can be pointed at the sandbox without editing the base URL by hand. The
+prices paths are served by other hosts and declare their own path-level `servers`:
+
+- the SMS prices paths (`/sms_out/a2p/…`, `/sms_out/p2p/…`, `/sms_out/otp/…`, `/sms_in/…`) name the
+  SMS Rates hosts;
+- `/prices.csv.gz` and `/lookup/prices` are served by both Voice IN Rates and Voice OUT Rates, so
+  their servers are the templates `https://{service}.didww.com/v3` and
+  `https://{service}-sandbox.didww.com/v3`, where the `service` variable is `api-vin` (the default)
+  or `api-vout`. Set it to the service whose prices you want; where the two services describe an
+  operation differently, the description gives each service's text under a heading naming the
+  `service` value and the service, as **api-vin — Voice IN Rates**.
 
 ## What the document covers
 
 Every collection and member endpoint the documented version serves, with its query parameters,
 request bodies, responses and error shapes — coverage, DIDs and DID groups, orders and reservations,
-inbound and outbound trunks, capacity, identities and regulation (addresses, proofs, requirements,
-verifications), emergency services, exports and account balance.
+inbound and outbound voice trunks, SMS trunks and trunk groups, capacity, identities and regulation
+(addresses, proofs, requirements, verifications), emergency services, exports and their file
+download, account balance, and the price files and price lookups of the Voice IN, Voice OUT and SMS
+plans.
 
 The schemas are strict: a resource object enumerates its full attribute and relationship set, and an
 undocumented key appearing in a response is treated as a defect rather than tolerated.
@@ -81,14 +128,14 @@ undocumented key appearing in a response is treated as a defect rather than tole
 - **Relationship endpoints** — `/{type}/{id}/relationships/{name}` and `/{type}/{id}/{name}`. They
   more than double the size of the document to describe what a reader can already derive from the
   `links.self` and `links.related` members the resource objects carry.
-- **Non-JSON:API file downloads** — `GET /exports/{id}.csv.gz` returns a gzipped CSV rather than a
-  JSON:API document.
 - **`PUT` as an alias of `PATCH`** — updates are documented as `PATCH`, the verb JSON:API defines.
   The API also answers `PUT` on the same paths, but nothing new is reachable through it.
 - **Types the documented version does not serve** — types removed at this version, and types
   introduced by a later, not-yet-released one.
 - **Relationships outside the API's fetchable set**, and a small number of attributes gated on
   per-account features that most callers cannot use.
+- **The token endpoint** — `POST /token` is served by the token service rather than by an API host,
+  and is described under [Authentication and environments](#authentication-and-environments) above.
 
 ## Using the specification
 
@@ -100,6 +147,20 @@ The document is plain OpenAPI 3.0.3 with no vendor extensions, so standard tooli
 - import it into Postman, Insomnia or Bruno as a request collection;
 - run a mock server against it — [Prism][prism];
 - lint or diff it in CI to catch breaking changes before they reach you.
+
+Support for path-level `servers` and for server variables varies between generators and tools: some
+send every request to the root server, or ignore the `service` variable. Check that a client
+generated from the document calls the prices operations on their own hosts.
+
+## Sources
+
+The published document is built, not generated directly: each DIDWW service generates its own
+source from its integration suite into [`openapi/sources/`](./openapi/sources/) — `api.json`,
+`voice_in.json`, `voice_out.json`, `sms.json` — and `scripts/build.mjs` assembles them into
+`openapi/v3_api.json` and `openapi/v3_api.yaml`, failing when the sources disagree. `main` holds the
+version customers are served; `prerelease` holds the next version while it is prepared, and is merged
+into `main` when that version is released. [`RELEASING.md`](./RELEASING.md) describes both branches
+and how a source is added.
 
 ## Related
 
@@ -115,9 +176,9 @@ The document is plain OpenAPI 3.0.3 with no vendor extensions, so standard tooli
 
 ## Feedback
 
-The document is generated, so it is not edited here: a mistake in it is a mistake in the generator
-or in the API itself. Open an issue describing what you expected and what the API actually answered,
-or contact [support@didww.com](mailto:support@didww.com).
+The document is generated, so it is not edited here: a mistake in it is a mistake in the generating
+suite of a service or in the API itself. Open an issue describing what you expected and what the API
+actually answered, or contact [support@didww.com](mailto:support@didww.com).
 
 ## License
 
