@@ -380,13 +380,13 @@
           "Prices"
         ],
         "operationId": "downloadPrices",
-        "description": "Downloads the price file of the plan assigned to the account: the prices of the plan as a gzipped CSV (UTF-8, LF line endings, a header row), named `voice_in_prices.csv.gz`. Prices are printed as the lookup answers them: never rounded, trailing zeros dropped, one decimal kept (`0.0`, `1.5`, `0.002`). The file is small and served whole, with no byte ranges, and it is the account's own: `Cache-Control` is `private` and `Vary` is `Authorization`, so a cache keyed by the URL alone must not hand it to another account. The token must list `api-vin.didww.com` in its audience, on the sandbox host as well; the `read` scope suffices. Conditional requests use `Last-Modified` and `If-Modified-Since` only: no `ETag` is sent and `If-None-Match` is ignored. `Last-Modified` is the later of the last change of the file's content and the last change of the account's plan assignment, so an account moved to another plan is never answered 304 with the prices it left; send it back in `If-Modified-Since` to be answered 304 while nothing has changed.",
+        "description": "Downloads the price file of the plan assigned to the account: the prices of the plan as a gzipped CSV (UTF-8, LF line endings, a header row), named `voice_in_prices.csv.gz`. Prices are printed as the lookup answers them: never rounded, trailing zeros dropped, one decimal kept (`0.0`, `1.5`, `0.002`). The file is small and served whole, with no byte ranges, and it is the account's own: `Cache-Control` is `private` and `Vary` is `Authorization`, so a cache keyed by the URL alone must not hand it to another account. The token must list `api-vin.didww.com` in its audience, on the sandbox host as well; the `read` scope suffices. Conditional requests use `Last-Modified` and `If-Modified-Since` only: no `ETag` is sent, and a request carrying `If-None-Match` is always answered in full, its `If-Modified-Since` ignored. `Last-Modified` is the later of the last change of the file's content and the last change of the account's plan assignment, so an account moved to another plan is never answered 304 with the prices it left; send it back in `If-Modified-Since` to be answered 304 while nothing has changed.",
         "parameters": [
           {
             "name": "If-Modified-Since",
             "in": "header",
             "required": false,
-            "description": "The `Last-Modified` date of the copy you hold. The file is sent only if it changed after that date; otherwise the answer is 304.",
+            "description": "The `Last-Modified` date of the copy you hold. The file is sent only if it changed after that date; otherwise the answer is 304. Ignored when the request also carries `If-None-Match`.",
             "schema": {
               "type": "string"
             }
@@ -512,13 +512,13 @@
           "Prices"
         ],
         "operationId": "headPrices",
-        "description": "Answers the headers of the price file without its body -- `Last-Modified`, `Content-Disposition` with `voice_in_prices.csv.gz`, `Content-Length` and the cache headers of the download -- so a client can tell whether its copy is current before downloading. `If-Modified-Since` works as on the download: a date at or after `Last-Modified` is answered 304. The audience (`api-vin.didww.com`, the same on the sandbox host), the scope (`read`) and the refusals are those of the download; no response carries a body.",
+        "description": "Answers the headers of the price file without its body -- `Last-Modified`, `Content-Disposition` with `voice_in_prices.csv.gz`, `Content-Length` and the cache headers of the download -- so a client can tell whether its copy is current before downloading. `If-Modified-Since` works as on the download: a date at or after `Last-Modified` is answered 304, unless the request also carries `If-None-Match`. The audience (`api-vin.didww.com`, the same on the sandbox host), the scope (`read`) and the refusals are those of the download; no response carries a body.",
         "parameters": [
           {
             "name": "If-Modified-Since",
             "in": "header",
             "required": false,
-            "description": "The `Last-Modified` date of the copy you hold. The headers of the file are answered only if it changed after that date; otherwise the answer is 304.",
+            "description": "The `Last-Modified` date of the copy you hold. The headers of the file are answered only if it changed after that date; otherwise the answer is 304. Ignored when the request also carries `If-None-Match`.",
             "schema": {
               "type": "string"
             }
