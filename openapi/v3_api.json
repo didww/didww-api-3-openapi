@@ -14358,6 +14358,8 @@
           },
           "scope": {
             "type": "string",
+            "nullable": true,
+            "pattern": "^(full|read(:[^:\\s]+)*)?$",
             "description": "`full` (the default) or `read`. A `read:` value the service does not know, such as `read:prices`, is granted as its closest known ancestor, so compare `scope` in the answer with the one requested. A `read` token is refused every method but GET and HEAD."
           },
           "api_version": {
@@ -14394,7 +14396,8 @@
           },
           "expires_in": {
             "type": "integer",
-            "minimum": 1,
+            "minimum": 60,
+            "maximum": 3600,
             "description": "Lifetime granted, in seconds."
           },
           "aud": {

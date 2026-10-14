@@ -9590,6 +9590,8 @@ components:
           description: 'The services the token is for: one hostname or a list. A service accepts the token only when this lists it; duplicates collapse, and one unknown member refuses the whole request.'
         scope:
           type: string
+          nullable: true
+          pattern: ^(full|read(:[^:\s]+)*)?$
           description: '`full` (the default) or `read`. A `read:` value the service does not know, such as `read:prices`, is granted as its closest known ancestor, so compare `scope` in the answer with the one requested. A `read` token is refused every method but GET and HEAD.'
         api_version:
           type: string
@@ -9617,7 +9619,8 @@ components:
             - Bearer
         expires_in:
           type: integer
-          minimum: 1
+          minimum: 60
+          maximum: 3600
           description: Lifetime granted, in seconds.
         aud:
           type: array
