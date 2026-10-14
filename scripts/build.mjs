@@ -468,9 +468,11 @@ export const buildDocument = (rawSources, version) => {
   dropUnreferencedParameters(paths, components, owners);
 
   // Tags are a union; a tag in several sources must carry the same description.
+  // The token service's tags lead: a token is the first call any reader makes.
   const tags = [];
   const tagOwners = new Map();
-  for (const source of sources) {
+  const tagSources = [...sources.filter((source) => source.name === 'auth'), ...sources.filter((source) => source.name !== 'auth')];
+  for (const source of tagSources) {
     for (const tag of source.doc.tags ?? []) {
       const existing = tags.find((other) => other.name === tag.name);
       if (!existing) {

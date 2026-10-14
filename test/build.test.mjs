@@ -70,9 +70,9 @@ describe('the path of the token service', () => {
     assert.equal(doc.paths['/lookup/prices'].servers[0].url, 'https://api-vin.didww.com/v3');
   });
 
-  it('puts its tag after the main source and before the service sources', () => {
+  it('puts its tag ahead of the main source and the service sources', () => {
     const doc = build({ api: mainSource(), voice_in: voiceIn(), auth: auth() });
-    assert.deepEqual(doc.tags.map((tag) => tag.name), ['Account', 'Authentication', 'Prices']);
+    assert.deepEqual(doc.tags.map((tag) => tag.name), ['Authentication', 'Account', 'Prices']);
   });
 });
 
