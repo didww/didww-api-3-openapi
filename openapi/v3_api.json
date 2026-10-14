@@ -15,6 +15,10 @@
   },
   "tags": [
     {
+      "name": "Authentication",
+      "description": "Access tokens, minted by the token service of the environment you call in exchange for an API key of that environment."
+    },
+    {
       "name": "Coverage",
       "description": "Countries, regions, cities and areas DIDWW sells numbers in."
     },
@@ -65,10 +69,6 @@
     {
       "name": "Emergency",
       "description": "Emergency calling: what a country requires, validating a submission against it, and the service that results."
-    },
-    {
-      "name": "Authentication",
-      "description": "Access tokens, minted by the token service of the environment you call in exchange for an API key of that environment."
     },
     {
       "name": "Prices",

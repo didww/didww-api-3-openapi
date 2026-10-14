@@ -34,6 +34,8 @@ externalDocs:
   description: DIDWW API documentation
   url: https://doc.didww.com/api3/2026-10-22/
 tags:
+  - name: Authentication
+    description: Access tokens, minted by the token service of the environment you call in exchange for an API key of that environment.
   - name: Coverage
     description: Countries, regions, cities and areas DIDWW sells numbers in.
   - name: DID groups
@@ -60,8 +62,6 @@ tags:
     description: Submissions of an identity and an address for approval against the requirements of a number.
   - name: Emergency
     description: 'Emergency calling: what a country requires, validating a submission against it, and the service that results.'
-  - name: Authentication
-    description: Access tokens, minted by the token service of the environment you call in exchange for an API key of that environment.
   - name: Prices
     description: 'Price files and price lookups, served by the platform service that prices the traffic: Voice IN, Voice OUT, SMS.'
 servers:
