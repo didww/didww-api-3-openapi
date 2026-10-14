@@ -3,7 +3,7 @@
   "info": {
     "title": "DIDWW Public API",
     "version": "2026-10-22",
-    "description": "JSONAPI interface to the DIDWW platform: browse coverage, order and manage DIDs,\nroute them to voice and SMS trunks, and reserve numbers before purchase.\n\nEvery request is authenticated with a bearer access token\n(`Authorization: Bearer <token>`). Mint one with `POST /token` on the token\nservice of the environment you call — `https://auth.didww.com/token` for\nProduction, `https://auth-sandbox.didww.com/token` for Sandbox — with an API key\nissued in the DIDWW user panel. A token is accepted only by the services its\naudience (`aud`) lists: `api.didww.com` for the operations of this host, and the\nproduction host of the platform service that serves the prices operations\n(`api-vin.didww.com`, `api-vout.didww.com`, `api-sms.didww.com`) for those, in\neither environment.\nA token minted with the `read` scope can only read: every other method is refused\nwith 403 and an `insufficient_scope` challenge.\n\nThe token's `api_version` claim selects the API version; this document\ndescribes `2026-10-22`.\n\nResponse schemas describe the full resource. A request narrowing one with\n`fields[...]` receives fewer members than its schema lists, deliberately:\nOpenAPI cannot express a member that is required only until a query\nparameter prunes it.\n",
+    "description": "JSONAPI interface to the DIDWW platform: browse coverage, order and manage DIDs,\nroute them to voice and SMS trunks, and reserve numbers before purchase.\n\nRequests are authenticated with a bearer access token\n(`Authorization: Bearer <token>`). Mint one with `POST /token` on the token\nservice of the environment you call — `https://auth.didww.com/token` for\nProduction, `https://auth-sandbox.didww.com/token` for Sandbox — with an API key\nissued in the DIDWW user panel. Three operations are the exception: `POST /token`\nitself takes the API key, the export download accepts either credential, and\n`GET /public_keys` needs none. A token is accepted only by the services its\naudience (`aud`) lists: `api.didww.com` for the operations of this host, and the\nproduction host of the platform service that serves the prices operations\n(`api-vin.didww.com`, `api-vout.didww.com`, `api-sms.didww.com`) for those, in\neither environment.\nA token minted with the `read` scope can only read: every other method is refused\nwith 403 and an `insufficient_scope` challenge.\n\nThe token's `api_version` claim selects the API version; this document\ndescribes `2026-10-22`.\n\nResponse schemas describe the full resource. A request narrowing one with\n`fields[...]` receives fewer members than its schema lists, deliberately:\nOpenAPI cannot express a member that is required only until a query\nparameter prunes it.\n",
     "contact": {
       "name": "DIDWW Support",
       "email": "support@didww.com"
@@ -89,7 +89,7 @@
         "type": "apiKey",
         "name": "api-key",
         "in": "header",
-        "description": "API key issued to the customer in the DIDWW user panel. Accepted by the export download alone; every other operation needs a bearer token."
+        "description": "API key issued to the customer in the DIDWW user panel. `POST /token` exchanges it for a bearer token; the export download is the one other operation that accepts it."
       }
     },
     "schemas": {
