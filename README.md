@@ -62,19 +62,20 @@ on `main`: a version appears there once it is the one customers are actually ser
 ## Authentication and environments
 
 Requests are authenticated with a short-lived bearer access token, `Authorization: Bearer <token>`;
-two operations are the exception, as noted below the table. A token is minted with `POST /token` on
+three operations are the exception, as noted below the table. A token is minted with `POST /token` on
 the token service of the environment being called, in exchange for an API key issued in the DIDWW
 user panel (see [API keys][api-keys] in the documentation):
 
 ```bash
 curl https://auth.didww.com/token \
-  -H 'Api-Key: <your API key>' \
+  -H 'api-key: <your API key>' \
   -H 'Content-Type: application/json' \
   -d '{"aud": ["api.didww.com", "api-vin.didww.com"], "api_version": "2026-10-22"}'
 ```
 
 The answer carries the token in `access_token`, its lifetime in seconds in `expires_in`, and the
-audiences, scope and API version it was minted for. Mint a new one when it expires.
+audiences, scope and API version it was minted for. Mint a new one when it expires. The document
+describes `POST /token` under the `Authentication` tag.
 
 - **Audience.** A token is accepted only by the services its `aud` lists. Each service's audience is
   its production host name, on the production and on the sandbox host alike; mint one token per
@@ -92,8 +93,9 @@ audiences, scope and API version it was minted for. Mint a new one when it expir
 | Voice OUT Rates | `https://api-vout.didww.com/v3` | `https://api-vout-sandbox.didww.com/v3` | `api-vout.didww.com` |
 | SMS Rates | `https://api-sms.didww.com/v3` | `https://api-sms-sandbox.didww.com/v3` | `api-sms.didww.com` |
 
-One operation also accepts the `api-key` header in place of a token: the export download
-(`GET /exports/{filename}.csv.gz`), which is reached through the URL a completed export reports.
+`POST /token` itself is authenticated by the `api-key` header. One operation also accepts that
+header in place of a token: the export download (`GET /exports/{filename}.csv.gz`), which is reached
+through the URL a completed export reports.
 One needs no authentication at all: `GET /public_keys`, the keys regulation documents are encrypted
 with before upload.
 
@@ -101,8 +103,10 @@ with before upload.
 
 The document's root `servers` are the Production and Sandbox base URLs of `api.didww.com`, so a
 client generated from it can be pointed at the sandbox without editing the base URL by hand. The
-prices paths are served by other hosts and declare their own path-level `servers`:
+token path and the prices paths are served by other hosts and declare their own path-level `servers`:
 
+- `/token` names the token service hosts, `https://auth.didww.com` and
+  `https://auth-sandbox.didww.com`, without `/v3`;
 - the SMS prices paths (`/sms_out/a2p/…`, `/sms_out/p2p/…`, `/sms_out/otp/…`, `/sms_in/…`) name the
   SMS Rates hosts;
 - `/prices.csv.gz` and `/lookup/prices` are served by both Voice IN Rates and Voice OUT Rates, so
@@ -118,8 +122,8 @@ Every collection and member endpoint the documented version serves, with its que
 request bodies, responses and error shapes — coverage, DIDs and DID groups, orders and reservations,
 inbound and outbound voice trunks, SMS trunks and trunk groups, capacity, identities and regulation
 (addresses, proofs, requirements, verifications), emergency services, exports and their file
-download, account balance, and the price files and price lookups of the Voice IN, Voice OUT and SMS
-plans.
+download, account balance, the price files and price lookups of the Voice IN, Voice OUT and SMS
+plans, and the token endpoint that mints access tokens.
 
 The schemas are strict: a resource object enumerates its full attribute and relationship set, and an
 undocumented key appearing in a response is treated as a defect rather than tolerated.
@@ -135,8 +139,6 @@ undocumented key appearing in a response is treated as a defect rather than tole
   introduced by a later, not-yet-released one.
 - **Relationships outside the API's fetchable set**, and a small number of attributes gated on
   per-account features that most callers cannot use.
-- **The token endpoint** — `POST /token` is served by the token service rather than by an API host,
-  and is described under [Authentication and environments](#authentication-and-environments) above.
 
 ## Using the specification
 
@@ -151,13 +153,13 @@ The document is plain OpenAPI 3.0.3 with no vendor extensions, so standard tooli
 
 Support for path-level `servers` and for server variables varies between generators and tools: some
 send every request to the root server, or ignore the `service` variable. Check that a client
-generated from the document calls the prices operations on their own hosts.
+generated from the document calls the token and prices operations on their own hosts.
 
 ## Sources
 
 The published document is built from one source per service: each DIDWW service generates its
 own source from its integration suite into [`openapi/sources/`](./openapi/sources/) — `api.json`,
-`voice_in.json`, `voice_out.json`, `sms.json` — and `scripts/build.mjs` assembles them into
+`auth.json`, `voice_in.json`, `voice_out.json`, `sms.json` — and `scripts/build.mjs` assembles them into
 `openapi/v3_api.json` and `openapi/v3_api.yaml`, failing when the sources disagree. `main` holds the
 version customers are served; `prerelease` holds the next version while it is prepared, and is merged
 into `main` when that version is released. [`RELEASING.md`](./RELEASING.md) describes both branches

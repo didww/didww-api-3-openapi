@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { describe, it } from 'node:test';
 import { BuildError, buildDocument, canonical } from '../scripts/build.mjs';
 
-import { VERSION, error, mainSource, serviceSource, voiceIn, voiceOut } from './fixtures.mjs';
+import { VERSION, auth, error, mainSource, serviceSource, voiceIn, voiceOut } from './fixtures.mjs';
 
 const build = (sources) => buildDocument(sources, VERSION);
 const rejects = (sources, pattern) => assert.throws(() => build(sources), (e) => e instanceof BuildError && pattern.test(e.message));
@@ -55,6 +55,24 @@ describe('a path served by one service source', () => {
     assert.deepEqual(doc.security, main.security);
     assert.deepEqual(doc.info, main.info);
     assert.deepEqual(doc.externalDocs, main.externalDocs);
+  });
+});
+
+describe('the path of the token service', () => {
+  it('gets its hosts without /v3 on the path item and its API key on the operation', () => {
+    const doc = build({ api: mainSource(), auth: auth(), voice_in: voiceIn() });
+    const item = doc.paths['/token'];
+    assert.deepEqual(item.servers, [
+      { url: 'https://auth.didww.com', description: 'Production' },
+      { url: 'https://auth-sandbox.didww.com', description: 'Sandbox' },
+    ]);
+    assert.deepEqual(item.post.security, [{ api_key: [] }]);
+    assert.equal(doc.paths['/lookup/prices'].servers[0].url, 'https://api-vin.didww.com/v3');
+  });
+
+  it('puts its tag after the main source and before the service sources', () => {
+    const doc = build({ api: mainSource(), voice_in: voiceIn(), auth: auth() });
+    assert.deepEqual(doc.tags.map((tag) => tag.name), ['Account', 'Authentication', 'Prices']);
   });
 });
 
@@ -461,6 +479,18 @@ describe('the build refuses', () => {
     const unlabelled = voiceIn();
     for (const server of unlabelled.servers) delete server.description;
     rejects({ api: mainSource(), voice_in: unlabelled }, /described "Production" and "Sandbox"/);
+  });
+
+  it('root servers of the token service source under /v3', () => {
+    const versioned = auth();
+    for (const server of versioned.servers) server.url += '/v3';
+    rejects({ api: mainSource(), auth: versioned }, /source auth: root servers must be exactly Production https:\/\/auth\.didww\.com and Sandbox https:\/\/auth-sandbox\.didww\.com,/);
+  });
+
+  it('a path served by the token service and a service source', () => {
+    const token = auth();
+    token.paths['/lookup/prices'] = voiceIn().paths['/lookup/prices'];
+    rejects({ api: mainSource(), auth: token, voice_in: voiceIn() }, /path \/lookup\/prices: served by auth, voice_in; the hosts of auth do not fit the \{service\} server templates/);
   });
 
   it('a shared component that differs', () => {

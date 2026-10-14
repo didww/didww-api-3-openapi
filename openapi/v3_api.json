@@ -3,7 +3,7 @@
   "info": {
     "title": "DIDWW Public API",
     "version": "2026-10-22",
-    "description": "JSONAPI interface to the DIDWW platform: browse coverage, order and manage DIDs,\nroute them to voice and SMS trunks, and reserve numbers before purchase.\n\nEvery request is authenticated with a bearer access token\n(`Authorization: Bearer <token>`). Mint one with `POST /token` on the token\nservice of the environment you call — `https://auth.didww.com/token` for\nProduction, `https://auth-sandbox.didww.com/token` for Sandbox — with an API key\nissued in the DIDWW user panel. A token is accepted only by the services its\naudience (`aud`) lists: `api.didww.com` for the operations of this host, and the\nproduction host of the platform service that serves the prices operations\n(`api-vin.didww.com`, `api-vout.didww.com`, `api-sms.didww.com`) for those, in\neither environment.\nA token minted with the `read` scope can only read: every other method is refused\nwith 403 and an `insufficient_scope` challenge.\n\nThe token's `api_version` claim selects the API version; this document\ndescribes `2026-10-22`.\n\nResponse schemas describe the full resource. A request narrowing one with\n`fields[...]` receives fewer members than its schema lists, deliberately:\nOpenAPI cannot express a member that is required only until a query\nparameter prunes it.\n",
+    "description": "JSONAPI interface to the DIDWW platform: browse coverage, order and manage DIDs,\nroute them to voice and SMS trunks, and reserve numbers before purchase.\n\nRequests are authenticated with a bearer access token\n(`Authorization: Bearer <token>`). Mint one with `POST /token` on the token\nservice of the environment you call — `https://auth.didww.com/token` for\nProduction, `https://auth-sandbox.didww.com/token` for Sandbox — with an API key\nissued in the DIDWW user panel. Three operations are the exception: `POST /token`\nitself takes the API key, the export download accepts either credential, and\n`GET /public_keys` needs none. A token is accepted only by the services its\naudience (`aud`) lists: `api.didww.com` for the operations of this host, and the\nproduction host of the platform service that serves the prices operations\n(`api-vin.didww.com`, `api-vout.didww.com`, `api-sms.didww.com`) for those, in\neither environment.\nA token minted with the `read` scope can only read: every other method is refused\nwith 403 and an `insufficient_scope` challenge.\n\nThe token's `api_version` claim selects the API version; this document\ndescribes `2026-10-22`.\n\nResponse schemas describe the full resource. A request narrowing one with\n`fields[...]` receives fewer members than its schema lists, deliberately:\nOpenAPI cannot express a member that is required only until a query\nparameter prunes it.\n",
     "contact": {
       "name": "DIDWW Support",
       "email": "support@didww.com"
@@ -67,6 +67,10 @@
       "description": "Emergency calling: what a country requires, validating a submission against it, and the service that results."
     },
     {
+      "name": "Authentication",
+      "description": "Access tokens, minted by the token service of the environment you call in exchange for an API key of that environment."
+    },
+    {
       "name": "Prices",
       "description": "Price files and price lookups, served by the platform service that prices the traffic: Voice IN, Voice OUT, SMS."
     }
@@ -93,7 +97,7 @@
         "type": "apiKey",
         "name": "api-key",
         "in": "header",
-        "description": "API key issued to the customer in the DIDWW user panel. Accepted by the export download alone; every other operation needs a bearer token."
+        "description": "API key issued to the customer in the DIDWW user panel. `POST /token` exchanges it for a bearer token; the export download is the one other operation that accepts it."
       }
     },
     "schemas": {
@@ -14321,6 +14325,127 @@
           }
         }
       },
+      "TokenAudience": {
+        "type": "string",
+        "enum": [
+          "api.didww.com",
+          "api-vin.didww.com",
+          "api-vout.didww.com",
+          "api-sms.didww.com"
+        ],
+        "description": "Production hostname of a service the token is for. It is the same name on the service's sandbox host."
+      },
+      "TokenRequest": {
+        "type": "object",
+        "required": [
+          "aud"
+        ],
+        "properties": {
+          "aud": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/TokenAudience"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/TokenAudience"
+                },
+                "minItems": 1
+              }
+            ],
+            "description": "The services the token is for: one hostname or a list. A service accepts the token only when this lists it; duplicates collapse, and one unknown member refuses the whole request."
+          },
+          "scope": {
+            "type": "string",
+            "nullable": true,
+            "pattern": "^(full|read(:[^:\\s]+)*)?$",
+            "description": "`full` (the default) or `read`. A `read:` value the service does not know, such as `read:prices`, is granted as its closest known ancestor, so compare `scope` in the answer with the one requested. A `read` token is refused every method but GET and HEAD."
+          },
+          "api_version": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "Name of the API version the token selects on api.didww.com. Absent: the default version of the account. A well-formed name the API does not know selects its newest version, and the API never serves a bearer token a version older than the first one that accepts bearer tokens, nor older than the default version of the account."
+          },
+          "expires_in": {
+            "type": "integer",
+            "description": "Requested lifetime in seconds. Absent: 900. A value outside 60–3600 is clamped into that range, not refused."
+          }
+        }
+      },
+      "Token": {
+        "type": "object",
+        "required": [
+          "access_token",
+          "token_type",
+          "expires_in",
+          "aud",
+          "scope",
+          "api_version"
+        ],
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "description": "The token, to send as `Authorization: Bearer <access_token>`. It is valid in the environment that minted it only."
+          },
+          "token_type": {
+            "type": "string",
+            "enum": [
+              "Bearer"
+            ]
+          },
+          "expires_in": {
+            "type": "integer",
+            "minimum": 60,
+            "maximum": 3600,
+            "description": "Lifetime granted, in seconds."
+          },
+          "aud": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TokenAudience"
+            },
+            "minItems": 1,
+            "description": "The services the token was minted for."
+          },
+          "scope": {
+            "type": "string",
+            "enum": [
+              "full",
+              "read"
+            ],
+            "description": "The scope granted: wider than the one requested when a `read:` value fell back to its ancestor."
+          },
+          "api_version": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+            "description": "The version name the token carries: the requested one, else the default version of the account."
+          }
+        }
+      },
+      "TokenError": {
+        "type": "object",
+        "required": [
+          "error",
+          "error_description"
+        ],
+        "properties": {
+          "error": {
+            "type": "string",
+            "enum": [
+              "invalid_request",
+              "invalid_scope",
+              "invalid_client",
+              "rate_limit_exceeded",
+              "server_error"
+            ]
+          },
+          "error_description": {
+            "type": "string",
+            "description": "Why the request was refused; on a 400 it names the parameter at fault, or says the body is not JSON."
+          }
+        }
+      },
       "VoiceInPrice": {
         "type": "object",
         "required": [
@@ -18190,6 +18315,13 @@
       }
     },
     "headers": {
+      "RetryAfter": {
+        "description": "Seconds to wait before retrying.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
       "ContentDisposition": {
         "description": "`attachment` with the canonical file name of the price domain.",
         "schema": {
@@ -18234,13 +18366,6 @@
           "enum": [
             "Authorization"
           ]
-        }
-      },
-      "RetryAfter": {
-        "description": "Seconds to wait before retrying.",
-        "schema": {
-          "type": "integer",
-          "minimum": 1
         }
       }
     }
@@ -28520,6 +28645,167 @@
           "required": true
         }
       }
+    },
+    "/token": {
+      "post": {
+        "summary": "Mint an access token",
+        "tags": [
+          "Authentication"
+        ],
+        "operationId": "createToken",
+        "description": "Exchanges an API key for a short-lived bearer token. Call the token service of the environment whose services you call — the token is refused in the other one — and list in `aud` every service the token is for: api.didww.com for the operations on that host, the host of the platform service for its prices operations. Mint a new token before `expires_in` runs out; tokens are not refreshed.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "token minted",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "no-store"
+                  ]
+                },
+                "description": "Always `no-store`."
+              },
+              "Pragma": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "no-cache"
+                  ]
+                },
+                "description": "Always `no-cache`."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Token"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "malformed request: `invalid_request` when the body is not JSON, `aud` is missing or lists an unknown service, `api_version` is not a version name or `expires_in` is not an integer; `invalid_scope` when `scope` holds several values or an unknown value outside the `read` family",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "no-store"
+                  ]
+                },
+                "description": "Always `no-store`."
+              },
+              "Pragma": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "no-cache"
+                  ]
+                },
+                "description": "Always `no-cache`."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "the API key was refused: missing, unknown, disabled, or used from an address it does not allow",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "no-store"
+                  ]
+                },
+                "description": "Always `no-store`."
+              },
+              "Pragma": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "no-cache"
+                  ]
+                },
+                "description": "Always `no-cache`."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenError"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "too many token requests from this address",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              },
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "no-store"
+                  ]
+                },
+                "description": "Always `no-store`."
+              },
+              "Pragma": {
+                "schema": {
+                  "type": "string",
+                  "enum": [
+                    "no-cache"
+                  ]
+                },
+                "description": "Always `no-cache`."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TokenError"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      },
+      "servers": [
+        {
+          "url": "https://auth.didww.com",
+          "description": "Production"
+        },
+        {
+          "url": "https://auth-sandbox.didww.com",
+          "description": "Sandbox"
+        }
+      ]
     },
     "/lookup/prices": {
       "servers": [

@@ -16,8 +16,12 @@ import yaml from 'js-yaml';
 // service sources in a fixed order, so the folded server variable and
 // descriptions never depend on the file system. Each service source serves
 // exactly one host.
-export const SOURCE_ORDER = ['api', 'voice_in', 'voice_out', 'sms'];
-export const SERVICE_OF = { voice_in: 'api-vin', voice_out: 'api-vout', sms: 'api-sms' };
+export const SOURCE_ORDER = ['api', 'auth', 'voice_in', 'voice_out', 'sms'];
+export const SERVICE_OF = { auth: 'auth', voice_in: 'api-vin', voice_out: 'api-vout', sms: 'api-sms' };
+// The token service answers at the root of its host; every other service
+// under /v3, the path the folded {service} templates carry.
+const SERVER_PATH = { auth: '' };
+const DEFAULT_SERVER_PATH = '/v3';
 const MAIN = 'api';
 const HTTP_METHODS = ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'];
 // Folded separately: the text is kept per service, the security is compared as
@@ -78,9 +82,10 @@ const checkSource = (name, doc) => {
   if (name === MAIN) return { name, doc };
 
   const service = SERVICE_OF[name];
+  const serverPath = SERVER_PATH[name] ?? DEFAULT_SERVER_PATH;
   const expected = [
-    { url: `https://${service}.didww.com/v3`, description: 'Production' },
-    { url: `https://${service}-sandbox.didww.com/v3`, description: 'Sandbox' },
+    { url: `https://${service}.didww.com${serverPath}`, description: 'Production' },
+    { url: `https://${service}-sandbox.didww.com${serverPath}`, description: 'Sandbox' },
   ];
   if (!same(doc.servers, expected)) {
     fail(`${where}: root servers must be exactly Production ${expected[0].url} and Sandbox ${expected[1].url}, ` +
@@ -98,7 +103,7 @@ const checkSource = (name, doc) => {
   const rest = JSON.stringify({ ...doc, info: without(doc.info, 'version') });
   if (rest.includes(doc.info.version)) fail(`${where}: the version name ${doc.info.version} appears outside info.version`);
 
-  return { name, doc, service, title: doc.info.title };
+  return { name, doc, service, serverPath, title: doc.info.title };
 };
 
 const PARAMETER_REF = /^#\/components\/parameters\/([^/]+)$/;
@@ -330,8 +335,8 @@ const pathServers = (sources) => {
   const description = sources.map((source) => `${source.service} — ${source.title}`).join('; ');
   const variables = { service: { enum: enumeration, default: enumeration[0], description } };
   return [
-    { url: 'https://{service}.didww.com/v3', description: 'Production', variables: clone(variables) },
-    { url: 'https://{service}-sandbox.didww.com/v3', description: 'Sandbox', variables: clone(variables) },
+    { url: `https://{service}.didww.com${DEFAULT_SERVER_PATH}`, description: 'Production', variables: clone(variables) },
+    { url: `https://{service}-sandbox.didww.com${DEFAULT_SERVER_PATH}`, description: 'Sandbox', variables: clone(variables) },
   ];
 };
 
@@ -417,6 +422,11 @@ export const buildDocument = (rawSources, version) => {
     if (served.some(([source]) => source.name === MAIN)) {
       fail(`path ${path}: served by ${MAIN} and by ${served.filter(([s]) => s.name !== MAIN).map(([s]) => s.name).join(', ')}; ` +
            `the main source's hosts do not fit the {service} server templates`);
+    }
+    const outside = served.filter(([source]) => source.serverPath !== DEFAULT_SERVER_PATH).map(([source]) => source.name);
+    if (outside.length > 0) {
+      fail(`path ${path}: served by ${served.map(([source]) => source.name).join(', ')}; ` +
+           `the hosts of ${outside.join(', ')} do not fit the {service} server templates`);
     }
     const methods = served.map(([source, item]) => [source.name, operationsOf(item).join(', ')]);
     if (methods.some(([, list]) => list !== methods[0][1])) {
