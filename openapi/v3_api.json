@@ -8838,7 +8838,7 @@
               "priority": {
                 "type": "integer",
                 "nullable": true,
-                "description": "Routing priority within an SMS trunk group; lower wins. Defaults to 100 on the trunk types that can join a group, and must stay null on `http_out`, which cannot.",
+                "description": "Routing priority within an SMS trunk group; the higher value is tried first. Defaults to 100 on the trunk types that can join a group, and must stay null on `http_out`, which cannot.",
                 "minimum": 0,
                 "maximum": 32767
               },
@@ -8922,7 +8922,7 @@
             "properties": {
               "host": {
                 "type": "string",
-                "description": "Host to submit outbound messages to. Present on `http_out` trunks only."
+                "description": "Full URL of the endpoint to submit outbound messages to. Present on `http_out` trunks only."
               }
             }
           }
@@ -9176,7 +9176,7 @@
                   "priority": {
                     "type": "integer",
                     "nullable": true,
-                    "description": "Routing priority within an SMS trunk group; lower wins. Defaults to 100 on the trunk types that can join a group, and must stay null on `http_out`, which cannot.",
+                    "description": "Routing priority within an SMS trunk group; the higher value is tried first. Defaults to 100 on the trunk types that can join a group, and must stay null on `http_out`, which cannot.",
                     "minimum": 0,
                     "maximum": 32767
                   },
@@ -9301,7 +9301,7 @@
                   "priority": {
                     "type": "integer",
                     "nullable": true,
-                    "description": "Routing priority within an SMS trunk group; lower wins. Defaults to 100 on the trunk types that can join a group, and must stay null on `http_out`, which cannot.",
+                    "description": "Routing priority within an SMS trunk group; the higher value is tried first. Defaults to 100 on the trunk types that can join a group, and must stay null on `http_out`, which cannot.",
                     "minimum": 0,
                     "maximum": 32767
                   },
@@ -9602,8 +9602,8 @@
               },
               "server_location": {
                 "type": "string",
-                "description": "Location of the DIDWW SMPP server the trunk is served from. Required when the trunk is created; the accepted values depend on the environment.",
-                "example": "fra"
+                "description": "Location of the DIDWW SMPP server the trunk is served from. Required when the trunk is created. Production accepts `nyc` and `ams`; the sandbox accepts `nyc` only.",
+                "example": "nyc"
               }
             },
             "required": [
@@ -9676,8 +9676,8 @@
               },
               "server_location": {
                 "type": "string",
-                "description": "Location of the DIDWW SMPP server the trunk is served from. Required when the trunk is created; the accepted values depend on the environment.",
-                "example": "fra"
+                "description": "Location of the DIDWW SMPP server the trunk is served from. Required when the trunk is created. Production accepts `nyc` and `ams`; the sandbox accepts `nyc` only.",
+                "example": "nyc"
               }
             },
             "required": [
@@ -9876,8 +9876,8 @@
               },
               "server_location": {
                 "type": "string",
-                "description": "Location of the DIDWW SMPP server the trunk is served from. Required when the trunk is created; the accepted values depend on the environment.",
-                "example": "fra"
+                "description": "Location of the DIDWW SMPP server the trunk is served from. Required when the trunk is created. Production accepts `nyc` and `ams`; the sandbox accepts `nyc` only.",
+                "example": "nyc"
               }
             }
           }
@@ -9943,8 +9943,8 @@
               },
               "server_location": {
                 "type": "string",
-                "description": "Location of the DIDWW SMPP server the trunk is served from. Required when the trunk is created; the accepted values depend on the environment.",
-                "example": "fra"
+                "description": "Location of the DIDWW SMPP server the trunk is served from. Required when the trunk is created. Production accepts `nyc` and `ams`; the sandbox accepts `nyc` only.",
+                "example": "nyc"
               }
             }
           }
@@ -18401,7 +18401,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -18470,7 +18470,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -18529,7 +18529,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -18734,7 +18734,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -18831,7 +18831,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -18890,7 +18890,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -18951,7 +18951,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -19130,7 +19130,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -19335,7 +19335,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -19445,7 +19445,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -19506,7 +19506,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -19637,7 +19637,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -19718,7 +19718,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -19779,7 +19779,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -19909,7 +19909,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -19960,7 +19960,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -20070,7 +20070,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -20131,7 +20131,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -20204,7 +20204,7 @@
             "description": "shared capacity group deleted"
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -20297,7 +20297,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -20376,7 +20376,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -20469,7 +20469,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -20548,7 +20548,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -20649,7 +20649,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -20730,7 +20730,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -20829,7 +20829,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -20908,7 +20908,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21062,7 +21062,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21145,7 +21145,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21236,7 +21236,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21316,7 +21316,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21379,7 +21379,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21496,7 +21496,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21575,7 +21575,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21618,7 +21618,7 @@
             "description": "reservation released"
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21728,7 +21728,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21818,7 +21818,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21879,7 +21879,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22005,7 +22005,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22094,7 +22094,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22167,7 +22167,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22300,7 +22300,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22393,7 +22393,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22446,7 +22446,7 @@
             "description": "emergency calling service cancelled"
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22557,7 +22557,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22788,7 +22788,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22909,7 +22909,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22980,7 +22980,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23120,7 +23120,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23200,7 +23200,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23389,7 +23389,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23496,7 +23496,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23555,7 +23555,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23616,7 +23616,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23689,7 +23689,7 @@
             "description": "order cancelled"
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23802,7 +23802,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23853,7 +23853,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23966,7 +23966,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24027,7 +24027,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24100,7 +24100,7 @@
             "description": "identity deleted"
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24213,7 +24213,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24264,7 +24264,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24377,7 +24377,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24438,7 +24438,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24511,7 +24511,7 @@
             "description": "address deleted"
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24594,7 +24594,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24661,7 +24661,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24720,7 +24720,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24763,7 +24763,7 @@
             "description": "encrypted file deleted"
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24863,7 +24863,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24914,7 +24914,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25024,7 +25024,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25085,7 +25085,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25158,7 +25158,7 @@
             "description": "proof deleted"
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25247,7 +25247,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25306,7 +25306,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25406,7 +25406,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25457,7 +25457,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25567,7 +25567,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25628,7 +25628,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25701,7 +25701,7 @@
             "description": "document deleted"
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25781,7 +25781,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25840,7 +25840,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25946,7 +25946,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -26032,7 +26032,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -26095,7 +26095,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -26216,7 +26216,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -26267,7 +26267,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -26484,7 +26484,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -26545,7 +26545,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -26618,7 +26618,7 @@
             "description": "trunk deleted"
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -26728,7 +26728,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -26779,7 +26779,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -26889,7 +26889,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -26950,7 +26950,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -27023,7 +27023,7 @@
             "description": "trunk group deleted"
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -27096,7 +27096,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -27215,7 +27215,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -27266,7 +27266,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -27375,7 +27375,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -27436,7 +27436,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -27509,7 +27509,7 @@
             "description": "trunk deleted"
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -27618,7 +27618,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -27669,7 +27669,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -27778,7 +27778,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -27839,7 +27839,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -27912,7 +27912,7 @@
             "description": "trunk group deleted"
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -28012,7 +28012,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -28155,7 +28155,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -28275,7 +28275,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -28428,7 +28428,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -28511,7 +28511,7 @@
             "description": "trunk deleted"
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -28584,7 +28584,7 @@
             }
           },
           "401": {
-            "description": "the bearer token was refused; a request without a bearer token gets the same status with no body",
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -28990,7 +28990,7 @@
           "Prices"
         ],
         "operationId": "downloadPrices",
-        "description": "**api-vin — Voice IN Rates**\n\nDownloads the price file of the plan assigned to the account: the prices of the plan as a gzipped CSV (UTF-8, LF line endings, a header row), named `voice_in_prices.csv.gz`. Prices are printed as the lookup answers them: never rounded, trailing zeros dropped, one decimal kept (`0.0`, `1.5`, `0.002`). The file is small and served whole, with no byte ranges, and it is the account's own: `Cache-Control` is `private` and `Vary` is `Authorization`, so a cache keyed by the URL alone must not hand it to another account. The token must list `api-vin.didww.com` in its audience, on the sandbox host as well; the `read` scope suffices. Conditional requests use `Last-Modified` and `If-Modified-Since` only: no `ETag` is sent, and a request carrying `If-None-Match` is always answered in full, its `If-Modified-Since` ignored. `Last-Modified` is the later of the last change of the file's content and the last change of the account's plan assignment, so an account moved to another plan is never answered 304 with the prices it left; send it back in `If-Modified-Since` to be answered 304 while nothing has changed.\n\n**api-vout — Voice OUT Rates**\n\nDownloads the price file of the plan assigned to the account: the prices of the plan as a gzipped CSV (UTF-8, LF line endings, a header row), named `voice_out_prices.csv.gz`. Prices are printed as the lookup answers them: never rounded, trailing zeros dropped, one decimal kept (`0.0`, `1.5`, `0.002`). One row per price of the plan, with the columns Category, Country, Network, Prefix, Rate (USD, excl. VAT), Connection fee (USD, excl. VAT), Initial Increment, Recurring Increment, Reject calls, Next rate (USD, excl. VAT), Next connection fee (USD, excl. VAT), Next rate effective date and Next change, carrying what the lookup's attributes of the matching names carry; the file leaves out some settings of a row, so two rows can look alike or show one prefix at different prices. The last digit of a prefix can be a range, as the lookup's `prefix` describes. A prefix with no price in effect whose next price starts within 30 days is also listed, with no Rate or Connection fee, as `New Breakout`. Prices are matched by the text of their prefix and their routing conditions, so a range that changes (`9995[0-5]` to `9995[0-7]`) is a new prefix: within 30 days of the change, the old one ends as `Removed` and the new one is listed as `New Breakout`. The file is small and served whole, with no byte ranges, and it is the account's own: `Cache-Control` is `private` and `Vary` is `Authorization`, so a cache keyed by the URL alone must not hand it to another account. The token must list `api-vout.didww.com` in its audience, on the sandbox host as well; the `read` scope suffices. Conditional requests use `Last-Modified` and `If-Modified-Since` only: no `ETag` is sent, and a request carrying `If-None-Match` is always answered in full, its `If-Modified-Since` ignored. `Last-Modified` is the later of the last change of the file's content and the last change of the account's plan assignment, so an account moved to another plan is never answered 304 with the prices it left; send it back in `If-Modified-Since` to be answered 304 while nothing has changed.",
+        "description": "**api-vin — Voice IN Rates**\n\nDownloads the price file of the plan assigned to the account: the prices of the plan as a gzipped CSV (UTF-8, LF line endings, a header row), named `voice_in_prices.csv.gz`. Prices are printed as the lookup answers them: never rounded, trailing zeros dropped, one decimal kept (`0.0`, `1.5`, `0.002`). One row per price of the plan, with the columns Country, Src country name, Source type, Destination, Rate (USD, excl. VAT), Connection fee (USD, excl. VAT), Initial interval, Next interval and Reject calls (`true` or `false`), carrying what the lookup's attributes of the matching names carry; Rate and Connection fee are empty on a row that rejects calls. The file is small and served whole, with no byte ranges, and it is the account's own: `Cache-Control` is `private` and `Vary` is `Authorization`, so a cache keyed by the URL alone must not hand it to another account. The token must list `api-vin.didww.com` in its audience, on the sandbox host as well; the `read` scope suffices. Conditional requests use `Last-Modified` and `If-Modified-Since` only: no `ETag` is sent, and a request carrying `If-None-Match` is always answered in full, its `If-Modified-Since` ignored. `Last-Modified` is the later of the last change of the file's content and the last change of the account's plan assignment, so an account moved to another plan is never answered 304 with the prices it left; send it back in `If-Modified-Since` to be answered 304 while nothing has changed.\n\n**api-vout — Voice OUT Rates**\n\nDownloads the price file of the plan assigned to the account: the prices of the plan as a gzipped CSV (UTF-8, LF line endings, a header row), named `voice_out_prices.csv.gz`. Prices are printed as the lookup answers them: never rounded, trailing zeros dropped, one decimal kept (`0.0`, `1.5`, `0.002`). One row per price of the plan, with the columns Category, Country, Network, Prefix, Rate (USD, excl. VAT), Connection fee (USD, excl. VAT), Initial Increment, Recurring Increment, Reject calls, Next rate (USD, excl. VAT), Next connection fee (USD, excl. VAT), Next rate effective date and Next change, carrying what the lookup's attributes of the matching names carry; the file leaves out some settings of a row, so two rows can look alike or show one prefix at different prices. The last digit of a prefix can be a range, as the lookup's `prefix` describes. A prefix with no price in effect whose next price starts within 30 days is also listed, with no Rate or Connection fee, as `New Breakout`. Prices are matched by the text of their prefix and their routing conditions, so a range that changes (`9995[0-5]` to `9995[0-7]`) is a new prefix: within 30 days of the change, the old one ends as `Removed` and the new one is listed as `New Breakout`. The file is small and served whole, with no byte ranges, and it is the account's own: `Cache-Control` is `private` and `Vary` is `Authorization`, so a cache keyed by the URL alone must not hand it to another account. The token must list `api-vout.didww.com` in its audience, on the sandbox host as well; the `read` scope suffices. Conditional requests use `Last-Modified` and `If-Modified-Since` only: no `ETag` is sent, and a request carrying `If-None-Match` is always answered in full, its `If-Modified-Since` ignored. `Last-Modified` is the later of the last change of the file's content and the last change of the account's plan assignment, so an account moved to another plan is never answered 304 with the prices it left; send it back in `If-Modified-Since` to be answered 304 while nothing has changed.",
         "parameters": [
           {
             "name": "If-Modified-Since",

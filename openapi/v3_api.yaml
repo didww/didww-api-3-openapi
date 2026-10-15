@@ -6063,7 +6063,7 @@ components:
             priority:
               type: integer
               nullable: true
-              description: Routing priority within an SMS trunk group; lower wins. Defaults to 100 on the trunk types that can join a group, and must stay null on `http_out`, which cannot.
+              description: Routing priority within an SMS trunk group; the higher value is tried first. Defaults to 100 on the trunk types that can join a group, and must stay null on `http_out`, which cannot.
               minimum: 0
               maximum: 32767
             allow_any_did_as_source:
@@ -6119,7 +6119,7 @@ components:
           properties:
             host:
               type: string
-              description: Host to submit outbound messages to. Present on `http_out` trunks only.
+              description: Full URL of the endpoint to submit outbound messages to. Present on `http_out` trunks only.
     SmsTrunkDocument:
       type: object
       required:
@@ -6239,7 +6239,7 @@ components:
                 priority:
                   type: integer
                   nullable: true
-                  description: Routing priority within an SMS trunk group; lower wins. Defaults to 100 on the trunk types that can join a group, and must stay null on `http_out`, which cannot.
+                  description: Routing priority within an SMS trunk group; the higher value is tried first. Defaults to 100 on the trunk types that can join a group, and must stay null on `http_out`, which cannot.
                   minimum: 0
                   maximum: 32767
                 allow_any_did_as_source:
@@ -6322,7 +6322,7 @@ components:
                 priority:
                   type: integer
                   nullable: true
-                  description: Routing priority within an SMS trunk group; lower wins. Defaults to 100 on the trunk types that can join a group, and must stay null on `http_out`, which cannot.
+                  description: Routing priority within an SMS trunk group; the higher value is tried first. Defaults to 100 on the trunk types that can join a group, and must stay null on `http_out`, which cannot.
                   minimum: 0
                   maximum: 32767
                 allow_any_did_as_source:
@@ -6535,8 +6535,8 @@ components:
               readOnly: true
             server_location:
               type: string
-              description: Location of the DIDWW SMPP server the trunk is served from. Required when the trunk is created; the accepted values depend on the environment.
-              example: fra
+              description: Location of the DIDWW SMPP server the trunk is served from. Required when the trunk is created. Production accepts `nyc` and `ams`; the sandbox accepts `nyc` only.
+              example: nyc
           required:
             - system_type
             - allowed_ips
@@ -6591,8 +6591,8 @@ components:
               maxLength: 8
             server_location:
               type: string
-              description: Location of the DIDWW SMPP server the trunk is served from. Required when the trunk is created; the accepted values depend on the environment.
-              example: fra
+              description: Location of the DIDWW SMPP server the trunk is served from. Required when the trunk is created. Production accepts `nyc` and `ams`; the sandbox accepts `nyc` only.
+              example: nyc
           required:
             - host
             - tx_port
@@ -6737,8 +6737,8 @@ components:
                 example: 203.0.113.10
             server_location:
               type: string
-              description: Location of the DIDWW SMPP server the trunk is served from. Required when the trunk is created; the accepted values depend on the environment.
-              example: fra
+              description: Location of the DIDWW SMPP server the trunk is served from. Required when the trunk is created. Production accepts `nyc` and `ams`; the sandbox accepts `nyc` only.
+              example: nyc
     SmsSmppSmscConfigurationRequest:
       type: object
       description: DIDWW connects to the customer as an SMPP client.
@@ -6787,8 +6787,8 @@ components:
               maxLength: 8
             server_location:
               type: string
-              description: Location of the DIDWW SMPP server the trunk is served from. Required when the trunk is created; the accepted values depend on the environment.
-              example: fra
+              description: Location of the DIDWW SMPP server the trunk is served from. Required when the trunk is created. Production accepts `nyc` and `ams`; the sandbox accepts `nyc` only.
+              example: nyc
     SmsTrunkGroup:
       type: object
       description: 'A group of SMS trunks. Describes the full resource: a response to a request carrying `fields[...]` omits the members it did not ask for.'
@@ -12791,7 +12791,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/BalanceDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -12829,7 +12829,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -12865,7 +12865,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/DidHistoryDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -13001,7 +13001,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -13056,7 +13056,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -13092,7 +13092,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ExportDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -13130,7 +13130,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -13237,7 +13237,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -13374,7 +13374,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -13443,7 +13443,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/AddressVerificationDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -13481,7 +13481,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -13559,7 +13559,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -13611,7 +13611,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/CapacityPoolDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -13649,7 +13649,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -13726,7 +13726,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -13758,7 +13758,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -13827,7 +13827,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/SharedCapacityGroupDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -13865,7 +13865,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -13910,7 +13910,7 @@ paths:
         '204':
           description: shared capacity group deleted
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -13966,7 +13966,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -14016,7 +14016,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/CountryDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -14072,7 +14072,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -14122,7 +14122,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/RegionDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -14182,7 +14182,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -14234,7 +14234,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/CityDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -14292,7 +14292,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -14342,7 +14342,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/AreaDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -14434,7 +14434,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -14488,7 +14488,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/DidGroupDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -14544,7 +14544,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -14595,7 +14595,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/AvailableDidDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -14634,7 +14634,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -14703,7 +14703,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -14753,7 +14753,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/DidReservationDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -14780,7 +14780,7 @@ paths:
         '204':
           description: reservation released
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -14849,7 +14849,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -14910,7 +14910,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/DidDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -14948,7 +14948,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -15023,7 +15023,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -15079,7 +15079,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmergencyRequirementDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -15124,7 +15124,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -15204,7 +15204,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -15264,7 +15264,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmergencyCallingServiceDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -15297,7 +15297,7 @@ paths:
         '204':
           description: emergency calling service cancelled
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -15363,7 +15363,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -15518,7 +15518,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -15594,7 +15594,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EmergencyVerificationDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -15638,7 +15638,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -15721,7 +15721,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -15772,7 +15772,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/NanpaPrefixDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -15896,7 +15896,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -15957,7 +15957,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -15993,7 +15993,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/OrderDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -16031,7 +16031,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -16076,7 +16076,7 @@ paths:
         '204':
           description: order cancelled
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -16144,7 +16144,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -16176,7 +16176,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -16248,7 +16248,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/IdentityDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -16286,7 +16286,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -16331,7 +16331,7 @@ paths:
         '204':
           description: identity deleted
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -16399,7 +16399,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -16431,7 +16431,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -16503,7 +16503,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/AddressDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -16541,7 +16541,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -16586,7 +16586,7 @@ paths:
         '204':
           description: address deleted
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -16637,7 +16637,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -16674,7 +16674,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -16710,7 +16710,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/EncryptedFileDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -16737,7 +16737,7 @@ paths:
         '204':
           description: encrypted file deleted
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -16796,7 +16796,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -16828,7 +16828,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -16897,7 +16897,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProofDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -16935,7 +16935,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -16980,7 +16980,7 @@ paths:
         '204':
           description: proof deleted
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -17030,7 +17030,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -17066,7 +17066,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/SupportingDocumentTemplateDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -17125,7 +17125,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -17157,7 +17157,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -17226,7 +17226,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/PermanentSupportingDocumentDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -17264,7 +17264,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -17309,7 +17309,7 @@ paths:
         '204':
           description: document deleted
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -17356,7 +17356,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -17392,7 +17392,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProofTypeDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -17457,7 +17457,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -17514,7 +17514,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/AddressRequirementDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -17553,7 +17553,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -17625,7 +17625,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -17657,7 +17657,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -17800,7 +17800,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/SmsTrunkDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -17838,7 +17838,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -17883,7 +17883,7 @@ paths:
         '204':
           description: trunk deleted
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -17948,7 +17948,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -17980,7 +17980,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -18049,7 +18049,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/SmsTrunkGroupDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -18087,7 +18087,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -18132,7 +18132,7 @@ paths:
         '204':
           description: trunk group deleted
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -18177,7 +18177,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -18247,7 +18247,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -18279,7 +18279,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -18347,7 +18347,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/VoiceInTrunkDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -18385,7 +18385,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -18430,7 +18430,7 @@ paths:
         '204':
           description: trunk deleted
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -18494,7 +18494,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -18526,7 +18526,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -18594,7 +18594,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/VoiceInTrunkGroupDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -18632,7 +18632,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -18677,7 +18677,7 @@ paths:
         '204':
           description: trunk group deleted
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -18736,7 +18736,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -18831,7 +18831,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -18906,7 +18906,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/VoiceOutTrunkDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -19007,7 +19007,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -19058,7 +19058,7 @@ paths:
         '204':
           description: trunk deleted
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -19103,7 +19103,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
-          description: the bearer token was refused; a request without a bearer token gets the same status with no body
+          description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
           content:
             application/vnd.api+json:
               schema:
@@ -19379,7 +19379,7 @@ paths:
       description: |-
         **api-vin — Voice IN Rates**
 
-        Downloads the price file of the plan assigned to the account: the prices of the plan as a gzipped CSV (UTF-8, LF line endings, a header row), named `voice_in_prices.csv.gz`. Prices are printed as the lookup answers them: never rounded, trailing zeros dropped, one decimal kept (`0.0`, `1.5`, `0.002`). The file is small and served whole, with no byte ranges, and it is the account's own: `Cache-Control` is `private` and `Vary` is `Authorization`, so a cache keyed by the URL alone must not hand it to another account. The token must list `api-vin.didww.com` in its audience, on the sandbox host as well; the `read` scope suffices. Conditional requests use `Last-Modified` and `If-Modified-Since` only: no `ETag` is sent, and a request carrying `If-None-Match` is always answered in full, its `If-Modified-Since` ignored. `Last-Modified` is the later of the last change of the file's content and the last change of the account's plan assignment, so an account moved to another plan is never answered 304 with the prices it left; send it back in `If-Modified-Since` to be answered 304 while nothing has changed.
+        Downloads the price file of the plan assigned to the account: the prices of the plan as a gzipped CSV (UTF-8, LF line endings, a header row), named `voice_in_prices.csv.gz`. Prices are printed as the lookup answers them: never rounded, trailing zeros dropped, one decimal kept (`0.0`, `1.5`, `0.002`). One row per price of the plan, with the columns Country, Src country name, Source type, Destination, Rate (USD, excl. VAT), Connection fee (USD, excl. VAT), Initial interval, Next interval and Reject calls (`true` or `false`), carrying what the lookup's attributes of the matching names carry; Rate and Connection fee are empty on a row that rejects calls. The file is small and served whole, with no byte ranges, and it is the account's own: `Cache-Control` is `private` and `Vary` is `Authorization`, so a cache keyed by the URL alone must not hand it to another account. The token must list `api-vin.didww.com` in its audience, on the sandbox host as well; the `read` scope suffices. Conditional requests use `Last-Modified` and `If-Modified-Since` only: no `ETag` is sent, and a request carrying `If-None-Match` is always answered in full, its `If-Modified-Since` ignored. `Last-Modified` is the later of the last change of the file's content and the last change of the account's plan assignment, so an account moved to another plan is never answered 304 with the prices it left; send it back in `If-Modified-Since` to be answered 304 while nothing has changed.
 
         **api-vout — Voice OUT Rates**
 
