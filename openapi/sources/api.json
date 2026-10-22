@@ -55,6 +55,10 @@
       "description": "Where inbound messages are delivered, how outbound messages are accepted for sending, and the groups that spread inbound messages over several trunks."
     },
     {
+      "name": "Sender ID verifications",
+      "description": "Verification requests for sender identities used for outbound messages, and the SMS trunk each one is routed through."
+    },
+    {
       "name": "Regulation",
       "description": "Identities, addresses and documents. Many countries release a number only once the paperwork behind it has been approved."
     },
@@ -1393,6 +1397,45 @@
           }
         }
       },
+      "SenderIdVerificationIdentifier": {
+        "type": "object",
+        "description": "Identifier of a `sender_id_verifications` resource.",
+        "required": [
+          "type",
+          "id"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "sender_id_verifications"
+            ]
+          },
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "e5a4e2f1-3b26-4a5c-9a0a-2f7c1f3e8d10"
+          }
+        }
+      },
+      "SenderIdVerificationToMany": {
+        "type": "object",
+        "description": "Relationship to a `sender_id_verifications` resources. `data` is present only when the relationship is requested with `include`.",
+        "required": [
+          "links"
+        ],
+        "properties": {
+          "links": {
+            "$ref": "#/components/schemas/RelationshipLinks"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SenderIdVerificationIdentifier"
+            }
+          }
+        }
+      },
       "SharedCapacityGroupIdentifier": {
         "type": "object",
         "description": "Identifier of a `shared_capacity_groups` resource.",
@@ -2626,13 +2669,13 @@
               "setup_price": {
                 "type": "string",
                 "description": "One-off charge, VAT excluded, as a decimal string.",
-                "example": "2.00",
+                "example": "2.0",
                 "readOnly": true
               },
               "monthly_price": {
                 "type": "string",
                 "description": "Recurring monthly charge, VAT excluded, as a decimal string.",
-                "example": "1.50",
+                "example": "1.5",
                 "readOnly": true
               },
               "channels_included_count": {
@@ -3513,6 +3556,9 @@
                   "$ref": "#/components/schemas/Region"
                 },
                 {
+                  "$ref": "#/components/schemas/SenderIdVerification"
+                },
+                {
                   "$ref": "#/components/schemas/SharedCapacityGroup"
                 },
                 {
@@ -3616,6 +3662,9 @@
                 },
                 {
                   "$ref": "#/components/schemas/Region"
+                },
+                {
+                  "$ref": "#/components/schemas/SenderIdVerification"
                 },
                 {
                   "$ref": "#/components/schemas/SharedCapacityGroup"
@@ -5286,19 +5335,19 @@
               "setup_price": {
                 "type": "string",
                 "description": "One-off charge per channel, as a decimal string.",
-                "example": "1.00",
+                "example": "1.0",
                 "readOnly": true
               },
               "monthly_price": {
                 "type": "string",
                 "description": "Recurring monthly charge per channel, as a decimal string.",
-                "example": "5.00",
+                "example": "5.0",
                 "readOnly": true
               },
               "metered_rate": {
                 "type": "string",
                 "description": "Per-minute rate applied once the pool is exhausted, as a decimal string.",
-                "example": "0.0100",
+                "example": "0.01",
                 "readOnly": true
               }
             }
@@ -5395,6 +5444,9 @@
                 },
                 {
                   "$ref": "#/components/schemas/Region"
+                },
+                {
+                  "$ref": "#/components/schemas/SenderIdVerification"
                 },
                 {
                   "$ref": "#/components/schemas/SharedCapacityGroup"
@@ -5502,6 +5554,9 @@
                   "$ref": "#/components/schemas/Region"
                 },
                 {
+                  "$ref": "#/components/schemas/SenderIdVerification"
+                },
+                {
                   "$ref": "#/components/schemas/SharedCapacityGroup"
                 },
                 {
@@ -5607,13 +5662,13 @@
               "setup_price": {
                 "type": "string",
                 "description": "One-off charge per channel at this volume, as a decimal string.",
-                "example": "1.00",
+                "example": "1.0",
                 "readOnly": true
               },
               "monthly_price": {
                 "type": "string",
                 "description": "Recurring monthly charge per channel at this volume, as a decimal string.",
-                "example": "4.50",
+                "example": "4.5",
                 "readOnly": true
               }
             }
@@ -5766,6 +5821,9 @@
                   "$ref": "#/components/schemas/Region"
                 },
                 {
+                  "$ref": "#/components/schemas/SenderIdVerification"
+                },
+                {
                   "$ref": "#/components/schemas/SharedCapacityGroup"
                 },
                 {
@@ -5869,6 +5927,9 @@
                 },
                 {
                   "$ref": "#/components/schemas/Region"
+                },
+                {
+                  "$ref": "#/components/schemas/SenderIdVerification"
                 },
                 {
                   "$ref": "#/components/schemas/SharedCapacityGroup"
@@ -7764,7 +7825,7 @@
               "threshold_amount": {
                 "type": "string",
                 "description": "Spending on the trunk that triggers a notification, as a decimal string. The accepted range depends on the account.",
-                "example": "100.00"
+                "example": "100.0"
               },
               "callback_url": {
                 "type": "string",
@@ -7913,6 +7974,9 @@
                   "$ref": "#/components/schemas/Region"
                 },
                 {
+                  "$ref": "#/components/schemas/SenderIdVerification"
+                },
+                {
                   "$ref": "#/components/schemas/SharedCapacityGroup"
                 },
                 {
@@ -8016,6 +8080,9 @@
                 },
                 {
                   "$ref": "#/components/schemas/Region"
+                },
+                {
+                  "$ref": "#/components/schemas/SenderIdVerification"
                 },
                 {
                   "$ref": "#/components/schemas/SharedCapacityGroup"
@@ -8163,7 +8230,7 @@
                   "threshold_amount": {
                     "type": "string",
                     "description": "Spending on the trunk that triggers a notification, as a decimal string. The accepted range depends on the account.",
-                    "example": "100.00"
+                    "example": "100.0"
                   },
                   "callback_url": {
                     "type": "string",
@@ -8376,7 +8443,7 @@
                   "threshold_amount": {
                     "type": "string",
                     "description": "Spending on the trunk that triggers a notification, as a decimal string. The accepted range depends on the account.",
-                    "example": "100.00"
+                    "example": "100.0"
                   },
                   "callback_url": {
                     "type": "string",
@@ -8895,7 +8962,8 @@
             "required": [
               "outgoing_dids",
               "incoming_dids",
-              "sms_trunk_group"
+              "sms_trunk_group",
+              "sender_id_verifications"
             ],
             "properties": {
               "outgoing_dids": {
@@ -8906,6 +8974,9 @@
               },
               "sms_trunk_group": {
                 "$ref": "#/components/schemas/SmsTrunkGroupToOne"
+              },
+              "sender_id_verifications": {
+                "$ref": "#/components/schemas/SenderIdVerificationToMany"
               }
             }
           },
@@ -8991,6 +9062,9 @@
                 },
                 {
                   "$ref": "#/components/schemas/Region"
+                },
+                {
+                  "$ref": "#/components/schemas/SenderIdVerification"
                 },
                 {
                   "$ref": "#/components/schemas/SharedCapacityGroup"
@@ -9096,6 +9170,9 @@
                 },
                 {
                   "$ref": "#/components/schemas/Region"
+                },
+                {
+                  "$ref": "#/components/schemas/SenderIdVerification"
                 },
                 {
                   "$ref": "#/components/schemas/SharedCapacityGroup"
@@ -10097,6 +10174,9 @@
                   "$ref": "#/components/schemas/Region"
                 },
                 {
+                  "$ref": "#/components/schemas/SenderIdVerification"
+                },
+                {
                   "$ref": "#/components/schemas/SharedCapacityGroup"
                 },
                 {
@@ -10200,6 +10280,9 @@
                 },
                 {
                   "$ref": "#/components/schemas/Region"
+                },
+                {
+                  "$ref": "#/components/schemas/SenderIdVerification"
                 },
                 {
                   "$ref": "#/components/schemas/SharedCapacityGroup"
@@ -10433,6 +10516,441 @@
                 "required": [
                   "sms_trunk"
                 ]
+              }
+            }
+          }
+        }
+      },
+      "SenderIdVerification": {
+        "type": "object",
+        "description": "A verification request for a sender identity used for outbound messages. Only its name and SMS trunk can be changed. Describes the full resource: a response to a request carrying `fields[...]` omits the members it did not ask for.",
+        "required": [
+          "id",
+          "type",
+          "attributes",
+          "relationships",
+          "meta"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "example": "e5a4e2f1-3b26-4a5c-9a0a-2f7c1f3e8d10"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "sender_id_verifications"
+            ]
+          },
+          "attributes": {
+            "type": "object",
+            "required": [
+              "name",
+              "status",
+              "sender_type",
+              "sender_ids",
+              "reference",
+              "reject_reasons",
+              "reject_comment",
+              "renew_date",
+              "created_at",
+              "activated_at",
+              "closed_at"
+            ],
+            "properties": {
+              "name": {
+                "type": "string",
+                "example": "ACME alerts"
+              },
+              "status": {
+                "type": "string",
+                "description": "Lifecycle state of the verification. A `closed` verification cannot be updated.",
+                "enum": [
+                  "active",
+                  "changes_required",
+                  "closed",
+                  "closing_in_process",
+                  "in_process",
+                  "new"
+                ]
+              },
+              "sender_type": {
+                "type": "string",
+                "description": "Kind of sender the verification covers.",
+                "enum": [
+                  "alphanumeric",
+                  "carrier",
+                  "long_code",
+                  "short_code",
+                  "toll_free"
+                ]
+              },
+              "sender_ids": {
+                "type": "array",
+                "description": "Sender IDs the verification covers. For `long_code` and `toll_free` they are the numbers of the customer's `dids`.",
+                "items": {
+                  "type": "string",
+                  "example": "ACME"
+                }
+              },
+              "reference": {
+                "type": "string",
+                "description": "Human-readable reference.",
+                "example": "SID-1234"
+              },
+              "reject_reasons": {
+                "type": "array",
+                "nullable": true,
+                "description": "Reasons the last submission was rejected. Null unless `status` is `changes_required`, and when there are none.",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "reject_comment": {
+                "type": "string",
+                "nullable": true,
+                "description": "Reviewer comment on the rejection. Null unless `status` is `changes_required`."
+              },
+              "renew_date": {
+                "type": "string",
+                "format": "date",
+                "nullable": true,
+                "description": "Next renewal date. Null once closed."
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "activated_at": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true
+              },
+              "closed_at": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true
+              }
+            }
+          },
+          "relationships": {
+            "type": "object",
+            "required": [
+              "sms_trunk",
+              "countries",
+              "dids",
+              "order",
+              "identity",
+              "address"
+            ],
+            "properties": {
+              "sms_trunk": {
+                "$ref": "#/components/schemas/SmsTrunkToOne"
+              },
+              "countries": {
+                "$ref": "#/components/schemas/CountryToMany"
+              },
+              "dids": {
+                "$ref": "#/components/schemas/DidToMany"
+              },
+              "order": {
+                "$ref": "#/components/schemas/OrderToOne"
+              },
+              "identity": {
+                "$ref": "#/components/schemas/IdentityToOne"
+              },
+              "address": {
+                "$ref": "#/components/schemas/AddressToOne"
+              }
+            }
+          },
+          "meta": {
+            "type": "object",
+            "properties": {
+              "setup_price": {
+                "type": "string",
+                "description": "One-off activation charge, as a decimal string.",
+                "example": "10.0"
+              },
+              "monthly_price": {
+                "type": "string",
+                "description": "Recurring monthly charge, as a decimal string.",
+                "example": "15.0"
+              }
+            },
+            "required": [
+              "setup_price",
+              "monthly_price"
+            ]
+          }
+        }
+      },
+      "SenderIdVerificationDocument": {
+        "type": "object",
+        "required": [
+          "data",
+          "meta"
+        ],
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/SenderIdVerification"
+          },
+          "included": {
+            "type": "array",
+            "description": "Compound document. Present only when `include` was sent.",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/Address"
+                },
+                {
+                  "$ref": "#/components/schemas/AddressRequirement"
+                },
+                {
+                  "$ref": "#/components/schemas/AddressVerification"
+                },
+                {
+                  "$ref": "#/components/schemas/Area"
+                },
+                {
+                  "$ref": "#/components/schemas/CapacityPool"
+                },
+                {
+                  "$ref": "#/components/schemas/City"
+                },
+                {
+                  "$ref": "#/components/schemas/Country"
+                },
+                {
+                  "$ref": "#/components/schemas/Did"
+                },
+                {
+                  "$ref": "#/components/schemas/DidGroup"
+                },
+                {
+                  "$ref": "#/components/schemas/EmergencyCallingService"
+                },
+                {
+                  "$ref": "#/components/schemas/EmergencyRequirement"
+                },
+                {
+                  "$ref": "#/components/schemas/EmergencyVerification"
+                },
+                {
+                  "$ref": "#/components/schemas/Identity"
+                },
+                {
+                  "$ref": "#/components/schemas/Order"
+                },
+                {
+                  "$ref": "#/components/schemas/PermanentSupportingDocument"
+                },
+                {
+                  "$ref": "#/components/schemas/Proof"
+                },
+                {
+                  "$ref": "#/components/schemas/ProofType"
+                },
+                {
+                  "$ref": "#/components/schemas/QtyBasedPricing"
+                },
+                {
+                  "$ref": "#/components/schemas/Region"
+                },
+                {
+                  "$ref": "#/components/schemas/SenderIdVerification"
+                },
+                {
+                  "$ref": "#/components/schemas/SharedCapacityGroup"
+                },
+                {
+                  "$ref": "#/components/schemas/SmsTrunk"
+                },
+                {
+                  "$ref": "#/components/schemas/SmsTrunkGroup"
+                },
+                {
+                  "$ref": "#/components/schemas/StockKeepingUnit"
+                },
+                {
+                  "$ref": "#/components/schemas/SupportingDocumentTemplate"
+                },
+                {
+                  "$ref": "#/components/schemas/VoiceInTrunk"
+                },
+                {
+                  "$ref": "#/components/schemas/VoiceInTrunkGroup"
+                }
+              ]
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        }
+      },
+      "SenderIdVerificationCollectionDocument": {
+        "type": "object",
+        "required": [
+          "data",
+          "meta",
+          "links"
+        ],
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SenderIdVerification"
+            }
+          },
+          "included": {
+            "type": "array",
+            "description": "Compound document. Present only when `include` was sent.",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/Address"
+                },
+                {
+                  "$ref": "#/components/schemas/AddressRequirement"
+                },
+                {
+                  "$ref": "#/components/schemas/AddressVerification"
+                },
+                {
+                  "$ref": "#/components/schemas/Area"
+                },
+                {
+                  "$ref": "#/components/schemas/CapacityPool"
+                },
+                {
+                  "$ref": "#/components/schemas/City"
+                },
+                {
+                  "$ref": "#/components/schemas/Country"
+                },
+                {
+                  "$ref": "#/components/schemas/Did"
+                },
+                {
+                  "$ref": "#/components/schemas/DidGroup"
+                },
+                {
+                  "$ref": "#/components/schemas/EmergencyCallingService"
+                },
+                {
+                  "$ref": "#/components/schemas/EmergencyRequirement"
+                },
+                {
+                  "$ref": "#/components/schemas/EmergencyVerification"
+                },
+                {
+                  "$ref": "#/components/schemas/Identity"
+                },
+                {
+                  "$ref": "#/components/schemas/Order"
+                },
+                {
+                  "$ref": "#/components/schemas/PermanentSupportingDocument"
+                },
+                {
+                  "$ref": "#/components/schemas/Proof"
+                },
+                {
+                  "$ref": "#/components/schemas/ProofType"
+                },
+                {
+                  "$ref": "#/components/schemas/QtyBasedPricing"
+                },
+                {
+                  "$ref": "#/components/schemas/Region"
+                },
+                {
+                  "$ref": "#/components/schemas/SenderIdVerification"
+                },
+                {
+                  "$ref": "#/components/schemas/SharedCapacityGroup"
+                },
+                {
+                  "$ref": "#/components/schemas/SmsTrunk"
+                },
+                {
+                  "$ref": "#/components/schemas/SmsTrunkGroup"
+                },
+                {
+                  "$ref": "#/components/schemas/StockKeepingUnit"
+                },
+                {
+                  "$ref": "#/components/schemas/SupportingDocumentTemplate"
+                },
+                {
+                  "$ref": "#/components/schemas/VoiceInTrunk"
+                },
+                {
+                  "$ref": "#/components/schemas/VoiceInTrunkGroup"
+                }
+              ]
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/CollectionMeta"
+          },
+          "links": {
+            "$ref": "#/components/schemas/PaginationLinks"
+          }
+        }
+      },
+      "SenderIdVerificationUpdateRequest": {
+        "type": "object",
+        "description": "A `closed` verification is refused with 422.",
+        "required": [
+          "data"
+        ],
+        "properties": {
+          "data": {
+            "type": "object",
+            "required": [
+              "id",
+              "type"
+            ],
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "sender_id_verifications"
+                ]
+              },
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "example": "e5a4e2f1-3b26-4a5c-9a0a-2f7c1f3e8d10"
+              },
+              "attributes": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "example": "ACME alerts"
+                  }
+                }
+              },
+              "relationships": {
+                "type": "object",
+                "properties": {
+                  "sms_trunk": {
+                    "type": "object",
+                    "description": "SMS trunk outbound messages are routed through. Send `data: null` to unassign it; outbound messages then stop until a trunk is assigned again. Only an `http_out`, `smpp_smsc` or `smpp_esme` trunk is accepted.",
+                    "required": [
+                      "data"
+                    ],
+                    "properties": {
+                      "data": {
+                        "$ref": "#/components/schemas/SmsTrunkIdentifierNullable"
+                      }
+                    }
+                  }
+                }
               }
             }
           }
@@ -12782,6 +13300,9 @@
                   "$ref": "#/components/schemas/Region"
                 },
                 {
+                  "$ref": "#/components/schemas/SenderIdVerification"
+                },
+                {
                   "$ref": "#/components/schemas/SharedCapacityGroup"
                 },
                 {
@@ -12885,6 +13406,9 @@
                 },
                 {
                   "$ref": "#/components/schemas/Region"
+                },
+                {
+                  "$ref": "#/components/schemas/SenderIdVerification"
                 },
                 {
                   "$ref": "#/components/schemas/SharedCapacityGroup"
@@ -13257,12 +13781,14 @@
               "setup_price": {
                 "type": "string",
                 "nullable": true,
-                "description": "One-off activation charge, as a decimal string. Always `\"0.0\"` when priced. Null only on a requirement reached through an emergency calling service this account is no longer priced for."
+                "description": "One-off activation charge, as a decimal string. Always `\"0.0\"` when priced. Null only on a requirement reached through an emergency calling service this account is no longer priced for.",
+                "example": "0.0"
               },
               "monthly_price": {
                 "type": "string",
                 "nullable": true,
-                "description": "Recurring monthly charge, as a decimal string. Null only on a requirement reached through an emergency calling service this account is no longer priced for."
+                "description": "Recurring monthly charge, as a decimal string. Null only on a requirement reached through an emergency calling service this account is no longer priced for.",
+                "example": "0.5"
               }
             },
             "required": [
@@ -13584,12 +14110,12 @@
               "setup_price": {
                 "type": "string",
                 "description": "One-off activation charge, as a decimal string.",
-                "example": "10.00"
+                "example": "10.0"
               },
               "monthly_price": {
                 "type": "string",
                 "description": "Recurring monthly charge, as a decimal string.",
-                "example": "5.00"
+                "example": "5.0"
               }
             },
             "required": [
@@ -13670,6 +14196,9 @@
                 },
                 {
                   "$ref": "#/components/schemas/Region"
+                },
+                {
+                  "$ref": "#/components/schemas/SenderIdVerification"
                 },
                 {
                   "$ref": "#/components/schemas/SharedCapacityGroup"
@@ -13775,6 +14304,9 @@
                 },
                 {
                   "$ref": "#/components/schemas/Region"
+                },
+                {
+                  "$ref": "#/components/schemas/SenderIdVerification"
                 },
                 {
                   "$ref": "#/components/schemas/SharedCapacityGroup"
@@ -13996,6 +14528,9 @@
                   "$ref": "#/components/schemas/Region"
                 },
                 {
+                  "$ref": "#/components/schemas/SenderIdVerification"
+                },
+                {
                   "$ref": "#/components/schemas/SharedCapacityGroup"
                 },
                 {
@@ -14099,6 +14634,9 @@
                 },
                 {
                   "$ref": "#/components/schemas/Region"
+                },
+                {
+                  "$ref": "#/components/schemas/SenderIdVerification"
                 },
                 {
                   "$ref": "#/components/schemas/SharedCapacityGroup"
@@ -16369,7 +16907,8 @@
               "configuration",
               "outgoing_dids",
               "incoming_dids",
-              "sms_trunk_group"
+              "sms_trunk_group",
+              "sender_id_verifications"
             ]
           }
         },
@@ -16461,6 +17000,135 @@
               "updated_at",
               "sms_trunks",
               "incoming_dids"
+            ]
+          }
+        },
+        "example": [
+          "id",
+          "name"
+        ]
+      },
+      "SenderIdVerificationFilter": {
+        "name": "filter",
+        "in": "query",
+        "required": false,
+        "style": "deepObject",
+        "explode": true,
+        "description": "Filters, sent as `filter[<name>]=<value>`.",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Matches the verification by its identifier. Accepts a comma-separated list, matching any of the values."
+            },
+            "name": {
+              "type": "string",
+              "description": "Matches verifications whose name contains this value."
+            },
+            "reference": {
+              "type": "string",
+              "description": "Matches the verification with exactly this reference."
+            },
+            "sender_type": {
+              "type": "string",
+              "description": "Matches verifications of this sender type. Takes one value, not a list.",
+              "enum": [
+                "alphanumeric",
+                "carrier",
+                "long_code",
+                "short_code",
+                "toll_free"
+              ]
+            },
+            "sms_trunk.id": {
+              "type": "string",
+              "description": "Matches verifications routed through the SMS trunk. Accepts a comma-separated list; a match on any listed value is enough."
+            },
+            "status": {
+              "type": "string",
+              "description": "Matches verifications in this lifecycle state. Takes one value, not a list.",
+              "enum": [
+                "active",
+                "changes_required",
+                "closed",
+                "closing_in_process",
+                "in_process",
+                "new"
+              ]
+            }
+          }
+        }
+      },
+      "SenderIdVerificationSort": {
+        "name": "sort",
+        "in": "query",
+        "required": false,
+        "style": "form",
+        "explode": false,
+        "description": "Sort fields, applied in order. Prefix a field with `-` to sort descending.",
+        "schema": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "created_at",
+              "-created_at",
+              "name",
+              "-name",
+              "renew_date",
+              "-renew_date",
+              "status",
+              "-status"
+            ]
+          }
+        },
+        "example": [
+          "created_at"
+        ]
+      },
+      "SenderIdVerificationPageSize": {
+        "name": "page[size]",
+        "in": "query",
+        "required": false,
+        "description": "Records per page. The maximum can be raised for an individual account, so a key may be allowed more than this.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 50
+        }
+      },
+      "SenderIdVerificationFields": {
+        "name": "fields[sender_id_verifications]",
+        "in": "query",
+        "required": false,
+        "style": "form",
+        "explode": false,
+        "description": "Sparse fieldset. When sent, `attributes` and `relationships` are pruned to the listed fields. The response schemas in this document describe the full, unpruned set.",
+        "schema": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "id",
+              "name",
+              "status",
+              "sender_type",
+              "sender_ids",
+              "reference",
+              "reject_reasons",
+              "reject_comment",
+              "renew_date",
+              "created_at",
+              "activated_at",
+              "closed_at",
+              "sms_trunk",
+              "countries",
+              "dids",
+              "order",
+              "identity",
+              "address"
             ]
           }
         },
@@ -25511,6 +26179,285 @@
         }
       }
     },
+    "/sender_id_verifications": {
+      "get": {
+        "summary": "List Sender ID verifications",
+        "tags": [
+          "Sender ID verifications"
+        ],
+        "operationId": "listSenderIdVerifications",
+        "description": "Returns the Sender ID verifications of the customer. `filter[status]`, `filter[sender_type]`, `filter[sms_trunk.id]`, `filter[name]` and `filter[reference]` narrow the list.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/SenderIdVerificationFilter"
+          },
+          {
+            "$ref": "#/components/parameters/SenderIdVerificationSort"
+          },
+          {
+            "$ref": "#/components/parameters/PageNumber"
+          },
+          {
+            "$ref": "#/components/parameters/SenderIdVerificationPageSize"
+          },
+          {
+            "name": "include",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": false,
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "sms_trunk",
+                  "countries",
+                  "dids",
+                  "order",
+                  "identity",
+                  "address"
+                ]
+              }
+            },
+            "example": [
+              "sms_trunk"
+            ]
+          },
+          {
+            "$ref": "#/components/parameters/SenderIdVerificationFields"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "verifications returned",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SenderIdVerificationCollectionDocument"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "malformed request — unknown filter, bad pagination or bad sort field",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "406": {
+            "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sender_id_verifications/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "Sender ID verification identifier.",
+          "schema": {
+            "type": "string",
+            "format": "uuid"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Read a Sender ID verification",
+        "tags": [
+          "Sender ID verifications"
+        ],
+        "operationId": "getSenderIdVerification",
+        "description": "Returns a single Sender ID verification.",
+        "parameters": [
+          {
+            "name": "include",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": false,
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "sms_trunk",
+                  "countries",
+                  "dids",
+                  "order",
+                  "identity",
+                  "address"
+                ]
+              }
+            },
+            "example": [
+              "sms_trunk"
+            ]
+          },
+          {
+            "$ref": "#/components/parameters/SenderIdVerificationFields"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "verification returned",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SenderIdVerificationDocument"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "no verification with that id belongs to the customer",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "406": {
+            "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update a Sender ID verification",
+        "tags": [
+          "Sender ID verifications"
+        ],
+        "operationId": "updateSenderIdVerification",
+        "description": "Changes the name, or the SMS trunk outbound messages are routed through. Send `sms_trunk` with `data: null` to unassign the trunk. A `closed` verification cannot be updated.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "verification updated",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SenderIdVerificationDocument"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "another verification already uses a Sender ID of this one on the SMS trunk",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "no verification with that id belongs to the customer",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "the body carries a member the API does not accept",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "406": {
+            "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "the request body was sent under an unsupported media type",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "content": {
+            "application/vnd.api+json": {
+              "schema": {
+                "$ref": "#/components/schemas/SenderIdVerificationUpdateRequest"
+              }
+            }
+          },
+          "required": true
+        }
+      }
+    },
     "/sms_trunks": {
       "get": {
         "summary": "List SMS trunks",
@@ -25546,7 +26493,8 @@
                 "enum": [
                   "outgoing_dids",
                   "incoming_dids",
-                  "sms_trunk_group"
+                  "sms_trunk_group",
+                  "sender_id_verifications"
                 ]
               }
             },
@@ -25824,7 +26772,8 @@
                 "enum": [
                   "outgoing_dids",
                   "incoming_dids",
-                  "sms_trunk_group"
+                  "sms_trunk_group",
+                  "sender_id_verifications"
                 ]
               }
             },
@@ -25976,7 +26925,7 @@
           "SMS trunks"
         ],
         "operationId": "deleteSmsTrunk",
-        "description": "Deletes the SMS trunk. Rejected with 422 while any DID is routed to it for inbound messages — route those DIDs elsewhere first.",
+        "description": "Deletes the SMS trunk. Rejected with 422 while any DID is routed to it for inbound messages — route those DIDs elsewhere first. Sender ID verifications that use the trunk are left without one, and their outbound messages stop until another trunk is assigned.",
         "responses": {
           "204": {
             "description": "trunk deleted"
