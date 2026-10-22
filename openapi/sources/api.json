@@ -2692,13 +2692,13 @@
               "setup_price": {
                 "type": "string",
                 "description": "One-off charge, VAT excluded, as a decimal string.",
-                "example": "2.00",
+                "example": "2.0",
                 "readOnly": true
               },
               "monthly_price": {
                 "type": "string",
                 "description": "Recurring monthly charge, VAT excluded, as a decimal string.",
-                "example": "1.50",
+                "example": "1.5",
                 "readOnly": true
               },
               "channels_included_count": {
@@ -5107,19 +5107,19 @@
               "setup_price": {
                 "type": "string",
                 "description": "One-off charge per channel, as a decimal string.",
-                "example": "1.00",
+                "example": "1.0",
                 "readOnly": true
               },
               "monthly_price": {
                 "type": "string",
                 "description": "Recurring monthly charge per channel, as a decimal string.",
-                "example": "5.00",
+                "example": "5.0",
                 "readOnly": true
               },
               "metered_rate": {
                 "type": "string",
                 "description": "Per-minute rate applied once the pool is exhausted, as a decimal string.",
-                "example": "0.0100",
+                "example": "0.01",
                 "readOnly": true
               }
             }
@@ -5428,13 +5428,13 @@
               "setup_price": {
                 "type": "string",
                 "description": "One-off charge per channel at this volume, as a decimal string.",
-                "example": "1.00",
+                "example": "1.0",
                 "readOnly": true
               },
               "monthly_price": {
                 "type": "string",
                 "description": "Recurring monthly charge per channel at this volume, as a decimal string.",
-                "example": "4.50",
+                "example": "4.5",
                 "readOnly": true
               }
             }
@@ -7576,7 +7576,7 @@
               "threshold_amount": {
                 "type": "string",
                 "description": "Spending on the trunk that triggers a notification, as a decimal string. The accepted range depends on the account.",
-                "example": "100.00"
+                "example": "100.0"
               },
               "callback_url": {
                 "type": "string",
@@ -7975,7 +7975,7 @@
                   "threshold_amount": {
                     "type": "string",
                     "description": "Spending on the trunk that triggers a notification, as a decimal string. The accepted range depends on the account.",
-                    "example": "100.00"
+                    "example": "100.0"
                   },
                   "callback_url": {
                     "type": "string",
@@ -8188,7 +8188,7 @@
                   "threshold_amount": {
                     "type": "string",
                     "description": "Spending on the trunk that triggers a notification, as a decimal string. The accepted range depends on the account.",
-                    "example": "100.00"
+                    "example": "100.0"
                   },
                   "callback_url": {
                     "type": "string",
@@ -11375,12 +11375,14 @@
               "setup_price": {
                 "type": "string",
                 "nullable": true,
-                "description": "One-off activation charge, as a decimal string. Always `\"0.0\"` when priced. Null only on a requirement reached through an emergency calling service this account is no longer priced for."
+                "description": "One-off activation charge, as a decimal string. Always `\"0.0\"` when priced. Null only on a requirement reached through an emergency calling service this account is no longer priced for.",
+                "example": "0.0"
               },
               "monthly_price": {
                 "type": "string",
                 "nullable": true,
-                "description": "Recurring monthly charge, as a decimal string. Null only on a requirement reached through an emergency calling service this account is no longer priced for."
+                "description": "Recurring monthly charge, as a decimal string. Null only on a requirement reached through an emergency calling service this account is no longer priced for.",
+                "example": "0.5"
               }
             },
             "required": [
@@ -11698,12 +11700,12 @@
               "setup_price": {
                 "type": "string",
                 "description": "One-off activation charge, as a decimal string.",
-                "example": "10.00"
+                "example": "10.0"
               },
               "monthly_price": {
                 "type": "string",
                 "description": "Recurring monthly charge, as a decimal string.",
-                "example": "5.00"
+                "example": "5.0"
               }
             },
             "required": [
@@ -16469,15 +16471,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `address`, `dids`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "address",
-                  "dids"
-                ]
+                "pattern": "^(?:address|dids)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -16801,15 +16800,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `address`, `dids`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "address",
-                  "dids"
-                ]
+                "pattern": "^(?:address|dids)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -16989,16 +16985,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `countries`, `shared_capacity_groups`, `qty_based_pricings`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "countries",
-                  "shared_capacity_groups",
-                  "qty_based_pricings"
-                ]
+                "pattern": "^(?:countries|shared_capacity_groups|qty_based_pricings)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -17083,16 +17075,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `countries`, `shared_capacity_groups`, `qty_based_pricings`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "countries",
-                  "shared_capacity_groups",
-                  "qty_based_pricings"
-                ]
+                "pattern": "^(?:countries|shared_capacity_groups|qty_based_pricings)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -17272,15 +17260,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `capacity_pool`, `dids`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "capacity_pool",
-                  "dids"
-                ]
+                "pattern": "^(?:capacity_pool|dids)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -17450,15 +17435,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `capacity_pool`, `dids`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "capacity_pool",
-                  "dids"
-                ]
+                "pattern": "^(?:capacity_pool|dids)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -17680,14 +17662,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `regions`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "regions"
-                ]
+                "pattern": "^(?:regions)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -17772,14 +17752,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `regions`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "regions"
-                ]
+                "pattern": "^(?:regions)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -17858,14 +17836,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `country`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "country"
-                ]
+                "pattern": "^(?:country)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -17950,14 +17926,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `country`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "country"
-                ]
+                "pattern": "^(?:country)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -18042,16 +18016,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `country`, `region`, `area`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "country",
-                  "region",
-                  "area"
-                ]
+                "pattern": "^(?:country|region|area)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -18136,16 +18106,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `country`, `region`, `area`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "country",
-                  "region",
-                  "area"
-                ]
+                "pattern": "^(?:country|region|area)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -18230,14 +18196,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `country`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "country"
-                ]
+                "pattern": "^(?:country)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -18322,14 +18286,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `country`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "country"
-                ]
+                "pattern": "^(?:country)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -18612,19 +18574,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `country`, `city`, `did_group_type`, `region`, `stock_keeping_units`, `address_requirement`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "country",
-                  "city",
-                  "did_group_type",
-                  "region",
-                  "stock_keeping_units",
-                  "address_requirement"
-                ]
+                "pattern": "^(?:country|city|did_group_type|region|stock_keeping_units|address_requirement)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -18709,19 +18664,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `country`, `city`, `did_group_type`, `region`, `stock_keeping_units`, `address_requirement`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "country",
-                  "city",
-                  "did_group_type",
-                  "region",
-                  "stock_keeping_units",
-                  "address_requirement"
-                ]
+                "pattern": "^(?:country|city|did_group_type|region|stock_keeping_units|address_requirement)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -18797,15 +18745,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `did_group`, `nanpa_prefix`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "did_group",
-                  "nanpa_prefix"
-                ]
+                "pattern": "^(?:did_group|nanpa_prefix)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -18890,15 +18835,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `did_group`, `nanpa_prefix`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "did_group",
-                  "nanpa_prefix"
-                ]
+                "pattern": "^(?:did_group|nanpa_prefix)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -19068,14 +19010,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `available_did`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "available_did"
-                ]
+                "pattern": "^(?:available_did)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -19160,14 +19100,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `available_did`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "available_did"
-                ]
+                "pattern": "^(?:available_did)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -19300,23 +19238,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `did_group`, `order`, `capacity_pool`, `shared_capacity_group`, `address_verification`, `voice_in_trunk`, `voice_in_trunk_group`, `emergency_calling_service`, `emergency_verification`, `identity`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "did_group",
-                  "order",
-                  "capacity_pool",
-                  "shared_capacity_group",
-                  "address_verification",
-                  "voice_in_trunk",
-                  "voice_in_trunk_group",
-                  "emergency_calling_service",
-                  "emergency_verification",
-                  "identity"
-                ]
+                "pattern": "^(?:did_group|order|capacity_pool|shared_capacity_group|address_verification|voice_in_trunk|voice_in_trunk_group|emergency_calling_service|emergency_verification|identity)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -19401,23 +19328,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `did_group`, `order`, `capacity_pool`, `shared_capacity_group`, `address_verification`, `voice_in_trunk`, `voice_in_trunk_group`, `emergency_calling_service`, `emergency_verification`, `identity`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "did_group",
-                  "order",
-                  "capacity_pool",
-                  "shared_capacity_group",
-                  "address_verification",
-                  "voice_in_trunk",
-                  "voice_in_trunk_group",
-                  "emergency_calling_service",
-                  "emergency_verification",
-                  "identity"
-                ]
+                "pattern": "^(?:did_group|order|capacity_pool|shared_capacity_group|address_verification|voice_in_trunk|voice_in_trunk_group|emergency_calling_service|emergency_verification|identity)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -19594,15 +19510,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `country`, `did_group_type`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "country",
-                  "did_group_type"
-                ]
+                "pattern": "^(?:country|did_group_type)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -19697,15 +19610,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `country`, `did_group_type`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "country",
-                  "did_group_type"
-                ]
+                "pattern": "^(?:country|did_group_type)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -19897,19 +19807,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `country`, `did_group_type`, `order`, `emergency_requirement`, `emergency_verification`, `dids`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "country",
-                  "did_group_type",
-                  "order",
-                  "emergency_requirement",
-                  "emergency_verification",
-                  "dids"
-                ]
+                "pattern": "^(?:country|did_group_type|order|emergency_requirement|emergency_verification|dids)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -20004,19 +19907,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `country`, `did_group_type`, `order`, `emergency_requirement`, `emergency_verification`, `dids`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "country",
-                  "did_group_type",
-                  "order",
-                  "emergency_requirement",
-                  "emergency_verification",
-                  "dids"
-                ]
+                "pattern": "^(?:country|did_group_type|order|emergency_requirement|emergency_verification|dids)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -20169,16 +20065,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `address`, `emergency_calling_service`, `dids`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "address",
-                  "emergency_calling_service",
-                  "dids"
-                ]
+                "pattern": "^(?:address|emergency_calling_service|dids)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -20538,16 +20430,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `address`, `emergency_calling_service`, `dids`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "address",
-                  "emergency_calling_service",
-                  "dids"
-                ]
+                "pattern": "^(?:address|emergency_calling_service|dids)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -20747,15 +20635,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `country`, `region`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "country",
-                  "region"
-                ]
+                "pattern": "^(?:country|region)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -20840,15 +20725,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `country`, `region`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "country",
-                  "region"
-                ]
+                "pattern": "^(?:country|region)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -21451,18 +21333,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `country`, `birth_country`, `proofs`, `addresses`, `permanent_documents`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "country",
-                  "birth_country",
-                  "proofs",
-                  "addresses",
-                  "permanent_documents"
-                ]
+                "pattern": "^(?:country|birth_country|proofs|addresses|permanent_documents)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -21632,18 +21508,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `country`, `birth_country`, `proofs`, `addresses`, `permanent_documents`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "country",
-                  "birth_country",
-                  "proofs",
-                  "addresses",
-                  "permanent_documents"
-                ]
+                "pattern": "^(?:country|birth_country|proofs|addresses|permanent_documents)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -21881,18 +21751,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `identity`, `country`, `area`, `city`, `proofs`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "identity",
-                  "country",
-                  "area",
-                  "city",
-                  "proofs"
-                ]
+                "pattern": "^(?:identity|country|area|city|proofs)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -22062,18 +21926,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `identity`, `country`, `area`, `city`, `proofs`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "identity",
-                  "country",
-                  "area",
-                  "city",
-                  "proofs"
-                ]
+                "pattern": "^(?:identity|country|area|city|proofs)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -22568,15 +22426,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `proof_type`, `entity`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "proof_type",
-                  "entity"
-                ]
+                "pattern": "^(?:proof_type|entity)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -22746,15 +22601,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `proof_type`, `entity`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "proof_type",
-                  "entity"
-                ]
+                "pattern": "^(?:proof_type|entity)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -23136,15 +22988,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `template`, `identity`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "template",
-                  "identity"
-                ]
+                "pattern": "^(?:template|identity)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -23314,15 +23163,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `template`, `identity`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "template",
-                  "identity"
-                ]
+                "pattern": "^(?:template|identity)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -23695,22 +23541,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `country`, `did_group_type`, `personal_permanent_document`, `business_permanent_document`, `personal_onetime_document`, `business_onetime_document`, `personal_proof_types`, `business_proof_types`, `address_proof_types`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "country",
-                  "did_group_type",
-                  "personal_permanent_document",
-                  "business_permanent_document",
-                  "personal_onetime_document",
-                  "business_onetime_document",
-                  "personal_proof_types",
-                  "business_proof_types",
-                  "address_proof_types"
-                ]
+                "pattern": "^(?:country|did_group_type|personal_permanent_document|business_permanent_document|personal_onetime_document|business_onetime_document|personal_proof_types|business_proof_types|address_proof_types)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -23795,22 +23631,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `country`, `did_group_type`, `personal_permanent_document`, `business_permanent_document`, `personal_onetime_document`, `business_onetime_document`, `personal_proof_types`, `business_proof_types`, `address_proof_types`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "country",
-                  "did_group_type",
-                  "personal_permanent_document",
-                  "business_permanent_document",
-                  "personal_onetime_document",
-                  "business_onetime_document",
-                  "personal_proof_types",
-                  "business_proof_types",
-                  "address_proof_types"
-                ]
+                "pattern": "^(?:country|did_group_type|personal_permanent_document|business_permanent_document|personal_onetime_document|business_onetime_document|personal_proof_types|business_proof_types|address_proof_types)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -23982,15 +23808,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `voice_in_trunk_group`, `pop`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "voice_in_trunk_group",
-                  "pop"
-                ]
+                "pattern": "^(?:voice_in_trunk_group|pop)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -24160,15 +23983,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `voice_in_trunk_group`, `pop`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "voice_in_trunk_group",
-                  "pop"
-                ]
+                "pattern": "^(?:voice_in_trunk_group|pop)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -24406,14 +24226,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `voice_in_trunks`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "voice_in_trunks"
-                ]
+                "pattern": "^(?:voice_in_trunks)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -24583,14 +24401,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `voice_in_trunks`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "voice_in_trunks"
-                ]
+                "pattern": "^(?:voice_in_trunks)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -24881,15 +24697,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `dids`, `emergency_dids`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "dids",
-                  "emergency_dids"
-                ]
+                "pattern": "^(?:dids|emergency_dids)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
@@ -25161,15 +24974,12 @@
             "required": false,
             "style": "form",
             "explode": false,
-            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it; the values listed here are the first segment.",
+            "description": "Relationships to return in the top-level `included` array. A value may be extended with dotted segments (`a.b`), each of which must be a relationship of the resource named before it. The first segment is one of `dids`, `emergency_dids`.",
             "schema": {
               "type": "array",
               "items": {
                 "type": "string",
-                "enum": [
-                  "dids",
-                  "emergency_dids"
-                ]
+                "pattern": "^(?:dids|emergency_dids)(?:\\.[a-z_]+)*$"
               }
             },
             "example": [
