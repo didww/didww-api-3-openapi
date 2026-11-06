@@ -27,6 +27,9 @@ info:
     `fields[...]` receives fewer members than its schema lists, deliberately:
     OpenAPI cannot express a member that is required only until a query
     parameter prunes it.
+
+    Requests spend the account's rate-limit budget: once it is spent, the answer
+    is 429 with `Retry-After`.
   contact:
     name: DIDWW Support
     email: support@didww.com
@@ -3316,24 +3319,24 @@ components:
                   description: Restricts an SMS export to messages whose recipient address contains this value.
                 status:
                   type: string
-                  description: 'Restricts an SMS export to messages in this state: `Success`, `Failed`, `Queued` for `sms_in`, `Routing Error`, `In Progress`, `Queued`, `Failed`, `Success` for `sms_out`.'
+                  description: 'Restricts an SMS export to messages in this state: `success`, `failed`, `queued` for `sms_in`, `routing_error`, `in_progress`, `queued`, `failed`, `success` for `sms_out`.'
                 trunk_type:
                   description: Restricts an `sms_in` export to messages delivered through trunks of this type, or of any of these types.
                   anyOf:
                     - type: string
                       enum:
-                        - SMPP SMSC
-                        - SMPP ESME
-                        - Email
-                        - HTTP IN
+                        - smpp_smsc
+                        - smpp_esme
+                        - sms_to_email
+                        - http_in
                     - type: array
                       items:
                         type: string
                         enum:
-                          - SMPP SMSC
-                          - SMPP ESME
-                          - Email
-                          - HTTP IN
+                          - smpp_smsc
+                          - smpp_esme
+                          - sms_to_email
+                          - http_in
                 sms_trunk.id:
                   description: Restricts an SMS export to messages through this SMS trunk of the customer, or any of these.
                   anyOf:
@@ -3348,8 +3351,10 @@ components:
                   description: Restricts an SMS export to the message with this identifier.
                 service_type:
                   type: string
-                  description: Restricts an `sms_out` export to person-to-person (`p2p`) or application-to-person (`a2p`) traffic, in any letter case; the export keeps the value as sent.
-                  pattern: ^(?:[aA]2[pP]|[pP]2[pP])$
+                  description: Restricts an `sms_out` export to person-to-person (`p2p`) or application-to-person (`a2p`) traffic.
+                  enum:
+                    - a2p
+                    - p2p
                 sender_id_verification.id:
                   description: Restricts an `sms_out` export to messages sent under this sender ID verification of the customer, or any of these.
                   anyOf:
@@ -3489,24 +3494,24 @@ components:
                       description: Restricts an SMS export to messages whose recipient address contains this value.
                     status:
                       type: string
-                      description: 'Restricts an SMS export to messages in this state: `Success`, `Failed`, `Queued` for `sms_in`, `Routing Error`, `In Progress`, `Queued`, `Failed`, `Success` for `sms_out`.'
+                      description: 'Restricts an SMS export to messages in this state: `success`, `failed`, `queued` for `sms_in`, `routing_error`, `in_progress`, `queued`, `failed`, `success` for `sms_out`.'
                     trunk_type:
                       description: Restricts an `sms_in` export to messages delivered through trunks of this type, or of any of these types.
                       anyOf:
                         - type: string
                           enum:
-                            - SMPP SMSC
-                            - SMPP ESME
-                            - Email
-                            - HTTP IN
+                            - smpp_smsc
+                            - smpp_esme
+                            - sms_to_email
+                            - http_in
                         - type: array
                           items:
                             type: string
                             enum:
-                              - SMPP SMSC
-                              - SMPP ESME
-                              - Email
-                              - HTTP IN
+                              - smpp_smsc
+                              - smpp_esme
+                              - sms_to_email
+                              - http_in
                     sms_trunk.id:
                       description: Restricts an SMS export to messages through this SMS trunk of the customer, or any of these.
                       anyOf:
@@ -3521,8 +3526,10 @@ components:
                       description: Restricts an SMS export to the message with this identifier.
                     service_type:
                       type: string
-                      description: Restricts an `sms_out` export to person-to-person (`p2p`) or application-to-person (`a2p`) traffic, in any letter case; the export keeps the value as sent.
-                      pattern: ^(?:[aA]2[pP]|[pP]2[pP])$
+                      description: Restricts an `sms_out` export to person-to-person (`p2p`) or application-to-person (`a2p`) traffic.
+                      enum:
+                        - a2p
+                        - p2p
                     sender_id_verification.id:
                       description: Restricts an `sms_out` export to messages sent under this sender ID verification of the customer, or any of these.
                       anyOf:
@@ -4174,15 +4181,15 @@ components:
               nullable: true
               description: Point of presence the trunk is pinned to. Null lets DIDWW choose.
               enum:
-                - NYC
-                - FRA
-                - LAC
-                - MIA
-                - SG
-                - HK
-                - AMS
+                - nyc
+                - fra
+                - lac
+                - mia
+                - sg
+                - hk
+                - ams
                 - null
-              example: FRA
+              example: fra
             created_at:
               type: string
               format: date-time
@@ -4316,15 +4323,15 @@ components:
                   nullable: true
                   description: Point of presence the trunk is pinned to. Null lets DIDWW choose.
                   enum:
-                    - NYC
-                    - FRA
-                    - LAC
-                    - MIA
-                    - SG
-                    - HK
-                    - AMS
+                    - nyc
+                    - fra
+                    - lac
+                    - mia
+                    - sg
+                    - hk
+                    - ams
                     - null
-                  example: FRA
+                  example: fra
                 configuration:
                   description: 'Transport configuration. `attributes` is determined by `type`: a SIP trunk delivers calls to a SIP host, a PSTN trunk forwards them to a phone number.'
                   anyOf:
@@ -4426,15 +4433,15 @@ components:
                   nullable: true
                   description: Point of presence the trunk is pinned to. Null lets DIDWW choose.
                   enum:
-                    - NYC
-                    - FRA
-                    - LAC
-                    - MIA
-                    - SG
-                    - HK
-                    - AMS
+                    - nyc
+                    - fra
+                    - lac
+                    - mia
+                    - sg
+                    - hk
+                    - ams
                     - null
-                  example: FRA
+                  example: fra
                 configuration:
                   description: 'Transport configuration. `attributes` is determined by `type`: a SIP trunk delivers calls to a SIP host, a PSTN trunk forwards them to a phone number. `type` must match the trunk''s; the members you send are written and the rest keep their stored values.'
                   anyOf:
@@ -4508,27 +4515,29 @@ components:
             use_did_in_ruri:
               type: boolean
               description: Put the DID number in the request URI user part. Requires SIP registration.
-            codec_ids:
+            codecs:
               type: array
-              description: 'Offered codecs, in preference order, as platform codec ids: 6 (telephone-event), 7 (G723), 8 (G729), 9 (PCMU), 10 (PCMA), 12 (speex), 13 (GSM), 14 (G726-32), 15 (G721), 16 (G726-24), 17 (G726-40), 18 (G726-16), 19 (L16). Required.'
+              description: 'Codecs offered on calls to the trunk, in priority order: the first has the highest priority. Defaults to `pcmu`, `pcma`, `g729`, `g723`, `telephone_event`.'
               minItems: 1
               uniqueItems: true
               items:
-                type: integer
+                type: string
                 enum:
-                  - 6
-                  - 7
-                  - 8
-                  - 9
-                  - 10
-                  - 12
-                  - 13
-                  - 14
-                  - 15
-                  - 16
-                  - 17
-                  - 18
-                  - 19
+                  - telephone_event
+                  - g723
+                  - g729
+                  - pcmu
+                  - pcma
+                  - speex
+                  - gsm
+                  - g726_32
+                  - g721
+                  - g726_24
+                  - g726_40
+                  - g726_16
+                  - l16
+                  - amr
+                  - amr_wb
             rx_dtmf_format_id:
               type: integer
               description: 'Inbound DTMF format: 1 RFC 2833, 2 SIP INFO application/dtmf-relay OR application/dtmf, 3 RFC 2833 OR SIP INFO.'
@@ -4644,6 +4653,27 @@ components:
                 - srtp_sdes
                 - srtp_dtls
                 - zrtp
+            ice_mode:
+              type: string
+              description: 'ICE (Interactive Connectivity Establishment) for calls to the trunk: not used, accepted when the trunk offers it, or initiated by DIDWW. Defaults to `disabled`.'
+              enum:
+                - disabled
+                - accept
+                - initiate
+            rtcp_mux_mode:
+              type: string
+              description: 'RTP and RTCP multiplexed on one port: not used, accepted when the trunk offers it, or initiated by DIDWW. Defaults to `disabled`.'
+              enum:
+                - disabled
+                - accept
+                - initiate
+            rtcp_feedback_mode:
+              type: string
+              description: 'RTCP feedback (AVPF): not used, accepted when the trunk offers it, or initiated by DIDWW. Defaults to `disabled`.'
+              enum:
+                - disabled
+                - accept
+                - initiate
             stir_shaken_mode:
               type: string
               description: How STIR/SHAKEN attestation is passed on.
@@ -4743,7 +4773,7 @@ components:
             - network_protocol_priority
             - resolve_ruri
             - use_did_in_ruri
-            - codec_ids
+            - codecs
             - rx_dtmf_format_id
             - tx_dtmf_format_id
             - auth_enabled
@@ -4768,6 +4798,9 @@ components:
             - symmetric_rtp_ignore_rtcp
             - allowed_rtp_ips
             - media_encryption_mode
+            - ice_mode
+            - rtcp_mux_mode
+            - rtcp_feedback_mode
             - stir_shaken_mode
             - diversion_relay_policy
             - diversion_inject_mode
@@ -4826,27 +4859,6 @@ components:
               description: SIP port. Must be blank when `enabled_sip_registration` is true.
               minimum: 1
               maximum: 65535
-            codec_ids:
-              type: array
-              description: 'Offered codecs, in preference order, as platform codec ids: 6 (telephone-event), 7 (G723), 8 (G729), 9 (PCMU), 10 (PCMA), 12 (speex), 13 (GSM), 14 (G726-32), 15 (G721), 16 (G726-24), 17 (G726-40), 18 (G726-16), 19 (L16). Required.'
-              minItems: 1
-              uniqueItems: true
-              items:
-                type: integer
-                enum:
-                  - 6
-                  - 7
-                  - 8
-                  - 9
-                  - 10
-                  - 12
-                  - 13
-                  - 14
-                  - 15
-                  - 16
-                  - 17
-                  - 18
-                  - 19
             rx_dtmf_format_id:
               type: integer
               description: 'Inbound DTMF format: 1 RFC 2833, 2 SIP INFO application/dtmf-relay OR application/dtmf, 3 RFC 2833 OR SIP INFO.'
@@ -5065,6 +5077,50 @@ components:
             cnam_lookup:
               type: boolean
               description: Look the caller name up and deliver it.
+            codecs:
+              type: array
+              description: 'Codecs offered on calls to the trunk, in priority order: the first has the highest priority. Defaults to `pcmu`, `pcma`, `g729`, `g723`, `telephone_event`.'
+              minItems: 1
+              uniqueItems: true
+              items:
+                type: string
+                enum:
+                  - telephone_event
+                  - g723
+                  - g729
+                  - pcmu
+                  - pcma
+                  - speex
+                  - gsm
+                  - g726_32
+                  - g721
+                  - g726_24
+                  - g726_40
+                  - g726_16
+                  - l16
+                  - amr
+                  - amr_wb
+            ice_mode:
+              type: string
+              description: 'ICE (Interactive Connectivity Establishment) for calls to the trunk: not used, accepted when the trunk offers it, or initiated by DIDWW. Defaults to `disabled`.'
+              enum:
+                - disabled
+                - accept
+                - initiate
+            rtcp_mux_mode:
+              type: string
+              description: 'RTP and RTCP multiplexed on one port: not used, accepted when the trunk offers it, or initiated by DIDWW. Defaults to `disabled`.'
+              enum:
+                - disabled
+                - accept
+                - initiate
+            rtcp_feedback_mode:
+              type: string
+              description: 'RTCP feedback (AVPF): not used, accepted when the trunk offers it, or initiated by DIDWW. Defaults to `disabled`.'
+              enum:
+                - disabled
+                - accept
+                - initiate
     PstnConfigurationRequest:
       type: object
       description: Delivery by forwarding to a phone number.
@@ -5311,6 +5367,10 @@ components:
             - default_dst_action
             - dst_prefixes
             - media_encryption_mode
+            - ice_mode
+            - rtcp_mux_mode
+            - rtcp_feedback_mode
+            - codecs
             - allowed_rtp_ips
             - force_symmetric_rtp
             - rtp_ping
@@ -5373,6 +5433,45 @@ components:
                 - srtp_sdes
                 - srtp_dtls
                 - zrtp
+            ice_mode:
+              type: string
+              description: 'ICE (Interactive Connectivity Establishment) for calls from the trunk: not used, accepted when the trunk offers it, or initiated by DIDWW. Defaults to `accept`.'
+              enum:
+                - disabled
+                - accept
+                - initiate
+            rtcp_mux_mode:
+              type: string
+              description: 'RTP and RTCP multiplexed on one port: not used, accepted when the trunk offers it, or initiated by DIDWW. Defaults to `accept`.'
+              enum:
+                - disabled
+                - accept
+                - initiate
+            rtcp_feedback_mode:
+              type: string
+              description: 'RTCP feedback (AVPF): not used, accepted when the trunk offers it, or initiated by DIDWW. Defaults to `accept`.'
+              enum:
+                - disabled
+                - accept
+                - initiate
+            codecs:
+              type: array
+              description: 'Codecs offered on calls from the trunk, in priority order: the first has the highest priority. Defaults to `pcma`, `pcmu`, `g729`, `g723`, `gsm`, `telephone_event`.'
+              minItems: 1
+              uniqueItems: true
+              items:
+                type: string
+                enum:
+                  - telephone_event
+                  - g723
+                  - g729
+                  - pcmu
+                  - pcma
+                  - gsm
+                  - g722
+                  - opus
+                  - amr
+                  - amr_wb
             allowed_rtp_ips:
               type: array
               nullable: true
@@ -5601,6 +5700,45 @@ components:
                     - srtp_sdes
                     - srtp_dtls
                     - zrtp
+                ice_mode:
+                  type: string
+                  description: 'ICE (Interactive Connectivity Establishment) for calls from the trunk: not used, accepted when the trunk offers it, or initiated by DIDWW. Defaults to `accept`.'
+                  enum:
+                    - disabled
+                    - accept
+                    - initiate
+                rtcp_mux_mode:
+                  type: string
+                  description: 'RTP and RTCP multiplexed on one port: not used, accepted when the trunk offers it, or initiated by DIDWW. Defaults to `accept`.'
+                  enum:
+                    - disabled
+                    - accept
+                    - initiate
+                rtcp_feedback_mode:
+                  type: string
+                  description: 'RTCP feedback (AVPF): not used, accepted when the trunk offers it, or initiated by DIDWW. Defaults to `accept`.'
+                  enum:
+                    - disabled
+                    - accept
+                    - initiate
+                codecs:
+                  type: array
+                  description: 'Codecs offered on calls from the trunk, in priority order: the first has the highest priority. Defaults to `pcma`, `pcmu`, `g729`, `g723`, `gsm`, `telephone_event`.'
+                  minItems: 1
+                  uniqueItems: true
+                  items:
+                    type: string
+                    enum:
+                      - telephone_event
+                      - g723
+                      - g729
+                      - pcmu
+                      - pcma
+                      - gsm
+                      - g722
+                      - opus
+                      - amr
+                      - amr_wb
                 allowed_rtp_ips:
                   type: array
                   nullable: true
@@ -5754,6 +5892,45 @@ components:
                     - srtp_sdes
                     - srtp_dtls
                     - zrtp
+                ice_mode:
+                  type: string
+                  description: 'ICE (Interactive Connectivity Establishment) for calls from the trunk: not used, accepted when the trunk offers it, or initiated by DIDWW. Defaults to `accept`.'
+                  enum:
+                    - disabled
+                    - accept
+                    - initiate
+                rtcp_mux_mode:
+                  type: string
+                  description: 'RTP and RTCP multiplexed on one port: not used, accepted when the trunk offers it, or initiated by DIDWW. Defaults to `accept`.'
+                  enum:
+                    - disabled
+                    - accept
+                    - initiate
+                rtcp_feedback_mode:
+                  type: string
+                  description: 'RTCP feedback (AVPF): not used, accepted when the trunk offers it, or initiated by DIDWW. Defaults to `accept`.'
+                  enum:
+                    - disabled
+                    - accept
+                    - initiate
+                codecs:
+                  type: array
+                  description: 'Codecs offered on calls from the trunk, in priority order: the first has the highest priority. Defaults to `pcma`, `pcmu`, `g729`, `g723`, `gsm`, `telephone_event`.'
+                  minItems: 1
+                  uniqueItems: true
+                  items:
+                    type: string
+                    enum:
+                      - telephone_event
+                      - g723
+                      - g729
+                      - pcmu
+                      - pcma
+                      - gsm
+                      - g722
+                      - opus
+                      - amr
+                      - amr_wb
                 allowed_rtp_ips:
                   type: array
                   nullable: true
@@ -8009,9 +8186,9 @@ components:
               type: string
               description: What the document proves — an identity or an address.
               enum:
-                - Address
-                - Business
-                - Personal
+                - address
+                - business
+                - personal
               readOnly: true
     ProofTypeDocument:
       type: object
@@ -8636,8 +8813,7 @@ components:
               readOnly: true
             personal_mandatory_fields:
               type: array
-              nullable: true
-              description: Identity fields that must be filled in for a personal identity. Null when none are.
+              description: Identity fields that must be filled in for a personal identity. Empty when none are.
               items:
                 type: string
                 enum:
@@ -8646,14 +8822,13 @@ components:
                   - country
                   - personal_tax_id
                   - id_number
-                  - vat_id
+                  - tax_id
                   - company_reg_number
                   - contact_email
               readOnly: true
             business_mandatory_fields:
               type: array
-              nullable: true
-              description: Identity fields that must be filled in for a business identity. Null when none are.
+              description: Identity fields that must be filled in for a business identity. Empty when none are.
               items:
                 type: string
                 enum:
@@ -8662,7 +8837,7 @@ components:
                   - country
                   - personal_tax_id
                   - id_number
-                  - vat_id
+                  - tax_id
                   - company_reg_number
                   - contact_email
               readOnly: true
@@ -9194,37 +9369,37 @@ components:
               readOnly: true
             personal_mandatory_fields:
               type: array
-              description: Fields that must be filled in for a personal identity. Empty when none are. Human-readable labels, not API names.
+              description: Fields that must be filled in for a personal identity. Empty when none are.
               items:
                 type: string
                 enum:
-                  - Birth Date
-                  - Country of Tax Residence
-                  - ID Number
-                  - Personal Tax ID
-                  - Contact email
+                  - birth_date
+                  - country
+                  - id_number
+                  - personal_tax_id
+                  - contact_email
               readOnly: true
             business_mandatory_fields:
               type: array
-              description: Fields that must be filled in for a business identity. Empty when none are. Human-readable labels, not API names.
+              description: Fields that must be filled in for a business identity. Empty when none are.
               items:
                 type: string
                 enum:
-                  - ID Number
-                  - VAT Number / TAX Code
-                  - Country of Tax Residence
-                  - Company ID
-                  - Representative Tax ID
-                  - Contact email
-                  - Company Representative Date of Birth
+                  - id_number
+                  - tax_id
+                  - country
+                  - company_reg_number
+                  - personal_tax_id
+                  - contact_email
+                  - birth_date
               readOnly: true
             address_mandatory_fields:
               type: array
-              description: Fields that must be filled in for the address. Empty when none are. Human-readable labels, not API names.
+              description: Fields that must be filled in for the address. Empty when none are.
               items:
                 type: string
                 enum:
-                  - State/Province/Region
+                  - area
               readOnly: true
             estimate_setup_time:
               type: string
@@ -10915,8 +11090,6 @@ components:
             - '-created_at'
             - description
             - '-description'
-            - expire_at
-            - '-expire_at'
             - expires_at
             - '-expires_at'
       example:
@@ -11855,6 +12028,10 @@ components:
             - default_dst_action
             - dst_prefixes
             - media_encryption_mode
+            - ice_mode
+            - rtcp_mux_mode
+            - rtcp_feedback_mode
+            - codecs
             - allowed_rtp_ips
             - force_symmetric_rtp
             - rtp_ping
@@ -12453,7 +12630,7 @@ components:
         properties:
           entity_type:
             type: string
-            description: 'Matches proof types proving this kind of entity. Accepts a comma-separated list, matching any of the values. Accepted values: `Address`, `Business`, `Personal`.'
+            description: 'Matches proof types proving this kind of entity. Accepts a comma-separated list, matching any of the values. Accepted values: `address`, `business`, `personal`.'
           id:
             type: string
             description: Matches the proof type by its identifier. Accepts a comma-separated list, matching any of the values.
@@ -12702,8 +12879,6 @@ components:
           enum:
             - description
             - '-description'
-            - expire_at
-            - '-expire_at'
             - expires_at
             - '-expires_at'
       example:
@@ -13224,6 +13399,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
   /did_history:
     get:
       summary: List DID history
@@ -13258,6 +13442,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '406':
           description: the requested media type cannot be served
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -13300,6 +13493,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '406':
           description: the requested media type cannot be served
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -13446,6 +13648,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
       requestBody:
         content:
           application/vnd.api+json:
@@ -13489,6 +13700,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
   /exports/{id}:
     parameters:
       - name: id
@@ -13527,6 +13747,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '406':
           description: the requested media type cannot be served
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -13581,6 +13810,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
       requestBody:
         content:
           application/vnd.api+json:
@@ -13617,6 +13855,15 @@ paths:
           description: 'the credential was refused: a refused API key gets no body, as shown; a refused bearer token gets an ErrorsDocument and a `WWW-Authenticate` challenge'
         '404':
           description: no completed export of the customer has that filename
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
   /address_verifications:
     get:
       summary: List address verifications
@@ -13664,6 +13911,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '406':
           description: the requested media type cannot be served
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -13817,6 +14073,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
       requestBody:
         content:
           application/vnd.api+json:
@@ -13878,6 +14143,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
     patch:
       summary: Update an address verification
       tags:
@@ -13924,6 +14198,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '422':
           description: the external reference is longer than the API accepts
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -13985,6 +14268,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
   /capacity_pools/{id}:
     parameters:
       - name: id
@@ -14040,6 +14332,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
     patch:
       summary: Release channels from a capacity pool
       tags:
@@ -14086,6 +14387,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '422':
           description: the new channel count was rejected
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -14147,6 +14457,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
     post:
       summary: Create a shared capacity group
       tags:
@@ -14187,6 +14506,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '422':
           description: the group was rejected
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -14252,6 +14580,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
     patch:
       summary: Update a shared capacity group
       tags:
@@ -14302,6 +14639,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
       requestBody:
         content:
           application/vnd.api+json:
@@ -14331,6 +14677,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '406':
           description: the requested media type cannot be served
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -14380,6 +14735,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '406':
           description: the requested media type cannot be served
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -14439,6 +14803,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
   /regions:
     get:
       summary: List regions
@@ -14484,6 +14857,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '406':
           description: the requested media type cannot be served
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -14543,6 +14925,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
   /cities:
     get:
       summary: List cities
@@ -14590,6 +14981,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '406':
           description: the requested media type cannot be served
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -14649,6 +15049,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
   /areas:
     get:
       summary: List areas
@@ -14696,6 +15105,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '406':
           description: the requested media type cannot be served
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -14751,6 +15169,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '406':
           description: the requested media type cannot be served
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -14836,6 +15263,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
   /did_groups/{id}:
     parameters:
       - name: id
@@ -14891,6 +15327,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
   /available_dids:
     get:
       summary: List available DIDs
@@ -14935,6 +15380,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '406':
           description: the requested media type cannot be served
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -14994,6 +15448,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
   /did_reservations:
     post:
       summary: Reserve an available DID
@@ -15035,6 +15498,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '422':
           description: the DID cannot be reserved
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -15095,6 +15567,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
   /did_reservations/{id}:
     parameters:
       - name: id
@@ -15150,6 +15631,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
     delete:
       summary: Release a reservation
       tags:
@@ -15173,6 +15663,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '406':
           description: the requested media type cannot be served
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -15224,6 +15723,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '406':
           description: the requested media type cannot be served
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -15283,6 +15791,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
     patch:
       summary: Update a DID
       tags:
@@ -15329,6 +15846,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '422':
           description: the update was rejected
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -15395,6 +15921,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
   /emergency_requirements/{id}:
     parameters:
       - name: id
@@ -15456,6 +15991,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
   /emergency_requirement_validations:
     post:
       summary: Check an identity or address against an emergency requirement
@@ -15503,6 +16047,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '422':
           description: the requirement is not satisfied
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -15570,6 +16123,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
   /emergency_calling_services/{id}:
     parameters:
       - name: id
@@ -15631,6 +16193,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
     delete:
       summary: Cancel an emergency calling service
       tags:
@@ -15660,6 +16231,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '406':
           description: the requested media type cannot be served
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -15717,6 +16297,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '406':
           description: the requested media type cannot be served
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -15888,6 +16477,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
       requestBody:
         content:
           application/vnd.api+json:
@@ -15955,6 +16553,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
     patch:
       summary: Update an emergency verification
       tags:
@@ -16007,6 +16614,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '422':
           description: the external reference is longer than the API accepts
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -16068,6 +16684,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
   /nanpa_prefixes/{id}:
     parameters:
       - name: id
@@ -16119,6 +16744,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '406':
           description: the requested media type cannot be served
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -16259,6 +16893,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
       requestBody:
         content:
           application/vnd.api+json:
@@ -16302,6 +16945,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
   /orders/{id}:
     parameters:
       - name: id
@@ -16340,6 +16992,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '406':
           description: the requested media type cannot be served
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -16394,6 +17055,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
       requestBody:
         content:
           application/vnd.api+json:
@@ -16429,6 +17099,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '422':
           description: the order cannot be cancelled
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -16484,6 +17163,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
     post:
       summary: Create an identity
       tags:
@@ -16524,6 +17212,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '422':
           description: the identity was rejected
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -16589,6 +17286,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
     patch:
       summary: Update an identity
       tags:
@@ -16639,6 +17345,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
       requestBody:
         content:
           application/vnd.api+json:
@@ -16674,6 +17389,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '409':
           description: 'the identity is still in use: it is the account identity of an account that is still open, a DID number names it as its main or its porting identity, an emergency calling service registered to it has not finished, or an SMS campaign registered to it has not finished'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -16729,6 +17453,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
     post:
       summary: Create an address
       tags:
@@ -16769,6 +17502,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '422':
           description: the address was rejected
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -16834,6 +17576,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
     patch:
       summary: Update an address
       tags:
@@ -16884,6 +17635,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
       requestBody:
         content:
           application/vnd.api+json:
@@ -16919,6 +17679,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '409':
           description: 'the address is still in use: it is the billing address of an account that is still open, a verification of it is still new or pending, an emergency calling service registered to it has not finished, or an SMS campaign registered to it has not finished'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -16962,6 +17731,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
     get:
       summary: List encrypted files
       tags:
@@ -16995,6 +17773,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '406':
           description: the requested media type cannot be served
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -17041,6 +17828,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
     delete:
       summary: Delete an encrypted file
       tags:
@@ -17064,6 +17860,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '406':
           description: the requested media type cannot be served
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -17119,6 +17924,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
     post:
       summary: Create a proof
       tags:
@@ -17159,6 +17973,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '422':
           description: the proof was rejected
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -17224,6 +18047,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
     patch:
       summary: Update a proof
       tags:
@@ -17274,6 +18106,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
       requestBody:
         content:
           application/vnd.api+json:
@@ -17309,6 +18150,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '422':
           description: the proof is relied on by a verification still under review
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -17351,6 +18201,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
   /supporting_document_templates/{id}:
     parameters:
       - name: id
@@ -17389,6 +18248,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '406':
           description: the requested media type cannot be served
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -17444,6 +18312,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
     post:
       summary: Create a permanent supporting document
       tags:
@@ -17484,6 +18361,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '422':
           description: the document was rejected
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -17549,6 +18435,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
     patch:
       summary: Update a permanent supporting document
       tags:
@@ -17599,6 +18494,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
       requestBody:
         content:
           application/vnd.api+json:
@@ -17638,6 +18542,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
   /proof_types:
     get:
       summary: List proof types
@@ -17669,6 +18582,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '406':
           description: the requested media type cannot be served
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -17711,6 +18633,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '406':
           description: the requested media type cannot be served
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -17762,6 +18693,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '406':
           description: the requested media type cannot be served
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -17821,6 +18761,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
   /address_requirement_validations:
     post:
       summary: Check an identity or address against an address requirement
@@ -17862,6 +18811,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '422':
           description: the requirement is not satisfied
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -17923,6 +18881,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
   /sender_id_verifications/{id}:
     parameters:
       - name: id
@@ -17978,6 +18945,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
     patch:
       summary: Update a Sender ID verification
       tags:
@@ -18024,6 +19000,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '422':
           description: another verification already uses a Sender ID of this one on the SMS trunk
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -18085,6 +19070,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
     post:
       summary: Create an SMS trunk
       tags:
@@ -18125,6 +19119,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '422':
           description: the trunk was rejected
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -18263,6 +19266,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
     patch:
       summary: Update an SMS trunk
       tags:
@@ -18313,6 +19325,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
       requestBody:
         content:
           application/vnd.api+json:
@@ -18348,6 +19369,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '422':
           description: the trunk is still in use
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -18403,6 +19433,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
     post:
       summary: Create an SMS trunk group
       tags:
@@ -18443,6 +19482,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '422':
           description: the trunk group was rejected
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -18508,6 +19556,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
     patch:
       summary: Update an SMS trunk group
       tags:
@@ -18558,6 +19615,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
       requestBody:
         content:
           application/vnd.api+json:
@@ -18593,6 +19659,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '422':
           description: the trunk group is still in use
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -18638,6 +19713,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '422':
           description: the trunk has no credentials to rotate
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -18699,6 +19783,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
     post:
       summary: Create an inbound trunk
       tags:
@@ -18739,6 +19832,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '422':
           description: the trunk was rejected
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -18804,6 +19906,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
     patch:
       summary: Update an inbound trunk
       tags:
@@ -18854,6 +19965,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
       requestBody:
         content:
           application/vnd.api+json:
@@ -18889,6 +20009,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '422':
           description: the trunk is still in use
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -18944,6 +20073,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
     post:
       summary: Create an inbound trunk group
       tags:
@@ -18984,6 +20122,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '422':
           description: the trunk group was rejected
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -19049,6 +20196,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
     patch:
       summary: Update an inbound trunk group
       tags:
@@ -19099,6 +20255,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
       requestBody:
         content:
           application/vnd.api+json:
@@ -19128,6 +20293,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '406':
           description: the requested media type cannot be served
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -19185,6 +20359,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '406':
           description: the requested media type cannot be served
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -19296,6 +20479,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
       requestBody:
         content:
           application/vnd.api+json:
@@ -19359,6 +20551,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '406':
           description: the requested media type cannot be served
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -19476,6 +20677,15 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
       requestBody:
         content:
           application/vnd.api+json:
@@ -19511,6 +20721,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '406':
           description: the requested media type cannot be served
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:
@@ -19562,6 +20781,15 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '422':
           description: the trunk has no credentials to rotate
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '429':
+          description: the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait
+          headers:
+            Retry-After:
+              $ref: '#/components/headers/RetryAfter'
           content:
             application/vnd.api+json:
               schema:

@@ -3,7 +3,7 @@
   "info": {
     "title": "DIDWW Public API",
     "version": "2026-10-22",
-    "description": "JSONAPI interface to the DIDWW platform: browse coverage, order and manage DIDs,\nroute them to voice and SMS trunks, and reserve numbers before purchase.\n\nRequests are authenticated with a bearer access token\n(`Authorization: Bearer <token>`). Mint one with `POST /token` on the token\nservice of the environment you call — `https://auth.didww.com/token` for\nProduction, `https://auth-sandbox.didww.com/token` for Sandbox — with an API key\nissued in the DIDWW user panel. Three operations are the exception: `POST /token`\nitself takes the API key, the export download accepts either credential, and\n`GET /public_keys` needs none. A token is accepted only by the services its\naudience (`aud`) lists: `api.didww.com` for the operations of this host, and the\nproduction host of the platform service that serves the prices operations\n(`api-vin.didww.com`, `api-vout.didww.com`, `api-sms.didww.com`) for those, in\neither environment.\nA token minted with the `read` scope can only read: every other method is refused\nwith 403 and an `insufficient_scope` challenge.\n\nThe token's `api_version` claim selects the API version; this document\ndescribes `2026-10-22`.\n\nResponse schemas describe the full resource. A request narrowing one with\n`fields[...]` receives fewer members than its schema lists, deliberately:\nOpenAPI cannot express a member that is required only until a query\nparameter prunes it.\n",
+    "description": "JSONAPI interface to the DIDWW platform: browse coverage, order and manage DIDs,\nroute them to voice and SMS trunks, and reserve numbers before purchase.\n\nRequests are authenticated with a bearer access token\n(`Authorization: Bearer <token>`). Mint one with `POST /token` on the token\nservice of the environment you call — `https://auth.didww.com/token` for\nProduction, `https://auth-sandbox.didww.com/token` for Sandbox — with an API key\nissued in the DIDWW user panel. Three operations are the exception: `POST /token`\nitself takes the API key, the export download accepts either credential, and\n`GET /public_keys` needs none. A token is accepted only by the services its\naudience (`aud`) lists: `api.didww.com` for the operations of this host, and the\nproduction host of the platform service that serves the prices operations\n(`api-vin.didww.com`, `api-vout.didww.com`, `api-sms.didww.com`) for those, in\neither environment.\nA token minted with the `read` scope can only read: every other method is refused\nwith 403 and an `insufficient_scope` challenge.\n\nThe token's `api_version` claim selects the API version; this document\ndescribes `2026-10-22`.\n\nResponse schemas describe the full resource. A request narrowing one with\n`fields[...]` receives fewer members than its schema lists, deliberately:\nOpenAPI cannot express a member that is required only until a query\nparameter prunes it.\n\nRequests spend the account's rate-limit budget: once it is spent, the answer\nis 429 with `Retry-After`.\n",
     "contact": {
       "name": "DIDWW Support",
       "email": "support@didww.com"
@@ -4864,7 +4864,7 @@
                   },
                   "status": {
                     "type": "string",
-                    "description": "Restricts an SMS export to messages in this state: `Success`, `Failed`, `Queued` for `sms_in`, `Routing Error`, `In Progress`, `Queued`, `Failed`, `Success` for `sms_out`."
+                    "description": "Restricts an SMS export to messages in this state: `success`, `failed`, `queued` for `sms_in`, `routing_error`, `in_progress`, `queued`, `failed`, `success` for `sms_out`."
                   },
                   "trunk_type": {
                     "description": "Restricts an `sms_in` export to messages delivered through trunks of this type, or of any of these types.",
@@ -4872,10 +4872,10 @@
                       {
                         "type": "string",
                         "enum": [
-                          "SMPP SMSC",
-                          "SMPP ESME",
-                          "Email",
-                          "HTTP IN"
+                          "smpp_smsc",
+                          "smpp_esme",
+                          "sms_to_email",
+                          "http_in"
                         ]
                       },
                       {
@@ -4883,10 +4883,10 @@
                         "items": {
                           "type": "string",
                           "enum": [
-                            "SMPP SMSC",
-                            "SMPP ESME",
-                            "Email",
-                            "HTTP IN"
+                            "smpp_smsc",
+                            "smpp_esme",
+                            "sms_to_email",
+                            "http_in"
                           ]
                         }
                       }
@@ -4914,8 +4914,11 @@
                   },
                   "service_type": {
                     "type": "string",
-                    "description": "Restricts an `sms_out` export to person-to-person (`p2p`) or application-to-person (`a2p`) traffic, in any letter case; the export keeps the value as sent.",
-                    "pattern": "^(?:[aA]2[pP]|[pP]2[pP])$"
+                    "description": "Restricts an `sms_out` export to person-to-person (`p2p`) or application-to-person (`a2p`) traffic.",
+                    "enum": [
+                      "a2p",
+                      "p2p"
+                    ]
                   },
                   "sender_id_verification.id": {
                     "description": "Restricts an `sms_out` export to messages sent under this sender ID verification of the customer, or any of these.",
@@ -5107,7 +5110,7 @@
                       },
                       "status": {
                         "type": "string",
-                        "description": "Restricts an SMS export to messages in this state: `Success`, `Failed`, `Queued` for `sms_in`, `Routing Error`, `In Progress`, `Queued`, `Failed`, `Success` for `sms_out`."
+                        "description": "Restricts an SMS export to messages in this state: `success`, `failed`, `queued` for `sms_in`, `routing_error`, `in_progress`, `queued`, `failed`, `success` for `sms_out`."
                       },
                       "trunk_type": {
                         "description": "Restricts an `sms_in` export to messages delivered through trunks of this type, or of any of these types.",
@@ -5115,10 +5118,10 @@
                           {
                             "type": "string",
                             "enum": [
-                              "SMPP SMSC",
-                              "SMPP ESME",
-                              "Email",
-                              "HTTP IN"
+                              "smpp_smsc",
+                              "smpp_esme",
+                              "sms_to_email",
+                              "http_in"
                             ]
                           },
                           {
@@ -5126,10 +5129,10 @@
                             "items": {
                               "type": "string",
                               "enum": [
-                                "SMPP SMSC",
-                                "SMPP ESME",
-                                "Email",
-                                "HTTP IN"
+                                "smpp_smsc",
+                                "smpp_esme",
+                                "sms_to_email",
+                                "http_in"
                               ]
                             }
                           }
@@ -5157,8 +5160,11 @@
                       },
                       "service_type": {
                         "type": "string",
-                        "description": "Restricts an `sms_out` export to person-to-person (`p2p`) or application-to-person (`a2p`) traffic, in any letter case; the export keeps the value as sent.",
-                        "pattern": "^(?:[aA]2[pP]|[pP]2[pP])$"
+                        "description": "Restricts an `sms_out` export to person-to-person (`p2p`) or application-to-person (`a2p`) traffic.",
+                        "enum": [
+                          "a2p",
+                          "p2p"
+                        ]
                       },
                       "sender_id_verification.id": {
                         "description": "Restricts an `sms_out` export to messages sent under this sender ID verification of the customer, or any of these.",
@@ -6244,16 +6250,16 @@
                 "nullable": true,
                 "description": "Point of presence the trunk is pinned to. Null lets DIDWW choose.",
                 "enum": [
-                  "NYC",
-                  "FRA",
-                  "LAC",
-                  "MIA",
-                  "SG",
-                  "HK",
-                  "AMS",
+                  "nyc",
+                  "fra",
+                  "lac",
+                  "mia",
+                  "sg",
+                  "hk",
+                  "ams",
                   null
                 ],
-                "example": "FRA"
+                "example": "fra"
               },
               "created_at": {
                 "type": "string",
@@ -6445,16 +6451,16 @@
                     "nullable": true,
                     "description": "Point of presence the trunk is pinned to. Null lets DIDWW choose.",
                     "enum": [
-                      "NYC",
-                      "FRA",
-                      "LAC",
-                      "MIA",
-                      "SG",
-                      "HK",
-                      "AMS",
+                      "nyc",
+                      "fra",
+                      "lac",
+                      "mia",
+                      "sg",
+                      "hk",
+                      "ams",
                       null
                     ],
-                    "example": "FRA"
+                    "example": "fra"
                   },
                   "configuration": {
                     "description": "Transport configuration. `attributes` is determined by `type`: a SIP trunk delivers calls to a SIP host, a PSTN trunk forwards them to a phone number.",
@@ -6593,16 +6599,16 @@
                     "nullable": true,
                     "description": "Point of presence the trunk is pinned to. Null lets DIDWW choose.",
                     "enum": [
-                      "NYC",
-                      "FRA",
-                      "LAC",
-                      "MIA",
-                      "SG",
-                      "HK",
-                      "AMS",
+                      "nyc",
+                      "fra",
+                      "lac",
+                      "mia",
+                      "sg",
+                      "hk",
+                      "ams",
                       null
                     ],
-                    "example": "FRA"
+                    "example": "fra"
                   },
                   "configuration": {
                     "description": "Transport configuration. `attributes` is determined by `type`: a SIP trunk delivers calls to a SIP host, a PSTN trunk forwards them to a phone number. `type` must match the trunk's; the members you send are written and the rest keep their stored values.",
@@ -6709,27 +6715,29 @@
                 "type": "boolean",
                 "description": "Put the DID number in the request URI user part. Requires SIP registration."
               },
-              "codec_ids": {
+              "codecs": {
                 "type": "array",
-                "description": "Offered codecs, in preference order, as platform codec ids: 6 (telephone-event), 7 (G723), 8 (G729), 9 (PCMU), 10 (PCMA), 12 (speex), 13 (GSM), 14 (G726-32), 15 (G721), 16 (G726-24), 17 (G726-40), 18 (G726-16), 19 (L16). Required.",
+                "description": "Codecs offered on calls to the trunk, in priority order: the first has the highest priority. Defaults to `pcmu`, `pcma`, `g729`, `g723`, `telephone_event`.",
                 "minItems": 1,
                 "uniqueItems": true,
                 "items": {
-                  "type": "integer",
+                  "type": "string",
                   "enum": [
-                    6,
-                    7,
-                    8,
-                    9,
-                    10,
-                    12,
-                    13,
-                    14,
-                    15,
-                    16,
-                    17,
-                    18,
-                    19
+                    "telephone_event",
+                    "g723",
+                    "g729",
+                    "pcmu",
+                    "pcma",
+                    "speex",
+                    "gsm",
+                    "g726_32",
+                    "g721",
+                    "g726_24",
+                    "g726_40",
+                    "g726_16",
+                    "l16",
+                    "amr",
+                    "amr_wb"
                   ]
                 }
               },
@@ -6877,6 +6885,33 @@
                   "zrtp"
                 ]
               },
+              "ice_mode": {
+                "type": "string",
+                "description": "ICE (Interactive Connectivity Establishment) for calls to the trunk: not used, accepted when the trunk offers it, or initiated by DIDWW. Defaults to `disabled`.",
+                "enum": [
+                  "disabled",
+                  "accept",
+                  "initiate"
+                ]
+              },
+              "rtcp_mux_mode": {
+                "type": "string",
+                "description": "RTP and RTCP multiplexed on one port: not used, accepted when the trunk offers it, or initiated by DIDWW. Defaults to `disabled`.",
+                "enum": [
+                  "disabled",
+                  "accept",
+                  "initiate"
+                ]
+              },
+              "rtcp_feedback_mode": {
+                "type": "string",
+                "description": "RTCP feedback (AVPF): not used, accepted when the trunk offers it, or initiated by DIDWW. Defaults to `disabled`.",
+                "enum": [
+                  "disabled",
+                  "accept",
+                  "initiate"
+                ]
+              },
               "stir_shaken_mode": {
                 "type": "string",
                 "description": "How STIR/SHAKEN attestation is passed on.",
@@ -6989,7 +7024,7 @@
               "network_protocol_priority",
               "resolve_ruri",
               "use_did_in_ruri",
-              "codec_ids",
+              "codecs",
               "rx_dtmf_format_id",
               "tx_dtmf_format_id",
               "auth_enabled",
@@ -7014,6 +7049,9 @@
               "symmetric_rtp_ignore_rtcp",
               "allowed_rtp_ips",
               "media_encryption_mode",
+              "ice_mode",
+              "rtcp_mux_mode",
+              "rtcp_feedback_mode",
               "stir_shaken_mode",
               "diversion_relay_policy",
               "diversion_inject_mode",
@@ -7090,30 +7128,6 @@
                 "description": "SIP port. Must be blank when `enabled_sip_registration` is true.",
                 "minimum": 1,
                 "maximum": 65535
-              },
-              "codec_ids": {
-                "type": "array",
-                "description": "Offered codecs, in preference order, as platform codec ids: 6 (telephone-event), 7 (G723), 8 (G729), 9 (PCMU), 10 (PCMA), 12 (speex), 13 (GSM), 14 (G726-32), 15 (G721), 16 (G726-24), 17 (G726-40), 18 (G726-16), 19 (L16). Required.",
-                "minItems": 1,
-                "uniqueItems": true,
-                "items": {
-                  "type": "integer",
-                  "enum": [
-                    6,
-                    7,
-                    8,
-                    9,
-                    10,
-                    12,
-                    13,
-                    14,
-                    15,
-                    16,
-                    17,
-                    18,
-                    19
-                  ]
-                }
               },
               "rx_dtmf_format_id": {
                 "type": "integer",
@@ -7377,6 +7391,59 @@
               "cnam_lookup": {
                 "type": "boolean",
                 "description": "Look the caller name up and deliver it."
+              },
+              "codecs": {
+                "type": "array",
+                "description": "Codecs offered on calls to the trunk, in priority order: the first has the highest priority. Defaults to `pcmu`, `pcma`, `g729`, `g723`, `telephone_event`.",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "telephone_event",
+                    "g723",
+                    "g729",
+                    "pcmu",
+                    "pcma",
+                    "speex",
+                    "gsm",
+                    "g726_32",
+                    "g721",
+                    "g726_24",
+                    "g726_40",
+                    "g726_16",
+                    "l16",
+                    "amr",
+                    "amr_wb"
+                  ]
+                }
+              },
+              "ice_mode": {
+                "type": "string",
+                "description": "ICE (Interactive Connectivity Establishment) for calls to the trunk: not used, accepted when the trunk offers it, or initiated by DIDWW. Defaults to `disabled`.",
+                "enum": [
+                  "disabled",
+                  "accept",
+                  "initiate"
+                ]
+              },
+              "rtcp_mux_mode": {
+                "type": "string",
+                "description": "RTP and RTCP multiplexed on one port: not used, accepted when the trunk offers it, or initiated by DIDWW. Defaults to `disabled`.",
+                "enum": [
+                  "disabled",
+                  "accept",
+                  "initiate"
+                ]
+              },
+              "rtcp_feedback_mode": {
+                "type": "string",
+                "description": "RTCP feedback (AVPF): not used, accepted when the trunk offers it, or initiated by DIDWW. Defaults to `disabled`.",
+                "enum": [
+                  "disabled",
+                  "accept",
+                  "initiate"
+                ]
               }
             }
           }
@@ -7729,6 +7796,10 @@
               "default_dst_action",
               "dst_prefixes",
               "media_encryption_mode",
+              "ice_mode",
+              "rtcp_mux_mode",
+              "rtcp_feedback_mode",
+              "codecs",
               "allowed_rtp_ips",
               "force_symmetric_rtp",
               "rtp_ping",
@@ -7805,6 +7876,54 @@
                   "srtp_dtls",
                   "zrtp"
                 ]
+              },
+              "ice_mode": {
+                "type": "string",
+                "description": "ICE (Interactive Connectivity Establishment) for calls from the trunk: not used, accepted when the trunk offers it, or initiated by DIDWW. Defaults to `accept`.",
+                "enum": [
+                  "disabled",
+                  "accept",
+                  "initiate"
+                ]
+              },
+              "rtcp_mux_mode": {
+                "type": "string",
+                "description": "RTP and RTCP multiplexed on one port: not used, accepted when the trunk offers it, or initiated by DIDWW. Defaults to `accept`.",
+                "enum": [
+                  "disabled",
+                  "accept",
+                  "initiate"
+                ]
+              },
+              "rtcp_feedback_mode": {
+                "type": "string",
+                "description": "RTCP feedback (AVPF): not used, accepted when the trunk offers it, or initiated by DIDWW. Defaults to `accept`.",
+                "enum": [
+                  "disabled",
+                  "accept",
+                  "initiate"
+                ]
+              },
+              "codecs": {
+                "type": "array",
+                "description": "Codecs offered on calls from the trunk, in priority order: the first has the highest priority. Defaults to `pcma`, `pcmu`, `g729`, `g723`, `gsm`, `telephone_event`.",
+                "minItems": 1,
+                "uniqueItems": true,
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "telephone_event",
+                    "g723",
+                    "g729",
+                    "pcmu",
+                    "pcma",
+                    "gsm",
+                    "g722",
+                    "opus",
+                    "amr",
+                    "amr_wb"
+                  ]
+                }
               },
               "allowed_rtp_ips": {
                 "type": "array",
@@ -8211,6 +8330,54 @@
                       "zrtp"
                     ]
                   },
+                  "ice_mode": {
+                    "type": "string",
+                    "description": "ICE (Interactive Connectivity Establishment) for calls from the trunk: not used, accepted when the trunk offers it, or initiated by DIDWW. Defaults to `accept`.",
+                    "enum": [
+                      "disabled",
+                      "accept",
+                      "initiate"
+                    ]
+                  },
+                  "rtcp_mux_mode": {
+                    "type": "string",
+                    "description": "RTP and RTCP multiplexed on one port: not used, accepted when the trunk offers it, or initiated by DIDWW. Defaults to `accept`.",
+                    "enum": [
+                      "disabled",
+                      "accept",
+                      "initiate"
+                    ]
+                  },
+                  "rtcp_feedback_mode": {
+                    "type": "string",
+                    "description": "RTCP feedback (AVPF): not used, accepted when the trunk offers it, or initiated by DIDWW. Defaults to `accept`.",
+                    "enum": [
+                      "disabled",
+                      "accept",
+                      "initiate"
+                    ]
+                  },
+                  "codecs": {
+                    "type": "array",
+                    "description": "Codecs offered on calls from the trunk, in priority order: the first has the highest priority. Defaults to `pcma`, `pcmu`, `g729`, `g723`, `gsm`, `telephone_event`.",
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "telephone_event",
+                        "g723",
+                        "g729",
+                        "pcmu",
+                        "pcma",
+                        "gsm",
+                        "g722",
+                        "opus",
+                        "amr",
+                        "amr_wb"
+                      ]
+                    }
+                  },
                   "allowed_rtp_ips": {
                     "type": "array",
                     "nullable": true,
@@ -8423,6 +8590,54 @@
                       "srtp_dtls",
                       "zrtp"
                     ]
+                  },
+                  "ice_mode": {
+                    "type": "string",
+                    "description": "ICE (Interactive Connectivity Establishment) for calls from the trunk: not used, accepted when the trunk offers it, or initiated by DIDWW. Defaults to `accept`.",
+                    "enum": [
+                      "disabled",
+                      "accept",
+                      "initiate"
+                    ]
+                  },
+                  "rtcp_mux_mode": {
+                    "type": "string",
+                    "description": "RTP and RTCP multiplexed on one port: not used, accepted when the trunk offers it, or initiated by DIDWW. Defaults to `accept`.",
+                    "enum": [
+                      "disabled",
+                      "accept",
+                      "initiate"
+                    ]
+                  },
+                  "rtcp_feedback_mode": {
+                    "type": "string",
+                    "description": "RTCP feedback (AVPF): not used, accepted when the trunk offers it, or initiated by DIDWW. Defaults to `accept`.",
+                    "enum": [
+                      "disabled",
+                      "accept",
+                      "initiate"
+                    ]
+                  },
+                  "codecs": {
+                    "type": "array",
+                    "description": "Codecs offered on calls from the trunk, in priority order: the first has the highest priority. Defaults to `pcma`, `pcmu`, `g729`, `g723`, `gsm`, `telephone_event`.",
+                    "minItems": 1,
+                    "uniqueItems": true,
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "telephone_event",
+                        "g723",
+                        "g729",
+                        "pcmu",
+                        "pcma",
+                        "gsm",
+                        "g722",
+                        "opus",
+                        "amr",
+                        "amr_wb"
+                      ]
+                    }
                   },
                   "allowed_rtp_ips": {
                     "type": "array",
@@ -11894,9 +12109,9 @@
                 "type": "string",
                 "description": "What the document proves — an identity or an address.",
                 "enum": [
-                  "Address",
-                  "Business",
-                  "Personal"
+                  "address",
+                  "business",
+                  "personal"
                 ],
                 "readOnly": true
               }
@@ -12836,8 +13051,7 @@
               },
               "personal_mandatory_fields": {
                 "type": "array",
-                "nullable": true,
-                "description": "Identity fields that must be filled in for a personal identity. Null when none are.",
+                "description": "Identity fields that must be filled in for a personal identity. Empty when none are.",
                 "items": {
                   "type": "string",
                   "enum": [
@@ -12846,7 +13060,7 @@
                     "country",
                     "personal_tax_id",
                     "id_number",
-                    "vat_id",
+                    "tax_id",
                     "company_reg_number",
                     "contact_email"
                   ]
@@ -12855,8 +13069,7 @@
               },
               "business_mandatory_fields": {
                 "type": "array",
-                "nullable": true,
-                "description": "Identity fields that must be filled in for a business identity. Null when none are.",
+                "description": "Identity fields that must be filled in for a business identity. Empty when none are.",
                 "items": {
                   "type": "string",
                   "enum": [
@@ -12865,7 +13078,7 @@
                     "country",
                     "personal_tax_id",
                     "id_number",
-                    "vat_id",
+                    "tax_id",
                     "company_reg_number",
                     "contact_email"
                   ]
@@ -13717,43 +13930,43 @@
               },
               "personal_mandatory_fields": {
                 "type": "array",
-                "description": "Fields that must be filled in for a personal identity. Empty when none are. Human-readable labels, not API names.",
+                "description": "Fields that must be filled in for a personal identity. Empty when none are.",
                 "items": {
                   "type": "string",
                   "enum": [
-                    "Birth Date",
-                    "Country of Tax Residence",
-                    "ID Number",
-                    "Personal Tax ID",
-                    "Contact email"
+                    "birth_date",
+                    "country",
+                    "id_number",
+                    "personal_tax_id",
+                    "contact_email"
                   ]
                 },
                 "readOnly": true
               },
               "business_mandatory_fields": {
                 "type": "array",
-                "description": "Fields that must be filled in for a business identity. Empty when none are. Human-readable labels, not API names.",
+                "description": "Fields that must be filled in for a business identity. Empty when none are.",
                 "items": {
                   "type": "string",
                   "enum": [
-                    "ID Number",
-                    "VAT Number / TAX Code",
-                    "Country of Tax Residence",
-                    "Company ID",
-                    "Representative Tax ID",
-                    "Contact email",
-                    "Company Representative Date of Birth"
+                    "id_number",
+                    "tax_id",
+                    "country",
+                    "company_reg_number",
+                    "personal_tax_id",
+                    "contact_email",
+                    "birth_date"
                   ]
                 },
                 "readOnly": true
               },
               "address_mandatory_fields": {
                 "type": "array",
-                "description": "Fields that must be filled in for the address. Empty when none are. Human-readable labels, not API names.",
+                "description": "Fields that must be filled in for the address. Empty when none are.",
                 "items": {
                   "type": "string",
                   "enum": [
-                    "State/Province/Region"
+                    "area"
                   ]
                 },
                 "readOnly": true
@@ -16217,8 +16430,6 @@
               "-created_at",
               "description",
               "-description",
-              "expire_at",
-              "-expire_at",
               "expires_at",
               "-expires_at"
             ]
@@ -17379,6 +17590,10 @@
               "default_dst_action",
               "dst_prefixes",
               "media_encryption_mode",
+              "ice_mode",
+              "rtcp_mux_mode",
+              "rtcp_feedback_mode",
+              "codecs",
               "allowed_rtp_ips",
               "force_symmetric_rtp",
               "rtp_ping",
@@ -18113,7 +18328,7 @@
           "properties": {
             "entity_type": {
               "type": "string",
-              "description": "Matches proof types proving this kind of entity. Accepts a comma-separated list, matching any of the values. Accepted values: `Address`, `Business`, `Personal`."
+              "description": "Matches proof types proving this kind of entity. Accepts a comma-separated list, matching any of the values. Accepted values: `address`, `business`, `personal`."
             },
             "id": {
               "type": "string",
@@ -18429,8 +18644,6 @@
             "enum": [
               "description",
               "-description",
-              "expire_at",
-              "-expire_at",
               "expires_at",
               "-expires_at"
             ]
@@ -19099,6 +19312,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       }
@@ -19168,6 +19396,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       }
@@ -19230,6 +19473,21 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -19452,6 +19710,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -19529,6 +19802,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       }
@@ -19591,6 +19879,21 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -19679,6 +19982,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -19738,6 +20056,21 @@
           },
           "404": {
             "description": "no completed export of the customer has that filename"
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       }
@@ -19818,6 +20151,21 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -20050,6 +20398,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -20147,6 +20510,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       },
@@ -20221,6 +20599,21 @@
           },
           "422": {
             "description": "the external reference is longer than the API accepts",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -20325,6 +20718,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       }
@@ -20412,6 +20820,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       },
@@ -20486,6 +20909,21 @@
           },
           "422": {
             "description": "the new channel count was rejected",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -20590,6 +21028,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       },
@@ -20654,6 +21107,21 @@
           },
           "422": {
             "description": "the group was rejected",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -20758,6 +21226,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       },
@@ -20839,6 +21322,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -20885,6 +21383,21 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -20966,6 +21479,21 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21060,6 +21588,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       }
@@ -21134,6 +21677,21 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21228,6 +21786,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       }
@@ -21308,6 +21881,21 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21402,6 +21990,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       }
@@ -21489,6 +22092,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       }
@@ -21569,6 +22187,21 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21714,6 +22347,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       }
@@ -21801,6 +22449,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       }
@@ -21872,6 +22535,21 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -21966,6 +22644,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       }
@@ -22032,6 +22725,21 @@
           },
           "422": {
             "description": "the DID cannot be reserved",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22134,6 +22842,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       }
@@ -22221,6 +22944,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       },
@@ -22257,6 +22995,21 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22351,6 +23104,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       }
@@ -22438,6 +23206,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       },
@@ -22512,6 +23295,21 @@
           },
           "422": {
             "description": "the update was rejected",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22623,6 +23421,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       }
@@ -22720,6 +23533,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       }
@@ -22796,6 +23624,21 @@
           },
           "422": {
             "description": "the requirement is not satisfied",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22910,6 +23753,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       }
@@ -23007,6 +23865,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       },
@@ -23053,6 +23926,21 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23150,6 +24038,21 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23408,6 +24311,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -23515,6 +24433,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       },
@@ -23599,6 +24532,21 @@
           },
           "422": {
             "description": "the external reference is longer than the API accepts",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23703,6 +24651,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       }
@@ -23783,6 +24746,21 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23999,6 +24977,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -24076,6 +25069,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       }
@@ -24138,6 +25146,21 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24226,6 +25249,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -24282,6 +25320,21 @@
           },
           "422": {
             "description": "the order cannot be cancelled",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24376,6 +25429,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       },
@@ -24440,6 +25508,21 @@
           },
           "422": {
             "description": "the identity was rejected",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24544,6 +25627,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       },
@@ -24625,6 +25723,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -24681,6 +25794,21 @@
           },
           "409": {
             "description": "the identity is still in use: it is the account identity of an account that is still open, a DID number names it as its main or its porting identity, an emergency calling service registered to it has not finished, or an SMS campaign registered to it has not finished",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24775,6 +25903,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       },
@@ -24839,6 +25982,21 @@
           },
           "422": {
             "description": "the address was rejected",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24943,6 +26101,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       },
@@ -25024,6 +26197,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -25080,6 +26268,21 @@
           },
           "409": {
             "description": "the address is still in use: it is the billing address of an account that is still open, a verification of it is still new or pending, an emergency calling service registered to it has not finished, or an SMS campaign registered to it has not finished",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25150,6 +26353,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       },
@@ -25210,6 +26428,21 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25286,6 +26519,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       },
@@ -25322,6 +26570,21 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25416,6 +26679,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       },
@@ -25480,6 +26758,21 @@
           },
           "422": {
             "description": "the proof was rejected",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25584,6 +26877,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       },
@@ -25665,6 +26973,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -25721,6 +27044,21 @@
           },
           "422": {
             "description": "the proof is relied on by a verification still under review",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25797,6 +27135,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       }
@@ -25859,6 +27212,21 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25953,6 +27321,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       },
@@ -26017,6 +27400,21 @@
           },
           "422": {
             "description": "the document was rejected",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -26121,6 +27519,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       },
@@ -26202,6 +27615,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -26265,6 +27693,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       }
@@ -26318,6 +27761,21 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -26387,6 +27845,21 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -26481,6 +27954,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       }
@@ -26568,6 +28056,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       }
@@ -26634,6 +28137,21 @@
           },
           "422": {
             "description": "the requirement is not satisfied",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -26738,6 +28256,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       }
@@ -26825,6 +28358,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       },
@@ -26899,6 +28447,21 @@
           },
           "422": {
             "description": "another verification already uses a Sender ID of this one on the SMS trunk",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -27003,6 +28566,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       },
@@ -27067,6 +28645,21 @@
           },
           "422": {
             "description": "the trunk was rejected",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -27277,6 +28870,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       },
@@ -27358,6 +28966,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -27414,6 +29037,21 @@
           },
           "422": {
             "description": "the trunk is still in use",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -27508,6 +29146,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       },
@@ -27572,6 +29225,21 @@
           },
           "422": {
             "description": "the trunk group was rejected",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -27676,6 +29344,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       },
@@ -27757,6 +29440,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -27813,6 +29511,21 @@
           },
           "422": {
             "description": "the trunk group is still in use",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -27886,6 +29599,21 @@
           },
           "422": {
             "description": "the trunk has no credentials to rotate",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -27990,6 +29718,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       },
@@ -28054,6 +29797,21 @@
           },
           "422": {
             "description": "the trunk was rejected",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -28158,6 +29916,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       },
@@ -28239,6 +30012,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -28295,6 +30083,21 @@
           },
           "422": {
             "description": "the trunk is still in use",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -28389,6 +30192,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       },
@@ -28453,6 +30271,21 @@
           },
           "422": {
             "description": "the trunk group was rejected",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -28557,6 +30390,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       },
@@ -28638,6 +30486,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -28684,6 +30547,21 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -28781,6 +30659,21 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -28951,6 +30844,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -29051,6 +30959,21 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -29231,6 +31154,21 @@
                 }
               }
             }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -29287,6 +31225,21 @@
           },
           "406": {
             "description": "the requested media type cannot be served",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -29370,6 +31323,21 @@
           },
           "422": {
             "description": "the trunk has no credentials to rotate",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
+            "headers": {
+              "Retry-After": {
+                "$ref": "#/components/headers/RetryAfter"
+              }
+            },
             "content": {
               "application/vnd.api+json": {
                 "schema": {
