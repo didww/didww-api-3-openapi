@@ -11267,7 +11267,7 @@
               "vat_id": {
                 "type": "string",
                 "nullable": true,
-                "description": "VAT identification number. Rejected on a personal identity, and validated against `country`, which must be set with it."
+                "description": "VAT identification number, listed as `tax_id` in the mandatory fields of the address and emergency requirements. Rejected on a personal identity, and validated against `country`, which must be set with it."
               },
               "id_number": {
                 "type": "string",
@@ -11516,7 +11516,7 @@
                   "vat_id": {
                     "type": "string",
                     "nullable": true,
-                    "description": "VAT identification number. Rejected on a personal identity, and validated against `country`, which must be set with it."
+                    "description": "VAT identification number, listed as `tax_id` in the mandatory fields of the address and emergency requirements. Rejected on a personal identity, and validated against `country`, which must be set with it."
                   },
                   "id_number": {
                     "type": "string",
@@ -11649,7 +11649,7 @@
                   "vat_id": {
                     "type": "string",
                     "nullable": true,
-                    "description": "VAT identification number. Rejected on a personal identity, and validated against `country`, which must be set with it."
+                    "description": "VAT identification number, listed as `tax_id` in the mandatory fields of the address and emergency requirements. Rejected on a personal identity, and validated against `country`, which must be set with it."
                   },
                   "id_number": {
                     "type": "string",
@@ -13056,12 +13056,10 @@
                   "type": "string",
                   "enum": [
                     "birth_date",
-                    "birth_country",
                     "country",
-                    "personal_tax_id",
+                    "birth_country",
                     "id_number",
-                    "tax_id",
-                    "company_reg_number",
+                    "personal_tax_id",
                     "contact_email"
                   ]
                 },
@@ -13073,13 +13071,11 @@
                 "items": {
                   "type": "string",
                   "enum": [
-                    "birth_date",
-                    "birth_country",
-                    "country",
-                    "personal_tax_id",
                     "id_number",
                     "tax_id",
+                    "country",
                     "company_reg_number",
+                    "personal_tax_id",
                     "contact_email"
                   ]
                 },
