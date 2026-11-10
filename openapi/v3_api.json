@@ -5730,7 +5730,7 @@
               },
               "metered_channels_count": {
                 "type": "integer",
-                "description": "Extra channels billed per minute once the shared ones are busy. Zero means no metered overflow — `overload_capacity` is NOT NULL with a default of 0."
+                "description": "Extra channels billed per minute once the shared ones are busy. Zero means no metered overflow. Defaults to 0."
               },
               "external_reference_id": {
                 "type": "string",
@@ -6010,7 +6010,7 @@
                   },
                   "metered_channels_count": {
                     "type": "integer",
-                    "description": "Extra channels billed per minute once the shared ones are busy. Zero means no metered overflow — `overload_capacity` is NOT NULL with a default of 0."
+                    "description": "Extra channels billed per minute once the shared ones are busy. Zero means no metered overflow. Defaults to 0."
                   },
                   "external_reference_id": {
                     "type": "string",
@@ -6100,7 +6100,7 @@
                   },
                   "metered_channels_count": {
                     "type": "integer",
-                    "description": "Extra channels billed per minute once the shared ones are busy. Zero means no metered overflow — `overload_capacity` is NOT NULL with a default of 0."
+                    "description": "Extra channels billed per minute once the shared ones are busy. Zero means no metered overflow. Defaults to 0."
                   },
                   "external_reference_id": {
                     "type": "string",
