@@ -5730,7 +5730,7 @@
               },
               "metered_channels_count": {
                 "type": "integer",
-                "description": "Extra channels billed per minute once the shared ones are busy. Zero means no metered overflow — `overload_capacity` is NOT NULL with a default of 0."
+                "description": "Extra channels billed per minute once the shared ones are busy. Zero means no metered overflow. Defaults to 0."
               },
               "external_reference_id": {
                 "type": "string",
@@ -6010,7 +6010,7 @@
                   },
                   "metered_channels_count": {
                     "type": "integer",
-                    "description": "Extra channels billed per minute once the shared ones are busy. Zero means no metered overflow — `overload_capacity` is NOT NULL with a default of 0."
+                    "description": "Extra channels billed per minute once the shared ones are busy. Zero means no metered overflow. Defaults to 0."
                   },
                   "external_reference_id": {
                     "type": "string",
@@ -6100,7 +6100,7 @@
                   },
                   "metered_channels_count": {
                     "type": "integer",
-                    "description": "Extra channels billed per minute once the shared ones are busy. Zero means no metered overflow — `overload_capacity` is NOT NULL with a default of 0."
+                    "description": "Extra channels billed per minute once the shared ones are busy. Zero means no metered overflow. Defaults to 0."
                   },
                   "external_reference_id": {
                     "type": "string",
@@ -7906,7 +7906,7 @@
               },
               "codecs": {
                 "type": "array",
-                "description": "Codecs offered on calls from the trunk, in priority order: the first has the highest priority. Defaults to `pcma`, `pcmu`, `g729`, `g723`, `gsm`, `telephone_event`.",
+                "description": "Codecs offered on calls from the trunk, in priority order: the first has the highest priority. Defaults to `pcma`, `pcmu`, `telephone_event`.",
                 "minItems": 1,
                 "uniqueItems": true,
                 "items": {
@@ -8359,7 +8359,7 @@
                   },
                   "codecs": {
                     "type": "array",
-                    "description": "Codecs offered on calls from the trunk, in priority order: the first has the highest priority. Defaults to `pcma`, `pcmu`, `g729`, `g723`, `gsm`, `telephone_event`.",
+                    "description": "Codecs offered on calls from the trunk, in priority order: the first has the highest priority. Defaults to `pcma`, `pcmu`, `telephone_event`.",
                     "minItems": 1,
                     "uniqueItems": true,
                     "items": {
@@ -8620,7 +8620,7 @@
                   },
                   "codecs": {
                     "type": "array",
-                    "description": "Codecs offered on calls from the trunk, in priority order: the first has the highest priority. Defaults to `pcma`, `pcmu`, `g729`, `g723`, `gsm`, `telephone_event`.",
+                    "description": "Codecs offered on calls from the trunk, in priority order: the first has the highest priority. Defaults to `pcma`, `pcmu`, `telephone_event`.",
                     "minItems": 1,
                     "uniqueItems": true,
                     "items": {
@@ -30551,6 +30551,16 @@
               }
             }
           },
+          "422": {
+            "description": "the trunk group is still in use",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
           "429": {
             "description": "the request budget of the account for the current window is spent (`too_many_requests`); `Retry-After` says how many seconds to wait",
             "headers": {
@@ -31297,6 +31307,16 @@
               }
             }
           },
+          "404": {
+            "description": "the trunk uses `twilio` authentication",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
           "406": {
             "description": "the requested media type cannot be served",
             "content": {
@@ -31318,7 +31338,7 @@
             }
           },
           "422": {
-            "description": "the trunk has no credentials to rotate",
+            "description": "the trunk is unknown or uses `ip_only` authentication",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
