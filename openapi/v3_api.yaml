@@ -5538,7 +5538,7 @@ components:
           properties:
             spent_amount:
               type: string
-              description: Spent on this trunk in the current billing period, as a decimal string.
+              description: Spent on this trunk over the last 24 hours, as a decimal string.
               example: '12.34'
           required:
             - spent_amount
@@ -10072,7 +10072,7 @@ components:
         api_version:
           type: string
           pattern: ^\d{4}-\d{2}-\d{2}$
-          description: 'Name of the API version the token selects on api.didww.com. Absent: the default version of the account. A well-formed name the API does not know selects its newest version, and the API never serves a bearer token a version older than the first one that accepts bearer tokens, nor older than the default version of the account.'
+          description: 'Name of the API version the token selects on api.didww.com. Absent: the default version of the account, or the current default version of the platform when the account has none. A well-formed name the API does not know selects its newest version, and the API never serves a bearer token a version older than the first one that accepts bearer tokens, nor older than the default version of the account.'
         expires_in:
           type: integer
           description: 'Requested lifetime in seconds. Absent: 900. A value outside 60–3600 is clamped into that range, not refused.'
@@ -10113,7 +10113,7 @@ components:
         api_version:
           type: string
           pattern: ^\d{4}-\d{2}-\d{2}$
-          description: 'The version name the token carries: the requested one, else the default version of the account.'
+          description: 'The version name the token carries: the requested one, else the default version of the account, or the current default version of the platform when the account has none.'
     TokenError:
       type: object
       required:
@@ -10831,7 +10831,7 @@ components:
             description: Matches groups served by the NANPA prefix.
           nanpa_prefix.npanxx:
             type: string
-            description: Matches groups served by the NANPA prefix with this six-digit NPA-NXX. Accepts a comma-separated list, matching any of the values. An empty value is accepted.
+            description: Matches groups served by the NANPA prefix with this six-digit NPA-NXX. Takes exactly one value; an empty value or a list is refused with 400.
           needs_registration:
             type: boolean
             description: Matches groups where buying requires a verified address.
@@ -13626,6 +13626,12 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
         '406':
           description: the requested media type cannot be served
           content:
@@ -13778,6 +13784,12 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
           description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
           content:
             application/vnd.api+json:
               schema:
@@ -14051,6 +14063,12 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
         '406':
           description: the requested media type cannot be served
           content:
@@ -14170,6 +14188,12 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
           description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
           content:
             application/vnd.api+json:
               schema:
@@ -14363,6 +14387,12 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the customer is in read-only mode, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
         '404':
           description: no capacity pool with that id belongs to the customer
           content:
@@ -14484,6 +14514,12 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
           description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the customer is in read-only mode, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
           content:
             application/vnd.api+json:
               schema:
@@ -14611,6 +14647,12 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the customer is in read-only mode, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
         '404':
           description: no shared capacity group with that id belongs to the customer
           content:
@@ -14665,6 +14707,12 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the customer is in read-only mode, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
         '404':
           description: no shared capacity group with that id belongs to the customer
           content:
@@ -14673,6 +14721,12 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '406':
           description: the requested media type cannot be served
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '422':
+          description: DIDs are still assigned to the group
           content:
             application/vnd.api+json:
               schema:
@@ -15374,6 +15428,12 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: numbers selection is not enabled for the account
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
         '406':
           description: the requested media type cannot be served
           content:
@@ -15432,6 +15492,12 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: numbers selection is not enabled for the account
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
         '404':
           description: no available DID with that id
           content:
@@ -15476,6 +15542,12 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
           description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'numbers selection is not enabled for the account, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
           content:
             application/vnd.api+json:
               schema:
@@ -15557,6 +15629,12 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: numbers selection is not enabled for the account
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
         '406':
           description: the requested media type cannot be served
           content:
@@ -15615,6 +15693,12 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: numbers selection is not enabled for the account
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
         '404':
           description: no reservation with that id belongs to the customer
           content:
@@ -15647,6 +15731,12 @@ paths:
           description: reservation released
         '401':
           description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'numbers selection is not enabled for the account, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
           content:
             application/vnd.api+json:
               schema:
@@ -15818,6 +15908,12 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
           description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
           content:
             application/vnd.api+json:
               schema:
@@ -16024,7 +16120,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '403':
-          description: emergency calling is not enabled for the account
+          description: 'emergency calling is not enabled for the account, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
           content:
             application/vnd.api+json:
               schema:
@@ -16214,7 +16310,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '403':
-          description: emergency calling is not enabled for the account
+          description: 'emergency calling is not enabled for the account, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
           content:
             application/vnd.api+json:
               schema:
@@ -16227,6 +16323,12 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '406':
           description: the requested media type cannot be served
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '422':
+          description: the service is `in_process` or already `canceled`
           content:
             application/vnd.api+json:
               schema:
@@ -16450,7 +16552,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '403':
-          description: emergency calling is not enabled for the account
+          description: 'emergency calling is not enabled for the account, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
           content:
             application/vnd.api+json:
               schema:
@@ -16585,7 +16687,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '403':
-          description: emergency calling is not enabled for the account
+          description: 'emergency calling is not enabled for the account, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
           content:
             application/vnd.api+json:
               schema:
@@ -16866,7 +16968,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '403':
-          description: the customer is in read-only mode
+          description: 'the customer is in read-only mode, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
           content:
             application/vnd.api+json:
               schema:
@@ -17027,6 +17129,12 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the customer is in read-only mode, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
         '404':
           description: no order with that id belongs to the customer
           content:
@@ -17077,6 +17185,12 @@ paths:
           description: order cancelled
         '401':
           description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the customer is in read-only mode, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
           content:
             application/vnd.api+json:
               schema:
@@ -17190,6 +17304,12 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
           description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
           content:
             application/vnd.api+json:
               schema:
@@ -17317,6 +17437,12 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
         '404':
           description: no identity with that id belongs to the customer
           content:
@@ -17367,6 +17493,12 @@ paths:
           description: identity deleted
         '401':
           description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
           content:
             application/vnd.api+json:
               schema:
@@ -17480,6 +17612,12 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
           description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
           content:
             application/vnd.api+json:
               schema:
@@ -17607,6 +17745,12 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
         '404':
           description: no address with that id belongs to the customer
           content:
@@ -17657,6 +17801,12 @@ paths:
           description: address deleted
         '401':
           description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
           content:
             application/vnd.api+json:
               schema:
@@ -17717,6 +17867,12 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
           description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
           content:
             application/vnd.api+json:
               schema:
@@ -17848,6 +18004,12 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
         '404':
           description: no encrypted file with that id belongs to the customer
           content:
@@ -17951,6 +18113,12 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
           description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
           content:
             application/vnd.api+json:
               schema:
@@ -18078,6 +18246,12 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
         '404':
           description: no proof with that id belongs to the customer
           content:
@@ -18128,6 +18302,12 @@ paths:
           description: proof deleted
         '401':
           description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
           content:
             application/vnd.api+json:
               schema:
@@ -18343,6 +18523,12 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
         '406':
           description: the requested media type cannot be served
           content:
@@ -18466,6 +18652,12 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
         '404':
           description: no permanent supporting document with that id belongs to the customer
           content:
@@ -18516,6 +18708,12 @@ paths:
           description: document deleted
         '401':
           description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
           content:
             application/vnd.api+json:
               schema:
@@ -18793,6 +18991,12 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
         '406':
           description: the requested media type cannot be served
           content:
@@ -18976,6 +19180,12 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
         '404':
           description: no verification with that id belongs to the customer
           content:
@@ -19097,6 +19307,12 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
           description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
           content:
             application/vnd.api+json:
               schema:
@@ -19297,6 +19513,12 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
         '404':
           description: no trunk with that id belongs to the customer
           content:
@@ -19347,6 +19569,12 @@ paths:
           description: trunk deleted
         '401':
           description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
           content:
             application/vnd.api+json:
               schema:
@@ -19460,6 +19688,12 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
           description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
           content:
             application/vnd.api+json:
               schema:
@@ -19587,6 +19821,12 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
         '404':
           description: no trunk group with that id belongs to the customer
           content:
@@ -19641,6 +19881,12 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
         '404':
           description: no trunk group with that id belongs to the customer
           content:
@@ -19691,6 +19937,12 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
           description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
           content:
             application/vnd.api+json:
               schema:
@@ -19810,6 +20062,12 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
           description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
           content:
             application/vnd.api+json:
               schema:
@@ -19937,6 +20195,12 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
         '404':
           description: no trunk with that id belongs to the customer
           content:
@@ -19987,6 +20251,12 @@ paths:
           description: trunk deleted
         '401':
           description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
           content:
             application/vnd.api+json:
               schema:
@@ -20100,6 +20370,12 @@ paths:
                 $ref: '#/components/schemas/ErrorsDocument'
         '401':
           description: the bearer token was refused; a request without a bearer token gets the same status and error document, without a `WWW-Authenticate` challenge
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the customer is in read-only mode, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
           content:
             application/vnd.api+json:
               schema:
@@ -20227,6 +20503,12 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the customer is in read-only mode, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
         '404':
           description: no trunk group with that id belongs to the customer
           content:
@@ -20281,6 +20563,12 @@ paths:
             application/vnd.api+json:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
+        '403':
+          description: 'the customer is in read-only mode, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
+          content:
+            application/vnd.api+json:
+              schema:
+                $ref: '#/components/schemas/ErrorsDocument'
         '404':
           description: no trunk group with that id belongs to the customer
           content:
@@ -20314,7 +20602,7 @@ paths:
       tags:
         - Outbound trunks
       operationId: listVoiceOutTrunks
-      description: Returns the outbound voice trunks the customer has configured. Each trunk reports what it has spent this period in `meta.spent_amount`.
+      description: Returns the outbound voice trunks the customer has configured. Each trunk reports what it has spent over the last 24 hours in `meta.spent_amount`.
       parameters:
         - $ref: '#/components/parameters/VoiceOutTrunkFilter'
         - $ref: '#/components/parameters/VoiceOutTrunkSort'
@@ -20458,7 +20746,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '403':
-          description: the outbound voice API is not enabled for the account
+          description: 'the outbound voice API is not enabled for the account, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
           content:
             application/vnd.api+json:
               schema:
@@ -20650,7 +20938,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '403':
-          description: the outbound voice API is not enabled for the account
+          description: 'the outbound voice API is not enabled for the account, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
           content:
             application/vnd.api+json:
               schema:
@@ -20710,7 +20998,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '403':
-          description: the outbound voice API is not enabled for the account
+          description: 'the outbound voice API is not enabled for the account, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
           content:
             application/vnd.api+json:
               schema:
@@ -20764,7 +21052,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorsDocument'
         '403':
-          description: the outbound voice API is not enabled for the account
+          description: 'the outbound voice API is not enabled for the account, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error="insufficient_scope"`)'
           content:
             application/vnd.api+json:
               schema:
