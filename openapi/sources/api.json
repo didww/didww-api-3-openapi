@@ -8010,7 +8010,7 @@
             "properties": {
               "spent_amount": {
                 "type": "string",
-                "description": "Spent on this trunk in the current billing period, as a decimal string.",
+                "description": "Spent on this trunk over the last 24 hours, as a decimal string.",
                 "example": "12.34"
               }
             },
@@ -15512,7 +15512,7 @@
             },
             "nanpa_prefix.npanxx": {
               "type": "string",
-              "description": "Matches groups served by the NANPA prefix with this six-digit NPA-NXX. Accepts a comma-separated list, matching any of the values. An empty value is accepted."
+              "description": "Matches groups served by the NANPA prefix with this six-digit NPA-NXX. Takes exactly one value; an empty value or a list is refused with 400."
             },
             "needs_registration": {
               "type": "boolean",
@@ -19082,6 +19082,16 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -19347,6 +19357,16 @@
                 "$ref": "#/components/headers/RetryAfter"
               }
             },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -19770,6 +19790,16 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -19971,6 +20001,16 @@
                 "$ref": "#/components/headers/RetryAfter"
               }
             },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -20224,6 +20264,16 @@
               }
             }
           },
+          "403": {
+            "description": "the customer is in read-only mode, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
           "404": {
             "description": "no capacity pool with that id belongs to the customer",
             "content": {
@@ -20432,6 +20482,16 @@
               }
             }
           },
+          "403": {
+            "description": "the customer is in read-only mode, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
           "400": {
             "description": "the body carries a member the API does not accept",
             "content": {
@@ -20620,6 +20680,16 @@
               }
             }
           },
+          "403": {
+            "description": "the customer is in read-only mode, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
           "404": {
             "description": "no shared capacity group with that id belongs to the customer",
             "content": {
@@ -20717,6 +20787,26 @@
         "responses": {
           "204": {
             "description": "shared capacity group deleted"
+          },
+          "422": {
+            "description": "DIDs are still assigned to the group",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "the customer is in read-only mode, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           },
           "404": {
             "description": "no shared capacity group with that id belongs to the customer",
@@ -21880,6 +21970,16 @@
               }
             }
           },
+          "403": {
+            "description": "numbers selection is not enabled for the account",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
           "406": {
             "description": "the requested media type cannot be served",
             "content": {
@@ -21982,6 +22082,16 @@
               }
             }
           },
+          "403": {
+            "description": "numbers selection is not enabled for the account",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
           "406": {
             "description": "the requested media type cannot be served",
             "content": {
@@ -22052,6 +22162,16 @@
           },
           "400": {
             "description": "the body carries a member the API does not accept",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "numbers selection is not enabled for the account, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22180,6 +22300,16 @@
               }
             }
           },
+          "403": {
+            "description": "numbers selection is not enabled for the account",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
           "406": {
             "description": "the requested media type cannot be served",
             "content": {
@@ -22282,6 +22412,16 @@
               }
             }
           },
+          "403": {
+            "description": "numbers selection is not enabled for the account",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
           "406": {
             "description": "the requested media type cannot be served",
             "content": {
@@ -22332,6 +22472,16 @@
           },
           "404": {
             "description": "no reservation with that id belongs to the customer",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "numbers selection is not enabled for the account, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -22674,6 +22824,16 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -22950,7 +23110,7 @@
             }
           },
           "403": {
-            "description": "emergency calling is not enabled for the account",
+            "description": "emergency calling is not enabled for the account, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23251,6 +23411,16 @@
           "204": {
             "description": "emergency calling service cancelled"
           },
+          "422": {
+            "description": "the service is `in_process` or already `canceled`",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
           "404": {
             "description": "no emergency calling service with that id belongs to the customer",
             "content": {
@@ -23262,7 +23432,7 @@
             }
           },
           "403": {
-            "description": "emergency calling is not enabled for the account",
+            "description": "emergency calling is not enabled for the account, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23630,7 +23800,7 @@
             }
           },
           "403": {
-            "description": "emergency calling is not enabled for the account",
+            "description": "emergency calling is not enabled for the account, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -23858,7 +24028,7 @@
             }
           },
           "403": {
-            "description": "emergency calling is not enabled for the account",
+            "description": "emergency calling is not enabled for the account, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24285,8 +24455,8 @@
               }
             }
           },
-          "403": {
-            "description": "the customer is in read-only mode",
+          "422": {
+            "description": "the order was rejected",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24295,8 +24465,8 @@
               }
             }
           },
-          "422": {
-            "description": "the order was rejected",
+          "403": {
+            "description": "the customer is in read-only mode, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24547,6 +24717,16 @@
               }
             }
           },
+          "403": {
+            "description": "the customer is in read-only mode, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
           "404": {
             "description": "no order with that id belongs to the customer",
             "content": {
@@ -24647,6 +24827,16 @@
           },
           "422": {
             "description": "the order cannot be cancelled",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "the customer is in read-only mode, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -24887,6 +25077,16 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -25095,6 +25295,16 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -25166,6 +25376,16 @@
                 "$ref": "#/components/headers/RetryAfter"
               }
             },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25354,6 +25574,16 @@
                 "$ref": "#/components/headers/RetryAfter"
               }
             },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25569,6 +25799,16 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -25647,6 +25887,16 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       }
@@ -25718,6 +25968,16 @@
                 "$ref": "#/components/headers/RetryAfter"
               }
             },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -25949,6 +26209,16 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         }
       }
@@ -26130,6 +26400,16 @@
                 "$ref": "#/components/headers/RetryAfter"
               }
             },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -26345,6 +26625,16 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -26416,6 +26706,16 @@
                 "$ref": "#/components/headers/RetryAfter"
               }
             },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -26779,6 +27079,16 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -26987,6 +27297,16 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -27058,6 +27378,16 @@
                 "$ref": "#/components/headers/RetryAfter"
               }
             },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -27516,6 +27846,16 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -27826,6 +28166,16 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -28017,6 +28367,16 @@
                 "$ref": "#/components/headers/RetryAfter"
               }
             },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -28338,6 +28698,16 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -28409,6 +28779,16 @@
                 "$ref": "#/components/headers/RetryAfter"
               }
             },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -28597,6 +28977,16 @@
                 "$ref": "#/components/headers/RetryAfter"
               }
             },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -28812,6 +29202,16 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -28883,6 +29283,16 @@
                 "$ref": "#/components/headers/RetryAfter"
               }
             },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -28971,6 +29381,16 @@
                 "$ref": "#/components/headers/RetryAfter"
               }
             },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -29169,6 +29589,16 @@
                 "$ref": "#/components/headers/RetryAfter"
               }
             },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -29384,6 +29814,16 @@
                 }
               }
             }
+          },
+          "403": {
+            "description": "the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
           }
         },
         "requestBody": {
@@ -29455,6 +29895,16 @@
                 "$ref": "#/components/headers/RetryAfter"
               }
             },
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -29588,6 +30038,16 @@
           },
           "422": {
             "description": "the trunk group was rejected",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "the customer is in read-only mode, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -29784,6 +30244,16 @@
               }
             }
           },
+          "403": {
+            "description": "the customer is in read-only mode, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
           "404": {
             "description": "no trunk group with that id belongs to the customer",
             "content": {
@@ -29892,6 +30362,16 @@
               }
             }
           },
+          "403": {
+            "description": "the customer is in read-only mode, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
+            "content": {
+              "application/vnd.api+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorsDocument"
+                }
+              }
+            }
+          },
           "404": {
             "description": "no trunk group with that id belongs to the customer",
             "content": {
@@ -29947,7 +30427,7 @@
           "Outbound trunks"
         ],
         "operationId": "listVoiceOutTrunks",
-        "description": "Returns the outbound voice trunks the customer has configured. Each trunk reports what it has spent this period in `meta.spent_amount`.",
+        "description": "Returns the outbound voice trunks the customer has configured. Each trunk reports what it has spent over the last 24 hours in `meta.spent_amount`.",
         "parameters": [
           {
             "$ref": "#/components/parameters/VoiceOutTrunkFilter"
@@ -30173,7 +30653,7 @@
             }
           },
           "403": {
-            "description": "the outbound voice API is not enabled for the account",
+            "description": "the outbound voice API is not enabled for the account, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -30483,7 +30963,7 @@
             }
           },
           "403": {
-            "description": "the outbound voice API is not enabled for the account",
+            "description": "the outbound voice API is not enabled for the account, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -30571,7 +31051,7 @@
             }
           },
           "403": {
-            "description": "the outbound voice API is not enabled for the account",
+            "description": "the outbound voice API is not enabled for the account, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
@@ -30669,7 +31149,7 @@
             }
           },
           "403": {
-            "description": "the outbound voice API is not enabled for the account",
+            "description": "the outbound voice API is not enabled for the account, or the token does not carry the `full` scope, which every method but `GET` and `HEAD` requires (title `Insufficient scope`, `WWW-Authenticate: Bearer error=\"insufficient_scope\"`)",
             "content": {
               "application/vnd.api+json": {
                 "schema": {
