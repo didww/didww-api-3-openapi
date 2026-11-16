@@ -1,7 +1,7 @@
 openapi: 3.0.3
 info:
   title: DIDWW Public API
-  version: '2026-10-22'
+  version: '2026-11-19'
   description: |
     JSONAPI interface to the DIDWW platform: browse coverage, order and manage DIDs,
     route them to voice and SMS trunks, and reserve numbers before purchase.
@@ -21,7 +21,7 @@ info:
     with 403 and an `insufficient_scope` challenge.
 
     The token's `api_version` claim selects the API version; this document
-    describes `2026-10-22`.
+    describes `2026-11-19`.
 
     Response schemas describe the full resource. A request narrowing one with
     `fields[...]` receives fewer members than its schema lists, deliberately:
@@ -35,7 +35,7 @@ info:
     email: support@didww.com
 externalDocs:
   description: DIDWW API documentation
-  url: https://doc.didww.com/api3/2026-10-22/
+  url: https://doc.didww.com/api3/2026-11-19/
 tags:
   - name: Authentication
     description: Access tokens, minted by the token service of the environment you call in exchange for an API key of that environment.
@@ -95,7 +95,7 @@ components:
         api_version:
           type: string
           description: V3 API version that served the request.
-          example: '2026-10-22'
+          example: '2026-11-19'
     CollectionMeta:
       type: object
       required:
@@ -105,7 +105,7 @@ components:
         api_version:
           type: string
           description: V3 API version that served the request.
-          example: '2026-10-22'
+          example: '2026-11-19'
         total_records:
           type: integer
           description: Total number of records matching the request.
@@ -2055,7 +2055,7 @@ components:
         api_version:
           type: string
           description: V3 API version that served the request.
-          example: '2026-10-22'
+          example: '2026-11-19'
         total_count:
           type: integer
           description: Numbers matching the filters. The response itself is capped, so this can exceed the size of `data`.
@@ -2138,7 +2138,7 @@ components:
         api_version:
           type: string
           description: V3 API version that served the request.
-          example: '2026-10-22'
+          example: '2026-11-19'
         available_count:
           type: integer
           description: Reservations still available to the customer under its numbers-selection plan.
@@ -2183,7 +2183,7 @@ components:
         api_version:
           type: string
           description: V3 API version that served the request.
-          example: '2026-10-22'
+          example: '2026-11-19'
         total_records:
           type: integer
           description: Total number of records matching the request.

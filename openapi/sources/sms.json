@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "SMS Rates",
-    "version": "2026-10-22",
+    "version": "2026-11-19",
     "description": "JSONAPI interface to the SMS prices of a DIDWW account, in four price domains: what an SMS\nsent through the account's A2P, P2P or OTP plan costs per destination (`sms_out/a2p`,\n`sms_out/p2p`, `sms_out/otp`), and what an SMS arriving on one of the account's numbers\ncosts (`sms_in`), as priced by the plan the account is assigned to in each domain. The\nplan's whole price list is one gzipped CSV file per domain; one number or one country is\nlooked up directly. Prices are plan values in USD, VAT excluded.\n\nEvery request is authenticated with a bearer access token (`Authorization: Bearer <token>`).\nMint one with `POST /token` on the token service of the environment you call —\n`https://auth.didww.com/token` for Production, `https://auth-sandbox.didww.com/token` for\nSandbox — with an API key issued in the DIDWW user panel. The audience this service verifies\nis `api-sms.didww.com` on the production and on the sandbox host alike, so the token's `aud`\nmust list that name. Every operation here reads: a token minted with the `read` scope is\nenough.\n\nAn account that holds no price plan of this service in a domain -- no plan at all, or a plan\nthis service publishes no prices for -- is answered with 404 `price_plan_not_assigned` by\nevery operation of that domain, and every operation spends the account's rate-limit budget:\nonce it is spent, the answer is 429 with `Retry-After`.\n",
     "contact": {
       "name": "DIDWW Support",
