@@ -45,10 +45,10 @@ To pin to a specific API version, replace `main` with that version's tag (for ex
 DIDWW API v3 is versioned by release date. A request carrying an access token is served the
 version named by the token's `api_version` claim — the version requested in the `api_version` field
 of `POST /token`, else the default version configured for the account — but never one older than
-`2026-10-22` or than the account's default. It never reads the `X-DIDWW-Api-Version` header.
-Versions released before `2026-10-22` are reached with the `api-key` header instead, the version
+`2026-11-19` or than the account's default. It never reads the `X-DIDWW-Api-Version` header.
+Versions released before `2026-11-19` are reached with the `api-key` header instead, the version
 picked by `X-DIDWW-Api-Version` (never older than the account's default), else the account's
-default; a key request that resolves to `2026-10-22` or later is refused with 401. The documents of
+default; a key request that resolves to `2026-11-19` or later is refused with 401. The documents of
 those versions, under their tags, describe that scheme.
 
 **`main` tracks one version: the latest one released to production.** It is named in
@@ -70,7 +70,7 @@ user panel (see [API keys][api-keys] in the documentation):
 curl https://auth.didww.com/token \
   -H 'api-key: <your API key>' \
   -H 'Content-Type: application/json' \
-  -d '{"aud": ["api.didww.com", "api-vin.didww.com"], "api_version": "2026-10-22"}'
+  -d '{"aud": ["api.didww.com", "api-vin.didww.com"], "api_version": "2026-11-19"}'
 ```
 
 The answer carries the token in `access_token`, its lifetime in seconds in `expires_in`, and the

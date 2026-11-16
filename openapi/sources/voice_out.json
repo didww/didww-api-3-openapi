@@ -2,7 +2,7 @@
   "openapi": "3.0.3",
   "info": {
     "title": "Voice OUT Rates",
-    "version": "2026-10-22",
+    "version": "2026-11-19",
     "description": "JSONAPI interface to the Voice OUT prices of a DIDWW account: what outbound calls to each\ndestination cost, as priced by the plan the account is assigned to. The plan's whole price\nlist is one gzipped CSV file; one number is looked up directly. Prices are plan values in\nUSD, VAT excluded.\n\nEvery request is authenticated with a bearer access token (`Authorization: Bearer <token>`).\nMint one with `POST /token` on the token service of the environment you call —\n`https://auth.didww.com/token` for Production, `https://auth-sandbox.didww.com/token` for\nSandbox — with an API key issued in the DIDWW user panel. The audience this service verifies\nis `api-vout.didww.com` on the production and on the sandbox host alike, so the token's `aud`\nmust list that name. Every operation here reads: a token minted with the `read` scope is\nenough.\n\nAn account with no plan assigned is answered with 404 `price_plan_not_assigned` by every\noperation, and every operation spends the account's rate-limit budget: once it is spent,\nthe answer is 429 with `Retry-After`.\n",
     "contact": {
       "name": "DIDWW Support",
