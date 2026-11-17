@@ -21216,6 +21216,14 @@ paths:
               - api-vout
             default: api-vin
             description: api-vin — Voice IN Rates; api-vout — Voice OUT Rates
+      - url: https://api-vin.didww.com/v3
+        description: Production — Voice IN Rates
+      - url: https://api-vout.didww.com/v3
+        description: Production — Voice OUT Rates
+      - url: https://api-vin-sandbox.didww.com/v3
+        description: Sandbox — Voice IN Rates
+      - url: https://api-vout-sandbox.didww.com/v3
+        description: Sandbox — Voice OUT Rates
     get:
       summary: Look up the price of a number
       tags:
@@ -21329,6 +21337,14 @@ paths:
               - api-vout
             default: api-vin
             description: api-vin — Voice IN Rates; api-vout — Voice OUT Rates
+      - url: https://api-vin.didww.com/v3
+        description: Production — Voice IN Rates
+      - url: https://api-vout.didww.com/v3
+        description: Production — Voice OUT Rates
+      - url: https://api-vin-sandbox.didww.com/v3
+        description: Sandbox — Voice IN Rates
+      - url: https://api-vout-sandbox.didww.com/v3
+        description: Sandbox — Voice OUT Rates
     get:
       summary: Download the price file
       tags:

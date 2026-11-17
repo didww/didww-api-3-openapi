@@ -110,11 +110,16 @@ token path and the prices paths are served by other hosts and declare their own 
 - the SMS prices paths (`/sms_out/a2p/…`, `/sms_out/p2p/…`, `/sms_out/otp/…`, `/sms_in/…`) name the
   SMS Rates hosts;
 - `/prices.csv.gz` and `/lookup/prices` are served by both Voice IN Rates and Voice OUT Rates, so
-  their servers are the templates `https://{service}.didww.com/v3` and
-  `https://{service}-sandbox.didww.com/v3`, where the `service` variable is `api-vin` (the default)
-  or `api-vout`. Set it to the service whose prices you want; where the two services describe an
-  operation differently, the description gives each service's text under a heading naming the
-  `service` value and the service, as **api-vin — Voice IN Rates**.
+  their first two servers are the templates `https://{service}.didww.com/v3` (Production) and
+  `https://{service}-sandbox.didww.com/v3` (Sandbox), where the `service` variable is `api-vin` (the
+  default) or `api-vout`. Set it to the service whose prices you want. The four hosts the templates
+  resolve to follow as servers of their own, for tools that cannot set a server variable:
+  `https://api-vin.didww.com/v3` (**Production — Voice IN Rates**), `https://api-vout.didww.com/v3`
+  (**Production — Voice OUT Rates**), `https://api-vin-sandbox.didww.com/v3`
+  (**Sandbox — Voice IN Rates**) and `https://api-vout-sandbox.didww.com/v3`
+  (**Sandbox — Voice OUT Rates**). Where the two services describe an operation differently, the
+  description gives each service's text under a heading naming the `service` value and the service,
+  as **api-vin — Voice IN Rates**.
 
 ## What the document covers
 
@@ -152,8 +157,10 @@ The document is plain OpenAPI 3.0.3 with no vendor extensions, so standard tooli
 - lint or diff it in CI to catch breaking changes before they reach you.
 
 Support for path-level `servers` and for server variables varies between generators and tools: some
-send every request to the root server, or ignore the `service` variable. Check that a client
-generated from the document calls the token and prices operations on their own hosts.
+send every request to the root server, some take the first server of a path, and some ignore the
+`service` variable, only ever use its default or keep the template as written — which is why the
+hosts of both voice services are also listed as servers of their own. Check that a client generated
+from the document calls the token and prices operations on their own hosts.
 
 ## Sources
 

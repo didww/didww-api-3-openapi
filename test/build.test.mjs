@@ -92,11 +92,50 @@ describe('a path served by two service sources', () => {
     assert.equal(item.servers[1].description, 'Sandbox');
     assert.equal(item.servers[0].variables.service.description, 'api-vin — Voice IN Rates; api-vout — Voice OUT Rates');
     assert.deepEqual(item.servers[1].variables, item.servers[0].variables);
+    assert.deepEqual(item.servers.filter((server) => server.variables), item.servers.slice(0, 2));
+  });
+
+  it('lists the templates resolved for every service after them, as servers of their own', () => {
+    assert.deepEqual(item.servers.slice(2), [
+      { url: 'https://api-vin.didww.com/v3', description: 'Production — Voice IN Rates' },
+      { url: 'https://api-vout.didww.com/v3', description: 'Production — Voice OUT Rates' },
+      { url: 'https://api-vin-sandbox.didww.com/v3', description: 'Sandbox — Voice IN Rates' },
+      { url: 'https://api-vout-sandbox.didww.com/v3', description: 'Sandbox — Voice OUT Rates' },
+    ]);
+  });
+
+  it('resolves the templates to the root servers of each service', () => {
+    const resolved = item.servers.slice(2).map((server) => server.url);
+    for (const source of [voiceIn(), voiceOut()]) {
+      for (const server of source.servers) assert.ok(resolved.includes(server.url), server.url);
+    }
+    assert.equal(resolved.length, 4);
+  });
+
+  it('repeats no server URL and starts every description with its environment', () => {
+    assert.equal(new Set(item.servers.map((server) => server.url)).size, item.servers.length);
+    assert.deepEqual(item.servers.map((server) => server.description.split(' — ')[0]),
+      ['Production', 'Sandbox', 'Production', 'Production', 'Sandbox', 'Sandbox']);
+  });
+
+  it('resolves the templates for three services, the environments in the order of the templates and the services in load order', () => {
+    const three = build({ sms: serviceSource('api-sms', 'SMS Rates', 'SmsPrice', ['mcc', 'mnc']), ...family() });
+    const servers = three.paths['/lookup/prices'].servers;
+    assert.deepEqual(servers[0].variables.service.enum, ['api-vin', 'api-vout', 'api-sms']);
+    assert.equal(servers[0].variables.service.default, 'api-vin');
+    assert.deepEqual(servers.slice(2).map((server) => [server.url, server.description]), [
+      ['https://api-vin.didww.com/v3', 'Production — Voice IN Rates'],
+      ['https://api-vout.didww.com/v3', 'Production — Voice OUT Rates'],
+      ['https://api-sms.didww.com/v3', 'Production — SMS Rates'],
+      ['https://api-vin-sandbox.didww.com/v3', 'Sandbox — Voice IN Rates'],
+      ['https://api-vout-sandbox.didww.com/v3', 'Sandbox — Voice OUT Rates'],
+      ['https://api-sms-sandbox.didww.com/v3', 'Sandbox — SMS Rates'],
+    ]);
   });
 
   it('orders the services by the load order whatever order the sources come in', () => {
     const shuffled = build({ voice_out: voiceOut(), api: mainSource(), voice_in: voiceIn() });
-    assert.deepEqual(shuffled.paths['/lookup/prices'].servers[0].variables.service.enum, ['api-vin', 'api-vout']);
+    assert.deepEqual(shuffled.paths['/lookup/prices'].servers, item.servers);
     assert.match(lookup(shuffled).description, /^\*\*api-vin — /);
   });
 
