@@ -330,13 +330,26 @@ const foldOperation = (components, where, entries, mainSecurity) => {
   return folded;
 };
 
+// A folded path carries the host as the {service} server variable, one
+// template per environment, defaulting to the first service in load order.
+// Tools that cannot set a server variable only ever reach that default, and
+// some use a server URL as written, braces included, so the templates resolved
+// for every service follow as servers of their own, described by environment
+// and service. They come after the templates, which keeps the first server of
+// each environment where it was, and no two URLs are equal: tools tell the
+// servers of a list apart by URL.
 const pathServers = (sources) => {
   const enumeration = sources.map((source) => source.service);
   const description = sources.map((source) => `${source.service} — ${source.title}`).join('; ');
   const variables = { service: { enum: enumeration, default: enumeration[0], description } };
+  const templates = [
+    { url: `https://{service}.didww.com${DEFAULT_SERVER_PATH}`, description: 'Production' },
+    { url: `https://{service}-sandbox.didww.com${DEFAULT_SERVER_PATH}`, description: 'Sandbox' },
+  ];
   return [
-    { url: `https://{service}.didww.com${DEFAULT_SERVER_PATH}`, description: 'Production', variables: clone(variables) },
-    { url: `https://{service}-sandbox.didww.com${DEFAULT_SERVER_PATH}`, description: 'Sandbox', variables: clone(variables) },
+    ...templates.map((template) => ({ ...template, variables: clone(variables) })),
+    ...templates.flatMap((template) => sources.map((source) => (
+      { url: template.url.replace('{service}', source.service), description: `${template.description} — ${source.title}` }))),
   ];
 };
 
