@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs';
 import { describe, it } from 'node:test';
 import { BuildError, buildDocument, canonical } from '../scripts/build.mjs';
 
-import { VERSION, error, mainSource, serviceSource, voiceIn, voiceOut } from './fixtures.mjs';
+import { VERSION, auth, error, mainSource, serviceSource, voiceIn, voiceOut } from './fixtures.mjs';
 
 const build = (sources) => buildDocument(sources, VERSION);
 const rejects = (sources, pattern) => assert.throws(() => build(sources), (e) => e instanceof BuildError && pattern.test(e.message));
@@ -58,6 +58,24 @@ describe('a path served by one service source', () => {
   });
 });
 
+describe('the path of the token service', () => {
+  it('gets its hosts without /v3 on the path item and its API key on the operation', () => {
+    const doc = build({ api: mainSource(), auth: auth(), voice_in: voiceIn() });
+    const item = doc.paths['/token'];
+    assert.deepEqual(item.servers, [
+      { url: 'https://auth.didww.com', description: 'Production' },
+      { url: 'https://auth-sandbox.didww.com', description: 'Sandbox' },
+    ]);
+    assert.deepEqual(item.post.security, [{ api_key: [] }]);
+    assert.equal(doc.paths['/lookup/prices'].servers[0].url, 'https://api-vin.didww.com/v3');
+  });
+
+  it('puts its tag ahead of the main source and the service sources', () => {
+    const doc = build({ api: mainSource(), voice_in: voiceIn(), auth: auth() });
+    assert.deepEqual(doc.tags.map((tag) => tag.name), ['Authentication', 'Account', 'Prices']);
+  });
+});
+
 describe('a path served by two service sources', () => {
   const doc = build(family());
   const item = doc.paths['/lookup/prices'];
@@ -74,11 +92,50 @@ describe('a path served by two service sources', () => {
     assert.equal(item.servers[1].description, 'Sandbox');
     assert.equal(item.servers[0].variables.service.description, 'api-vin — Voice IN Rates; api-vout — Voice OUT Rates');
     assert.deepEqual(item.servers[1].variables, item.servers[0].variables);
+    assert.deepEqual(item.servers.filter((server) => server.variables), item.servers.slice(0, 2));
+  });
+
+  it('lists the templates resolved for every service after them, as servers of their own', () => {
+    assert.deepEqual(item.servers.slice(2), [
+      { url: 'https://api-vin.didww.com/v3', description: 'Production — Voice IN Rates' },
+      { url: 'https://api-vout.didww.com/v3', description: 'Production — Voice OUT Rates' },
+      { url: 'https://api-vin-sandbox.didww.com/v3', description: 'Sandbox — Voice IN Rates' },
+      { url: 'https://api-vout-sandbox.didww.com/v3', description: 'Sandbox — Voice OUT Rates' },
+    ]);
+  });
+
+  it('resolves the templates to the root servers of each service', () => {
+    const resolved = item.servers.slice(2).map((server) => server.url);
+    for (const source of [voiceIn(), voiceOut()]) {
+      for (const server of source.servers) assert.ok(resolved.includes(server.url), server.url);
+    }
+    assert.equal(resolved.length, 4);
+  });
+
+  it('repeats no server URL and starts every description with its environment', () => {
+    assert.equal(new Set(item.servers.map((server) => server.url)).size, item.servers.length);
+    assert.deepEqual(item.servers.map((server) => server.description.split(' — ')[0]),
+      ['Production', 'Sandbox', 'Production', 'Production', 'Sandbox', 'Sandbox']);
+  });
+
+  it('resolves the templates for three services, the environments in the order of the templates and the services in load order', () => {
+    const three = build({ sms: serviceSource('api-sms', 'SMS Rates', 'SmsPrice', ['mcc', 'mnc']), ...family() });
+    const servers = three.paths['/lookup/prices'].servers;
+    assert.deepEqual(servers[0].variables.service.enum, ['api-vin', 'api-vout', 'api-sms']);
+    assert.equal(servers[0].variables.service.default, 'api-vin');
+    assert.deepEqual(servers.slice(2).map((server) => [server.url, server.description]), [
+      ['https://api-vin.didww.com/v3', 'Production — Voice IN Rates'],
+      ['https://api-vout.didww.com/v3', 'Production — Voice OUT Rates'],
+      ['https://api-sms.didww.com/v3', 'Production — SMS Rates'],
+      ['https://api-vin-sandbox.didww.com/v3', 'Sandbox — Voice IN Rates'],
+      ['https://api-vout-sandbox.didww.com/v3', 'Sandbox — Voice OUT Rates'],
+      ['https://api-sms-sandbox.didww.com/v3', 'Sandbox — SMS Rates'],
+    ]);
   });
 
   it('orders the services by the load order whatever order the sources come in', () => {
     const shuffled = build({ voice_out: voiceOut(), api: mainSource(), voice_in: voiceIn() });
-    assert.deepEqual(shuffled.paths['/lookup/prices'].servers[0].variables.service.enum, ['api-vin', 'api-vout']);
+    assert.deepEqual(shuffled.paths['/lookup/prices'].servers, item.servers);
     assert.match(lookup(shuffled).description, /^\*\*api-vin — /);
   });
 
@@ -461,6 +518,18 @@ describe('the build refuses', () => {
     const unlabelled = voiceIn();
     for (const server of unlabelled.servers) delete server.description;
     rejects({ api: mainSource(), voice_in: unlabelled }, /described "Production" and "Sandbox"/);
+  });
+
+  it('root servers of the token service source under /v3', () => {
+    const versioned = auth();
+    for (const server of versioned.servers) server.url += '/v3';
+    rejects({ api: mainSource(), auth: versioned }, /source auth: root servers must be exactly Production https:\/\/auth\.didww\.com and Sandbox https:\/\/auth-sandbox\.didww\.com,/);
+  });
+
+  it('a path served by the token service and a service source', () => {
+    const token = auth();
+    token.paths['/lookup/prices'] = voiceIn().paths['/lookup/prices'];
+    rejects({ api: mainSource(), auth: token, voice_in: voiceIn() }, /path \/lookup\/prices: served by auth, voice_in; the hosts of auth do not fit the \{service\} server templates/);
   });
 
   it('a shared component that differs', () => {

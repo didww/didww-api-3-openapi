@@ -72,3 +72,17 @@ export const voiceIn = () => serviceSource('api-vin', 'Voice IN Rates', 'VoiceIn
   [{ name: 'filter[src_country_iso]', in: 'query', required: false, schema: { type: 'string' } }]);
 export const voiceOut = () => serviceSource('api-vout', 'Voice OUT Rates', 'VoiceOutPrice', ['prefix', 'network']);
 
+// The token service: one path at the root of its host, authenticated by an API key.
+export const auth = () => ({
+  openapi: '3.0.3',
+  info: { title: 'DIDWW API Token Service', version: VERSION },
+  tags: [{ name: 'Authentication', description: 'Access tokens.' }],
+  servers: [{ url: 'https://auth.didww.com', description: 'Production' }, { url: 'https://auth-sandbox.didww.com', description: 'Sandbox' }],
+  components: { securitySchemes: { api_key: { type: 'apiKey', in: 'header', name: 'api-key' } } },
+  security: [{ api_key: [] }],
+  paths: {
+    '/token': {
+      post: { tags: ['Authentication'], operationId: 'createToken', summary: 'Mint an access token', description: 'Exchanges an API key for a token.', responses: { 200: { description: 'token minted' } } },
+    },
+  },
+});
